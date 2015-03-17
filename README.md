@@ -1,5 +1,5 @@
 # i18next-scanner
-i18next-scanner is available as grunt and gulp task that can scan your JavaScript and HTML sources, extracts translations keys and values, and merges them into your resource files.
+i18next-scanner is available as grunt and gulp task that can scan your JavaScript/HTML source files, extracts translation keys/values, and merges them into i18n resource files.
 
 
 **COMING SOON**
