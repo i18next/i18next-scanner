@@ -29,7 +29,9 @@
   ],
   "dependencies": {
     "i18next": "^1.7.10",
-    "sha1": "^1.1.0"
+    "through2": "^0.6.3",
+    "vinyl": "^0.4.6",
+    "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^9.0.3",
