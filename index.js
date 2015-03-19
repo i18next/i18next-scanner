@@ -20,7 +20,7 @@ var scanner = function(options) {
          * i18n._("text", { count: 1 }); // result matched
          * i18n._("text" + str); // skip run-time variables
          */
-        results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || "";
+        results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
             var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
             if (r) {
@@ -36,7 +36,7 @@ var scanner = function(options) {
          * i18n.t("ns:foo.bar", { count: 1 }); // result matched
          * i18n.t("ns:foo.bar" + str); // skip run-time variables
          */
-        results = content.match(/i18n\.t\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || "";
+        results = content.match(/i18n\.t\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
             var r = result.match(/i18n\.t\(("[^"]*"|'[^']*')/);
             if (r) {

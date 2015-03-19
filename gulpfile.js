@@ -2,6 +2,7 @@ var fs = require('fs');
 var gulp = require('gulp');
 var del = require('del');
 var browserify = require('browserify');
+var runSequence = require('run-sequence');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
 var errorHandler = require('./gulp/error-handler');
