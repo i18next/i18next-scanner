@@ -1,0 +1,7 @@
+{{i18n "Basic Example"}}
+{{i18n "__first-name__ __last-name__" first-name=firstname last-name=lastname}}
+{{i18n "English" defaultKey="locale:language.en-US"}}
+{{i18n defaultKey="loading"}}
+{{#i18n}}Some text{{/i18n}}
+{{#i18n this}}Description: {{description}}{{/i18n}}
+{{#i18n this last-name=lastname}}{{firstname}} __last-name__{{/i18n}}
