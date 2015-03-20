@@ -4,7 +4,7 @@ var vfs = require('vinyl-fs');
 var File = require('vinyl');
 var through = require('through2');
 
-var scanner = function(options) {
+module.exports = function(options) {
     var parser = require('./lib/parser')(options);
 
     options = options || {};
@@ -146,20 +146,3 @@ var scanner = function(options) {
 
     return through.obj(transform, flush);
 };
-
-vfs.src('test/fixtures/modules/**/*.{js,hbs}', {base: 'test/fixtures'})
-    .pipe(scanner({
-        lngs: ['en','de'],
-        defaultValue: '__STRING_NOT_TRANSLATED__',
-        resGetPath: 'i18n/__lng__/__ns__.json',
-        resSetPath: 'i18n/__lng__/__ns__.savedMissing.json',
-        nsseparator: ':', // namespace separator
-        keyseparator: '.', // key separator
-        interpolationPrefix: '__',
-        interpolationSuffix: '__',
-        ns: {
-            namespaces: [],
-            defaultNs: 'translation'
-        }
-    }))
-    .pipe(vfs.dest('./dist'));
