@@ -44,6 +44,7 @@
     "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
+    "del": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-jshint": "^1.9.2",
     "gulp-util": "^3.0.4",
