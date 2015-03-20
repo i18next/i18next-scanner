@@ -5,7 +5,6 @@ var gulp = require('gulp');
 var del = require('del');
 var runSequence = require('run-sequence');
 var jshint = require('gulp-jshint');
-var source = require('vinyl-source-stream');
 var errorHandler = require('./gulp/error-handler');
 var pkg = require('./package.json');
 var config = require('./gulp/config');
