@@ -1,0 +1,47 @@
+{
+  "name": "i18next-scanner",
+  "version": "0.1.0",
+  "description": "A text scanner for i18next",
+  "homepage": "https://github.com/cheton/i18next-scanner",
+  "author": "Cheton Wu <cheton@gmail.com>",
+  "scripts": {
+    "test": "npm run gulp && npm run tap-test",
+    "gulp": "gulp",
+    "tap-test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cheton/i18next-scanner.git"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/cheton/i18next-scanner/blob/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.1.x"
+  },
+  "keywords": [
+    "i18next"
+  ],
+  "dependencies": {
+    "debuglog": "^1.0.1",
+    "i18next": "^1.7.10",
+    "i18next-text": "^0.5.1",
+    "lodash": "^3.5.0",
+    "through2": "^0.6.3",
+    "vinyl": "^0.4.6",
+    "vinyl-fs": "^1.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-jshint": "^1.9.2",
+    "gulp-util": "^3.0.4",
+    "run-sequence": "^1.0.2",
+    "tap": "^0.7.1",
+    "yargs": "^3.5.4"
+  }
+}
