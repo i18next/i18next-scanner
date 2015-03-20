@@ -14,6 +14,77 @@ var scanner = function(options) {
         var results;
 
         /**
+         * Handlebars
+         *
+         * {{i18n 'bar'}}
+         * {{i18n 'bar' key='foo'}}
+         * {{i18n 'baz' key='locale:foo'}}
+         * {{i18n key='noval'}}
+         */
+        results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
+        _.each(results, function(result) {
+            var key, defaultValue;
+
+            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
+            if ( ! _.isUndefined(r[1])) {
+                defaultValue = _.trim(r[1], '\'"');
+            }
+
+            var params = parser.parseHashArguments(r[2]);
+            if (_.has(params, 'key')) {
+                key = params['key'];
+            }
+            
+            if (_.isUndefined(key) && _.isUndefined(defaultValue)) {
+                return;
+            }
+
+            if (_.isUndefined(key)) {
+                parser.parseValue(defaultValue);
+            } else {
+                parser.parseKey(key, defaultValue);
+            }
+        });
+
+        /**
+         * Handlebars block expressions
+         *
+         * {{#i18n}}Some text{{/i18n}}
+         * {{#i18n this}}Description: {{description}}{{/i18n}}
+         * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
+         *
+         * http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-wordo
+         */
+        results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
+        _.each(results, function(result) {
+            var key, defaultValue;
+
+            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
+
+            if ( ! _.isUndefined(r[2])) {
+                defaultValue = _.trim(r[2], '\'"');
+            }
+
+            if (_.isUndefined(defaultValue)) {
+                return;
+            }
+
+            parser.parseValue(defaultValue);
+        });
+
+        /**
+         * <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz"></div>
+         */
+        results = content.match(/data\-i18n=("[^"]*"|'[^']*')/igm) || '';
+        _.each(results, function(result) {
+            var r = result.match(/data\-i18n=("[^"]*"|'[^']*')/);
+            if (r) {
+                var keys = _.trim(r[1], '\'"');
+                parser.parseKeys(keys);
+            }
+        });
+
+        /**
          * i18n._('This is text value');
          * i18n._("text"); // result matched
          * i18n._('text'); // result matched

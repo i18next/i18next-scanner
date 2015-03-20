@@ -28,22 +28,20 @@
     "i18next"
   ],
   "dependencies": {
+    "debuglog": "^1.0.1",
     "i18next": "^1.7.10",
+    "i18next-text": "^0.5.1",
+    "lodash": "^3.5.0",
     "through2": "^0.6.3",
     "vinyl": "^0.4.6",
     "vinyl-fs": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^9.0.3",
-    "del": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-jshint": "^1.9.2",
     "gulp-util": "^3.0.4",
-    "i18next-text": "^0.5.1",
-    "lodash": "^3.5.0",
     "run-sequence": "^1.0.2",
     "tap": "^0.7.1",
-    "vinyl-source-stream": "^1.1.0",
     "yargs": "^3.5.4"
   }
 }
