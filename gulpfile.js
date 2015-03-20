@@ -3,7 +3,6 @@ var fs = require('fs');
 var path = require('path');
 var gulp = require('gulp');
 var del = require('del');
-var browserify = require('browserify');
 var runSequence = require('run-sequence');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
