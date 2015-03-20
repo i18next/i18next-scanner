@@ -4,6 +4,7 @@
   "description": "A text scanner for i18next",
   "homepage": "https://github.com/cheton/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
+  "main": "./index.js",
   "scripts": {
     "test": "npm run gulp && npm run tap-test",
     "gulp": "gulp",
@@ -25,12 +26,18 @@
     "npm": "1.1.x"
   },
   "keywords": [
-    "i18next"
+    "i18n",
+    "i18next",
+    "gettext",
+    "hash",
+    "sha1",
+    "crc32",
+    "md5"
   ],
   "dependencies": {
     "debuglog": "^1.0.1",
     "i18next": "^1.7.10",
-    "i18next-text": "^0.5.1",
+    "i18next-text": "^0.5.2",
     "lodash": "^3.5.0",
     "through2": "^0.6.3",
     "vinyl": "^0.4.6",
