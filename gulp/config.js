@@ -14,7 +14,6 @@ module.exports = {
     banner: banner,
     clean: {
         files: [
-            'dist'
         ]
     },
     jshint: {
