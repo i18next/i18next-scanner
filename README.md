@@ -4,7 +4,10 @@
 
 i18next-scanner is available as both gulp and grunt plugins that can scan your code, extracts translation keys/values, and merges them into i18n resource files.
 
+~TBD~
+
 ## Features
+~TBD~
 
 ## Installation
 ```
@@ -210,6 +213,7 @@ gulp.src(['src/**/*.{js,html}'], {base: 'src'})
 
 ```javascript
 var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
 var customTransform = function(file, enc, done) {
     var parser = this.parser;
     var extname = path.extname(file.path);
@@ -244,6 +248,7 @@ var customTransform = function(file, enc, done) {
 
 ```javascript
 var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
 var customTransform = function(file, enc, done) {
     var parser = this.parser;
     var extname = path.extname(file.path);
