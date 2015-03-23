@@ -78,7 +78,7 @@ gulp.task('i18next-scanner', function() {
     };
 
     return gulp.src(['src/**/*.js'], {base: 'src'})
-        .pipe(i18next(options))
+        .pipe(i18next(options, customTransform))
         .pipe(gulp.dest('assets'));
 });
 ```
@@ -169,7 +169,7 @@ gulp.task('i18next-scanner', function() {
     };
 
     return gulp.src(['src/**/*.hbs'], {base: 'src'})
-        .pipe(i18next(options))
+        .pipe(i18next(options, customTransform))
         .pipe(gulp.dest('assets'));
 });
 ```
