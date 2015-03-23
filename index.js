@@ -5,6 +5,12 @@ var vfs = require('vinyl-fs');
 var File = require('vinyl');
 var through = require('through2');
 
+/**
+ * @param {object} options The options object.
+ * @param {function} [customTransform]
+ * @param {function} [customFlush]
+ * @return {object} Returns a through2.obj().
+ */
 module.exports = function(options, customTransform, customFlush) {
     var parser = require('./lib/parser')(options || {});
 
