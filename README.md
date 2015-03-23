@@ -7,8 +7,9 @@ i18next-scanner is available as both gulp and grunt plugins that can scan your c
 ## Features
 
 ## Installation
-
-`npm install i18next-scanner`
+```
+npm install i18next-scanner
+```
 
 ## Gulp Usage
 
