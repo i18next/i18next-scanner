@@ -18,17 +18,10 @@ gulp.task('i18next-scanner', function() {
 
     return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
         .pipe(i18next({
-            // Provides a list of supported languages by setting the lngs option.
-            lngs: ['en', 'de'],
-            // Sorts the keys in ascending order.
-            sort: true, // default: false
-            // Provides a default value if a value is not specified.
-            defaultValue: '', // default: ''
-            // The resGetPath is your source i18n path, it is relative to current working directory.
+            lngs: ['en', 'de'], // default: 'en'
+            defaultValue: '__STRING_NOT_TRANSLATED__', // default: ''
             resGetPath: 'assets/i18n/__lng__/__ns__.json', // default: 'i18n/__lng__/__ns__.json'
-            // The resSetPath is your target i18n path, it is relative to your gulp.dest path.
             resSetPath: 'i18n/__lng__/__ns__.json', // default: 'i18n/__lng__/__ns__.json'
-            // Default namespace is 'translation'.
             ns: 'translation'
         })
         .pipe(gulp.dest('assets'));
@@ -41,7 +34,7 @@ gulp.task('i18next-scanner', function() {
 
 ### Parses the i18n._() method
 
-```
+```javascript
 gulp.task('i18next-scanner', function() {
     var i18next = require('i18next-scanner');
     var hash = require('i18next-text').hash['sha1'];
@@ -92,7 +85,7 @@ gulp.task('i18next-scanner', function() {
 
 ### Handlebars i18n helper with block expressions
 
-```
+```javascript
 gulp.task('i18next-scanner', function() {
     var i18next = require('i18next-scanner');
     var hash = require('i18next-text').hash['sha1'];
@@ -152,8 +145,6 @@ gulp.task('i18next-scanner', function() {
          * {{#i18n}}Some text{{/i18n}}
          * {{#i18n this}}Description: {{description}}{{/i18n}}
          * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
-         *
-         * http://stackoverflow.com/questions/406230/regular-expression-to-match-string-not-containing-a-wordo
          */
         (function() {
             var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
