@@ -261,7 +261,7 @@ For example:
 ```
 
 ### customTransform
-The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done` function to indicate that the transformation is done, even if that transformation means discarding the file.
+The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
 ```javascript
 var customTransform = function _transform(file, enc, done) {
@@ -311,7 +311,7 @@ var customTransform = function _transform(file, enc, done) {
 ```
 
 ### customFlush
-The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement a `customFlush` function to override the default `flush` function, and call the `done()` function when everything's done.
+The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
 For example:
 ```javascript
 var _ = require('lodash');
