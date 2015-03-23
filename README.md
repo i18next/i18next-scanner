@@ -18,10 +18,10 @@ gulp.task('i18next-scanner', function() {
 
     return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
         .pipe(i18next({
-            lngs: ['en', 'de'], // default: 'en'
-            defaultValue: '__STRING_NOT_TRANSLATED__', // default: ''
-            resGetPath: 'assets/i18n/__lng__/__ns__.json', // default: 'i18n/__lng__/__ns__.json'
-            resSetPath: 'i18n/__lng__/__ns__.json', // default: 'i18n/__lng__/__ns__.json'
+            lngs: ['en', 'de'],
+            defaultValue: '__STRING_NOT_TRANSLATED__',
+            resGetPath: 'assets/i18n/__lng__/__ns__.json',
+            resSetPath: 'i18n/__lng__/__ns__.json',
             ns: 'translation'
         })
         .pipe(gulp.dest('assets'));
