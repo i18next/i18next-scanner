@@ -55,9 +55,9 @@ You might want to find all occurrences of the `i18n._()` function in your code.
 For example:
 ```javascript
 i18n._('This is text value');
-i18n._("text"); // result matched
-i18n._('text'); // result matched
-i18n._("text", { count: 1 }); // result matched
+i18n._("text");
+i18n._('text');
+i18n._("text", { count: 1 });
 i18n._("text" + str); // skip run-time variables
 ```
 
