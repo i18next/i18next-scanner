@@ -35,6 +35,7 @@
     "md5"
   ],
   "dependencies": {
+    "colors": "^1.0.3",
     "debuglog": "^1.0.1",
     "i18next": "^1.7.10",
     "i18next-text": "^0.5.2",
