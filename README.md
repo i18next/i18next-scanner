@@ -51,6 +51,22 @@ gulp.src(['src/**/*.{js,html}'], {base: 'src'})
 ### Usage with i18next-text
 
 #### Example of parsing strings
+You might want to find all occurrences of the `i18n._()` function in your code.
+For example:
+```javascript
+i18n._('This is text value');
+i18n._("text"); // result matched
+i18n._('text'); // result matched
+i18n._("text", { count: 1 }); // result matched
+i18n._("text" + str); // skip run-time variables
+```
+
+The content can be parsed with a regular expression, like below:
+```javascript
+i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]
+```
+
+The code might look like this:
 ```javascript
 var _ = require('lodash');
 var hash = require('i18next-text').hash['sha1'];
@@ -59,13 +75,6 @@ var customTransform = function(file, enc, done) {
     var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
 
-    /*
-     * i18n._('This is text value');
-     * i18n._("text"); // result matched
-     * i18n._('text'); // result matched
-     * i18n._("text", { count: 1 }); // result matched
-     * i18n._("text" + str); // skip run-time variables
-     */
     (function() {
         var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
@@ -84,8 +93,33 @@ var customTransform = function(file, enc, done) {
 };
 ```
 
-#### Handlebars i18n helper with block expressions
+#### Handlebars i18n helper
+**i18n function helper**
+```hbs
+{{i18n 'bar'}}
+{{i18n 'bar' defaultKey='foo'}}
+{{i18n 'baz' defaultKey='locale:foo'}}
+{{i18n defaultKey='noval'}}
+```
+Using the regular expression for the above:
+```hbs
+{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}
+```
 
+**i18n block helper**
+```hbs
+{{#i18n}}Some text{{/i18n}}
+{{#i18n this}}Description: {{description}}{{/i18n}}
+{{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
+```
+Using the regular expression for the above:
+```javascript
+{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}
+```
+
+**Sample code**
+
+The sample code might look like this:
 ```javascript
 var _ = require('lodash');
 var hash = require('i18next-text').hash['sha1'];
@@ -94,12 +128,7 @@ var customTransform = function(file, enc, done) {
     var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
 
-    /*
-     * {{i18n 'bar'}}
-     * {{i18n 'bar' defaultKey='foo'}}
-     * {{i18n 'baz' defaultKey='locale:foo'}}
-     * {{i18n defaultKey='noval'}}
-     */
+    // i18n function helper
     (function() {
         var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
         _.each(results, function(result) {
@@ -129,11 +158,7 @@ var customTransform = function(file, enc, done) {
         });
     }());
 
-    /*
-     * {{#i18n}}Some text{{/i18n}}
-     * {{#i18n this}}Description: {{description}}{{/i18n}}
-     * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
-     */
+    // i18n block helper
     (function() {
         var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
         _.each(results, function(result) {
