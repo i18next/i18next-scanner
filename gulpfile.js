@@ -6,6 +6,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var jshint = require('gulp-jshint');
 var errorHandler = require('./gulp/error-handler');
+var hashlib = require('i18next-text').hash;
 var pkg = require('./package.json');
 var config = require('./gulp/config');
 
@@ -35,34 +36,36 @@ gulp.task('i18next-scanner', function() {
          * Supports Handlebars i18n helper
          *
          * {{i18n 'bar'}}
-         * {{i18n 'bar' key='foo'}}
-         * {{i18n 'baz' key='locale:foo'}}
-         * {{i18n key='noval'}}
+         * {{i18n 'bar' defaultKey='foo'}}
+         * {{i18n 'baz' defaultKey='locale:foo'}}
+         * {{i18n defaultKey='noval'}}
          */
         (function() {
             var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
             _.each(results, function(result) {
-                var key, defaultValue;
-
+                var key, value;
                 var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
+
                 if ( ! _.isUndefined(r[1])) {
-                    defaultValue = _.trim(r[1], '\'"');
+                    value = _.trim(r[1], '\'"');
                 }
 
                 var params = parser.parseHashArguments(r[2]);
-                if (_.has(params, 'key')) {
-                    key = params['key'];
+                if (_.has(params, 'defaultKey')) {
+                    key = params['defaultKey'];
                 }
                 
-                if (_.isUndefined(key) && _.isUndefined(defaultValue)) {
+                if (_.isUndefined(key) && _.isUndefined(value)) {
                     return;
                 }
 
                 if (_.isUndefined(key)) {
-                    parser.parseValue(defaultValue);
-                } else {
-                    parser.parseKey(key, defaultValue);
+                    key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                    parser.parseValue(value, key);
+                    return;
                 }
+                
+                parser.parseKey(key, value);
             });
         }());
 
@@ -78,19 +81,19 @@ gulp.task('i18next-scanner', function() {
         (function() {
             var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
             _.each(results, function(result) {
-                var key, defaultValue;
-
+                var key, value;
                 var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
 
                 if ( ! _.isUndefined(r[2])) {
-                    defaultValue = _.trim(r[2], '\'"');
+                    value = _.trim(r[2], '\'"');
                 }
 
-                if (_.isUndefined(defaultValue)) {
+                if (_.isUndefined(value)) {
                     return;
                 }
 
-                parser.parseValue(defaultValue);
+                key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                parser.parseValue(value, key);
             });
         }());
 
@@ -106,10 +109,13 @@ gulp.task('i18next-scanner', function() {
         (function() {
             var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
             _.each(results, function(result) {
+                var key, value;
                 var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+
                 if (r) {
-                    var value = _.trim(r[1], '\'"');
-                    parser.parseValue(value);
+                    value = _.trim(r[1], '\'"');
+                    key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                    parser.parseValue(value, key);
                 }
             });
         }());
