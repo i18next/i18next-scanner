@@ -1,33 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>I18next-scanner by cheton</title>
+    <meta name="description" content="I18next-scanner : i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>I18next-scanner</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>I18next-scanner</h1>
-        <p>i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.</p>
 
-        <p class="view"><a href="https://github.com/cheton/i18next-scanner">View the Project on GitHub <small>cheton/i18next-scanner</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/cheton/i18next-scanner">View on GitHub</a>
 
+          <h1 id="project_title">I18next-scanner</h1>
+          <h2 id="project_tagline">i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.</h2>
 
-        <ul>
-          <li><a href="https://github.com/cheton/i18next-scanner/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/cheton/i18next-scanner/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/cheton/i18next-scanner">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/cheton/i18next-scanner/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/cheton/i18next-scanner/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a id="i18next-scanner-" class="anchor" href="#i18next-scanner-" aria-hidden="true"><span class="octicon octicon-link"></span></a>i18next-scanner <a href="https://travis-ci.org/cheton/i18next-scanner"><img src="https://travis-ci.org/cheton/i18next-scanner.svg?branch=master" alt="build status"></a>
 </h1>
@@ -43,7 +46,7 @@
 
 <ul>
 <li>Fully compatible with <a href="https://github.com/i18next/i18next">i18next</a> - a full-featured i18n javascript library for translating your webapplication.</li>
-<li>Support <a href="https://github.com/cheton/i18next-text">i18next-text</a> to write your code without maintaining i18n keys.</li>
+<li>Support <a href="https://github.com/cheton/i18next-text">i18next-text</a> to write your code without the need to maintain i18n keys.</li>
 <li>A transform stream that works with both Gulp and Grunt task runner.</li>
 <li>Support custom transform and flush functions.</li>
 </ul>
@@ -53,191 +56,6 @@
 
 <pre><code>npm install i18next-scanner
 </code></pre>
-
-<h2>
-<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
-
-<pre><code>function(options[, customTransform[, customFlush]])
-</code></pre>
-
-<h3>
-<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>options</h3>
-
-<div class="highlight highlight-javascript"><pre>{
-    lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>],
-    sort<span class="pl-k">:</span> <span class="pl-c1">false</span>,
-    defaultValue<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
-    resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-    resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-    nsseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>:<span class="pl-pds">'</span></span>,
-    keyseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>,
-    interpolationPrefix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
-    interpolationSuffix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
-    ns<span class="pl-k">:</span> {
-        namespaces<span class="pl-k">:</span> [],
-        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>
-    }
-}</pre></div>
-
-<h4>
-<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
-
-<p>Type: <code>Array</code> Default: <code>['en']</code></p>
-
-<p>Provides a list of supported languages by setting the lngs option.</p>
-
-<h4>
-<a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>sort</h4>
-
-<p>Type: <code>Boolean</code>  Default: <code>false</code></p>
-
-<p>Set to <code>true</code> if you want to sort translation keys in ascending order.</p>
-
-<h4>
-<a id="defaultvalue" class="anchor" href="#defaultvalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>defaultValue</h4>
-
-<p>Type: <code>String</code> Default: <code>''</code></p>
-
-<p>Provides a default value if a value is not specified.</p>
-
-<h4>
-<a id="resgetpath" class="anchor" href="#resgetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resGetPath</h4>
-
-<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
-
-<p>The source path of resource files. The <code>resGetPath</code> is relative to current working directory.</p>
-
-<h4>
-<a id="ressetpath" class="anchor" href="#ressetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resSetPath</h4>
-
-<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
-
-<p>The target path of resource files. The <code>resSetPath</code> is relative to current working directory or your <code>gulp.dest()</code> path.</p>
-
-<h4>
-<a id="nsseparator" class="anchor" href="#nsseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>nsseparator</h4>
-
-<p>Type: <code>String</code> Default: <code>':'</code></p>
-
-<p>The namespace separator.</p>
-
-<h4>
-<a id="keyseparator" class="anchor" href="#keyseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>keyseparator</h4>
-
-<p>Type: <code>String</code> Default: <code>'.'</code></p>
-
-<p>The key separator.</p>
-
-<h4>
-<a id="interpolationprefix" class="anchor" href="#interpolationprefix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationPrefix</h4>
-
-<p>Type: <code>String</code> Default: <code>'__'</code></p>
-
-<p>The prefix for variables.</p>
-
-<h4>
-<a id="interpolationsuffix" class="anchor" href="#interpolationsuffix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationSuffix</h4>
-
-<p>Type: <code>String</code> Default: <code>'__'</code></p>
-
-<p>The suffix for variables.</p>
-
-<h4>
-<a id="ns" class="anchor" href="#ns" aria-hidden="true"><span class="octicon octicon-link"></span></a>ns</h4>
-
-<p>Type: <code>Object</code> or <code>String</code></p>
-
-<p>If an <code>Object</code> is supplied, you can either specify a list of namespaces, or override the default namespace.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre>{
-    ns<span class="pl-k">:</span> {
-        namespaces<span class="pl-k">:</span> [ <span class="pl-c">// Default: []</span>
-            <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span>,
-            <span class="pl-s"><span class="pl-pds">'</span>locale<span class="pl-pds">'</span></span>
-        ],
-        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
-    }
-}</pre></div>
-
-<p>If a <code>String</code> is supplied instead, it will become the default namespace.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre>{
-    ns<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
-}</pre></div>
-
-<h3>
-<a id="customtransform" class="anchor" href="#customtransform" aria-hidden="true"><span class="octicon octicon-link"></span></a>customTransform</h3>
-
-<p>The optional <code>customTransform</code> function is provided as the 2nd argument. It must have the following signature: <code>function (file, encoding, done) {}</code>. A minimal implementation should call the <code>done</code> function to indicate that the transformation is done, even if that transformation means discarding the file.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-
-    <span class="pl-c">// add custom code</span>
-
-    done();
-};</pre></div>
-
-<p>To parse a translation key, call <code>this.parser.parseKey(key, defaultValue)</code>. The <code>defaultValue</code> is optional if the key is not assigned with a default value.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
-
-    <span class="pl-c">// parse the content and loop over the results</span>
-
-    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        parser.parseKey(result.key, result.<span class="pl-c1">defaultValue</span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>);
-    });
-};</pre></div>
-
-<p>Alternatively, you may call <code>this.parser.parseValue(value, defaultKey)</code> to parse a text string with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
-
-    <span class="pl-c">// parse the content and loop over the results</span>
-
-    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        <span class="pl-k">var</span> defaultKey <span class="pl-k">=</span> sha1(result.<span class="pl-c1">value</span>); <span class="pl-c">// returns a SHA-1 hash value as its default key</span>
-        parser.parseValue(result.<span class="pl-c1">value</span>, result.defaultKey <span class="pl-k">||</span> defaultKey);
-    });
-};</pre></div>
-
-<h3>
-<a id="customflush" class="anchor" href="#customflush" aria-hidden="true"><span class="octicon octicon-link"></span></a>customFlush</h3>
-
-<p>The optional <code>customFlush</code> function is provided as the last argument, it is called just prior to the stream ending. You can override the default <code>flush</code> function to process 
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> customFlush <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_flush</span>(<span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> that <span class="pl-k">=</span> <span class="pl-v">this</span>;
-    <span class="pl-k">var</span> resStore <span class="pl-k">=</span> parser.toObject({
-        sort<span class="pl-k">:</span> <span class="pl-k">!!</span>parser.<span class="pl-c1">options</span>.sort
-     });
-
-    <span class="pl-c">// loop over the resStore</span>
-    _.each(resStore, <span class="pl-k">function</span>(<span class="pl-smi">namespaces</span>, <span class="pl-smi">lng</span>) {
-        _.each(namespaces, <span class="pl-k">function</span>(<span class="pl-smi">obj</span>, <span class="pl-smi">ns</span>) {
-            <span class="pl-c">// add custom code</span>
-        });
-    });
-
-    done();
-};</pre></div>
 
 <h2>
 <a id="gulp-usage" class="anchor" href="#gulp-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gulp Usage</h2>
@@ -257,6 +75,14 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
         })
         .pipe(gulp.dest(<span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>));
 });</pre></div>
+
+<h2>
+<a id="grunt-usage" class="anchor" href="#grunt-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grunt Usage</h2>
+
+<p>~TBD~</p>
+
+<h2>
+<a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advanced Usage</h2>
 
 <h3>
 <a id="customize-transform-and-flush-functions" class="anchor" href="#customize-transform-and-flush-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Customize transform and flush functions</h3>
@@ -377,9 +203,189 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 };</pre></div>
 
 <h2>
-<a id="grunt-usage" class="anchor" href="#grunt-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grunt Usage</h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
 
-<p>~TBD~</p>
+<pre><code>function(options[, customTransform[, customFlush]])
+</code></pre>
+
+<h3>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>options</h3>
+
+<div class="highlight highlight-javascript"><pre>{
+    lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>],
+    sort<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    defaultValue<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
+    resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
+    resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
+    nsseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>:<span class="pl-pds">'</span></span>,
+    keyseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>,
+    interpolationPrefix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
+    interpolationSuffix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
+    ns<span class="pl-k">:</span> {
+        namespaces<span class="pl-k">:</span> [],
+        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>
+    }
+}</pre></div>
+
+<h4>
+<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
+
+<p>Type: <code>Array</code> Default: <code>['en']</code></p>
+
+<p>Provides a list of supported languages by setting the lngs option.</p>
+
+<h4>
+<a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>sort</h4>
+
+<p>Type: <code>Boolean</code>  Default: <code>false</code></p>
+
+<p>Set to <code>true</code> if you want to sort translation keys in ascending order.</p>
+
+<h4>
+<a id="defaultvalue" class="anchor" href="#defaultvalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>defaultValue</h4>
+
+<p>Type: <code>String</code> Default: <code>''</code></p>
+
+<p>Provides a default value if a value is not specified.</p>
+
+<h4>
+<a id="resgetpath" class="anchor" href="#resgetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resGetPath</h4>
+
+<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
+
+<p>The source path of resource files. The <code>resGetPath</code> is relative to current working directory.</p>
+
+<h4>
+<a id="ressetpath" class="anchor" href="#ressetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resSetPath</h4>
+
+<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
+
+<p>The target path of resource files. The <code>resSetPath</code> is relative to current working directory or your <code>gulp.dest()</code> path.</p>
+
+<h4>
+<a id="nsseparator" class="anchor" href="#nsseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>nsseparator</h4>
+
+<p>Type: <code>String</code> Default: <code>':'</code></p>
+
+<p>The namespace separator.</p>
+
+<h4>
+<a id="keyseparator" class="anchor" href="#keyseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>keyseparator</h4>
+
+<p>Type: <code>String</code> Default: <code>'.'</code></p>
+
+<p>The key separator.</p>
+
+<h4>
+<a id="interpolationprefix" class="anchor" href="#interpolationprefix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationPrefix</h4>
+
+<p>Type: <code>String</code> Default: <code>'__'</code></p>
+
+<p>The prefix for variables.</p>
+
+<h4>
+<a id="interpolationsuffix" class="anchor" href="#interpolationsuffix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationSuffix</h4>
+
+<p>Type: <code>String</code> Default: <code>'__'</code></p>
+
+<p>The suffix for variables.</p>
+
+<h4>
+<a id="ns" class="anchor" href="#ns" aria-hidden="true"><span class="octicon octicon-link"></span></a>ns</h4>
+
+<p>Type: <code>Object</code> or <code>String</code></p>
+
+<p>If an <code>Object</code> is supplied, you can either specify a list of namespaces, or override the default namespace.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre>{
+    ns<span class="pl-k">:</span> {
+        namespaces<span class="pl-k">:</span> [ <span class="pl-c">// Default: []</span>
+            <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span>,
+            <span class="pl-s"><span class="pl-pds">'</span>locale<span class="pl-pds">'</span></span>
+        ],
+        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
+    }
+}</pre></div>
+
+<p>If a <code>String</code> is supplied instead, it will become the default namespace.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre>{
+    ns<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
+}</pre></div>
+
+<h3>
+<a id="customtransform" class="anchor" href="#customtransform" aria-hidden="true"><span class="octicon octicon-link"></span></a>customTransform</h3>
+
+<p>The optional <code>customTransform</code> function is provided as the 2nd argument. It must have the following signature: <code>function (file, encoding, done) {}</code>. A minimal implementation should call the <code>done()</code> function to indicate that the transformation is done, even if that transformation means discarding the file.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
+    <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
+
+    <span class="pl-c">// add custom code</span>
+
+    done();
+};</pre></div>
+
+<p>To parse a translation key, call <code>this.parser.parseKey(key, defaultValue)</code>. The <code>defaultValue</code> is optional if the key is not assigned with a default value.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
+    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
+
+    <span class="pl-c">// parse the content and loop over the results</span>
+
+    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
+        parser.parseKey(result.key, result.<span class="pl-c1">defaultValue</span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>);
+    });
+};</pre></div>
+
+<p>Alternatively, you may call <code>this.parser.parseValue(value, defaultKey)</code> to parse a text string with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
+    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
+
+    <span class="pl-c">// parse the content and loop over the results</span>
+
+    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
+        <span class="pl-k">var</span> defaultKey <span class="pl-k">=</span> sha1(result.<span class="pl-c1">value</span>); <span class="pl-c">// returns a SHA-1 hash value as its default key</span>
+        parser.parseValue(result.<span class="pl-c1">value</span>, result.defaultKey <span class="pl-k">||</span> defaultKey);
+    });
+};</pre></div>
+
+<h3>
+<a id="customflush" class="anchor" href="#customflush" aria-hidden="true"><span class="octicon octicon-link"></span></a>customFlush</h3>
+
+<p>The optional <code>customFlush</code> function is provided as the last argument, it is called just prior to the stream ending. You can implement your <code>customFlush</code> function to override the default <code>flush</code> function. When everything's done, call the <code>done()</code> function to indicate the stream is finished.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> customFlush <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_flush</span>(<span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> that <span class="pl-k">=</span> <span class="pl-v">this</span>;
+    <span class="pl-k">var</span> resStore <span class="pl-k">=</span> parser.toObject({
+        sort<span class="pl-k">:</span> <span class="pl-k">!!</span>parser.<span class="pl-c1">options</span>.sort
+     });
+
+    <span class="pl-c">// loop over the resStore</span>
+    _.each(resStore, <span class="pl-k">function</span>(<span class="pl-smi">namespaces</span>, <span class="pl-smi">lng</span>) {
+        _.each(namespaces, <span class="pl-k">function</span>(<span class="pl-smi">obj</span>, <span class="pl-smi">ns</span>) {
+            <span class="pl-c">// add custom code</span>
+        });
+    });
+
+    done();
+};</pre></div>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
@@ -388,12 +394,17 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 
 <p>Licensed under the <a href="https://github.com/cheton/i18next-scanner/blob/master/LICENSE">MIT License</a>.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/cheton">cheton</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">I18next-scanner maintained by <a href="https://github.com/cheton">cheton</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
