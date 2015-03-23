@@ -8,7 +8,7 @@ It's available as both Gulp and Grunt plugins.
 
 ## Features
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
-* Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without maintaining i18n keys.
+* Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
 
