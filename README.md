@@ -2,12 +2,15 @@
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
-i18next-scanner is available as both gulp and grunt plugins that can scan your code, extracts translation keys/values, and merges them into i18n resource files.
+i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.
 
-~TBD~
+It's available as both Gulp and Grunt plugins.
 
 ## Features
-~TBD~
+* Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
+* Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without maintaining i18n keys.
+* A transform stream that works with both Gulp and Grunt task runner.
+* Support custom transform and flush functions.
 
 ## Installation
 ```
@@ -41,51 +44,61 @@ function(options[, customTransform[, customFlush]])
 #### lngs
 
 Type: `Array` Default: `['en']`
+
 Provides a list of supported languages by setting the lngs option.
 
 #### sort
 
 Type: `Boolean`  Default: `false`
+
 Set to `true` if you want to sort translation keys in ascending order.
 
 #### defaultValue
 
 Type: `String` Default: `''`
+
 Provides a default value if a value is not specified.
 
 #### resGetPath
 
 Type: `String` Default: `'i18n/__lng__/__ns__.json'`
+
 The source path of resource files. The `resGetPath` is relative to current working directory.
 
 #### resSetPath
 
 Type: `String` Default: `'i18n/__lng__/__ns__.json'`
+
 The target path of resource files. The `resSetPath` is relative to current working directory or your `gulp.dest()` path.
 
 #### nsseparator
 
 Type: `String` Default: `':'`
+
 The namespace separator.
 
 #### keyseparator
 
 Type: `String` Default: `'.'`
+
 The key separator.
 
 #### interpolationPrefix
 
 Type: `String` Default: `'__'`
+
 The prefix for variables.
 
 #### interpolationSuffix
 
 Type: `String` Default: `'__'`
+
 The suffix for variables.
 
 #### ns
 
 Type: `Object` or `String`
+
 If an `Object` is supplied, you can either specify a list of namespaces, or override the default namespace.
 For example:
 ```javascript
@@ -199,8 +212,8 @@ gulp.task('i18next-scanner', function() {
 });
 ```
 
-### Customize transform and flush
-The [i18next-scanner](https://github.com/cheton/i18next-scanner/) itself is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
+### Customize transform and flush functions
+The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner/) is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
 ```javascript
 gulp.src(['src/**/*.{js,html}'], {base: 'src'})
     .pipe(i18next(options, customTransform, customFlush)
@@ -209,8 +222,7 @@ gulp.src(['src/**/*.{js,html}'], {base: 'src'})
 
 ### Usage with i18next-text
 
-#### Parses the i18n._() method
-
+#### Example of parsing strings
 ```javascript
 var _ = require('lodash');
 var hash = require('i18next-text').hash['sha1'];
@@ -234,7 +246,7 @@ var customTransform = function(file, enc, done) {
 
             if (r) {
                 value = _.trim(r[1], '\'"');
-                key = hash(value); // returns a SHA-1 hash value as default key
+                key = hash(value); // returns a hash value as its default key
                 parser.parseValue(value, key);
             }
         });
@@ -280,7 +292,7 @@ var customTransform = function(file, enc, done) {
             }
 
             if (_.isUndefined(key)) {
-                key = hash(value); // returns a SHA-1 hash value as default key
+                key = hash(value); // returns a hash value as its default key
                 parser.parseValue(value, key);
                 return;
             }
@@ -308,7 +320,7 @@ var customTransform = function(file, enc, done) {
                 return;
             }
 
-            key = hash(value); // returns a SHA-1 hash value as default key
+            key = hash(value); // returns a hash value as its default key
             parser.parseValue(value, key);
         });
     }());
@@ -318,8 +330,7 @@ var customTransform = function(file, enc, done) {
 ```
 
 ## Grunt Usage
-
-## Options
+~TBD~
 
 ## License
 
