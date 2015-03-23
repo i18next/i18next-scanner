@@ -102,7 +102,7 @@ var customTransform = function(file, enc, done) {
 {{i18n defaultKey='noval'}}
 ```
 Using the regular expression for the above:
-```hbs
+```javascript
 {{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}
 ```
 
