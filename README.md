@@ -28,9 +28,7 @@ gulp.task('i18next-scanner', function() {
 });
 ```
 
-## Grunt Usage
-
-## Usage with i18next-text
+## Gulp Usage with i18next-text
 
 ### Parses the i18n._() method
 
@@ -173,6 +171,8 @@ gulp.task('i18next-scanner', function() {
         .pipe(gulp.dest('assets'));
 });
 ```
+
+## Grunt Usage
 
 ## Options
 
