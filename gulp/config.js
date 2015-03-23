@@ -49,7 +49,8 @@ module.exports = {
             ns: {
                 // Provides a list of namespaces by setting the namespaces option.
                 namespaces: [
-                    'translation'
+                    'translation',
+                    'locale'
                 ],
 
                 // Changes the default namespace by setting the ns.defaultNs option.
