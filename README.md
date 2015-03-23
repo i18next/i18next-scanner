@@ -14,6 +14,8 @@ npm install i18next-scanner
 ## Gulp Usage
 
 ```javascript
+var gulp = require('gulp');
+
 gulp.task('i18next-scanner', function() {
     var i18next = require('i18next-scanner');
 
@@ -34,6 +36,9 @@ gulp.task('i18next-scanner', function() {
 ### Parses the i18n._() method
 
 ```javascript
+var _ = require('lodash');
+var gulp = require('gulp');
+
 gulp.task('i18next-scanner', function() {
     var i18next = require('i18next-scanner');
     var hash = require('i18next-text').hash['sha1'];
@@ -51,8 +56,6 @@ gulp.task('i18next-scanner', function() {
         var content = fs.readFileSync(file.path, enc);
 
         /*
-         * Supports i18next-text's _() method for i18next:
-         *
          * i18n._('This is text value');
          * i18n._("text"); // result matched
          * i18n._('text'); // result matched
@@ -85,6 +88,9 @@ gulp.task('i18next-scanner', function() {
 ### Handlebars i18n helper with block expressions
 
 ```javascript
+var _ = require('lodash');
+var gulp = require('gulp');
+
 gulp.task('i18next-scanner', function() {
     var i18next = require('i18next-scanner');
     var hash = require('i18next-text').hash['sha1'];
@@ -102,8 +108,6 @@ gulp.task('i18next-scanner', function() {
         var content = fs.readFileSync(file.path, enc);
 
         /*
-         * Supports Handlebars i18n helper
-         *
          * {{i18n 'bar'}}
          * {{i18n 'bar' defaultKey='foo'}}
          * {{i18n 'baz' defaultKey='locale:foo'}}
@@ -139,8 +143,6 @@ gulp.task('i18next-scanner', function() {
         }());
 
         /*
-         * Supports Handlebars i18n helper with block expressions
-         *
          * {{#i18n}}Some text{{/i18n}}
          * {{#i18n this}}Description: {{description}}{{/i18n}}
          * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
