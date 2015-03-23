@@ -311,7 +311,7 @@ var customTransform = function _transform(file, enc, done) {
 ```
 
 ### customFlush
-The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can override the default `flush` function to process 
+The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement a `customFlush` function to override the default `flush` function, and call the `done()` function when everything's done.
 For example:
 ```javascript
 var _ = require('lodash');
