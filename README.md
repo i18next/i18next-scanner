@@ -17,6 +17,146 @@ It's available as both Gulp and Grunt plugins.
 npm install i18next-scanner
 ```
 
+## Gulp Usage
+```javascript
+var gulp = require('gulp');
+
+gulp.task('i18next-scanner', function() {
+    var i18next = require('i18next-scanner');
+
+    return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
+        .pipe(i18next({
+            lngs: ['en', 'de'],
+            defaultValue: '__STRING_NOT_TRANSLATED__',
+            resGetPath: 'assets/i18n/__lng__/__ns__.json',
+            resSetPath: 'i18n/__lng__/__ns__.json',
+            ns: 'translation'
+        })
+        .pipe(gulp.dest('assets'));
+});
+```
+## Grunt Usage
+~TBD~
+
+## Advanced Usage
+
+### Customize transform and flush functions
+The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner/) is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
+```javascript
+gulp.src(['src/**/*.{js,html}'], {base: 'src'})
+    .pipe(i18next(options, customTransform, customFlush)
+    .pipe(gulp.dest('assets'));
+```
+
+### Usage with i18next-text
+
+#### Example of parsing strings
+```javascript
+var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
+var customTransform = function(file, enc, done) {
+    var parser = this.parser;
+    var extname = path.extname(file.path);
+    var content = fs.readFileSync(file.path, enc);
+
+    /*
+     * i18n._('This is text value');
+     * i18n._("text"); // result matched
+     * i18n._('text'); // result matched
+     * i18n._("text", { count: 1 }); // result matched
+     * i18n._("text" + str); // skip run-time variables
+     */
+    (function() {
+        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
+        _.each(results, function(result) {
+            var key, value;
+            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+
+            if (r) {
+                value = _.trim(r[1], '\'"');
+                key = hash(value); // returns a hash value as its default key
+                parser.parseValue(value, key);
+            }
+        });
+    }());
+
+    done();
+};
+```
+
+#### Handlebars i18n helper with block expressions
+
+```javascript
+var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
+var customTransform = function(file, enc, done) {
+    var parser = this.parser;
+    var extname = path.extname(file.path);
+    var content = fs.readFileSync(file.path, enc);
+
+    /*
+     * {{i18n 'bar'}}
+     * {{i18n 'bar' defaultKey='foo'}}
+     * {{i18n 'baz' defaultKey='locale:foo'}}
+     * {{i18n defaultKey='noval'}}
+     */
+    (function() {
+        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
+        _.each(results, function(result) {
+            var key, value;
+            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
+
+            if ( ! _.isUndefined(r[1])) {
+                value = _.trim(r[1], '\'"');
+            }
+
+            var params = parser.parseHashArguments(r[2]);
+            if (_.has(params, 'defaultKey')) {
+                key = params['defaultKey'];
+            }
+                
+            if (_.isUndefined(key) && _.isUndefined(value)) {
+                return;
+            }
+
+            if (_.isUndefined(key)) {
+                key = hash(value); // returns a hash value as its default key
+                parser.parseValue(value, key);
+                return;
+            }
+                
+            parser.parseKey(key, value);
+        });
+    }());
+
+    /*
+     * {{#i18n}}Some text{{/i18n}}
+     * {{#i18n this}}Description: {{description}}{{/i18n}}
+     * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
+     */
+    (function() {
+        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
+        _.each(results, function(result) {
+            var key, value;
+            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
+
+            if ( ! _.isUndefined(r[2])) {
+                value = _.trim(r[2], '\'"');
+            }
+
+            if (_.isUndefined(value)) {
+                return;
+            }
+
+            key = hash(value); // returns a hash value as its default key
+            parser.parseValue(value, key);
+        });
+    }());
+
+    done();
+};
+```
+
 ## API
 ```
 function(options[, customTransform[, customFlush]])
@@ -191,146 +331,6 @@ var customFlush = function _flush(done) {
     done();
 };
 ```
-
-## Gulp Usage
-
-```javascript
-var gulp = require('gulp');
-
-gulp.task('i18next-scanner', function() {
-    var i18next = require('i18next-scanner');
-
-    return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
-        .pipe(i18next({
-            lngs: ['en', 'de'],
-            defaultValue: '__STRING_NOT_TRANSLATED__',
-            resGetPath: 'assets/i18n/__lng__/__ns__.json',
-            resSetPath: 'i18n/__lng__/__ns__.json',
-            ns: 'translation'
-        })
-        .pipe(gulp.dest('assets'));
-});
-```
-
-### Customize transform and flush functions
-The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner/) is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
-```javascript
-gulp.src(['src/**/*.{js,html}'], {base: 'src'})
-    .pipe(i18next(options, customTransform, customFlush)
-    .pipe(gulp.dest('assets'));
-```
-
-### Usage with i18next-text
-
-#### Example of parsing strings
-```javascript
-var _ = require('lodash');
-var hash = require('i18next-text').hash['sha1'];
-var customTransform = function(file, enc, done) {
-    var parser = this.parser;
-    var extname = path.extname(file.path);
-    var content = fs.readFileSync(file.path, enc);
-
-    /*
-     * i18n._('This is text value');
-     * i18n._("text"); // result matched
-     * i18n._('text'); // result matched
-     * i18n._("text", { count: 1 }); // result matched
-     * i18n._("text" + str); // skip run-time variables
-     */
-    (function() {
-        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
-
-            if (r) {
-                value = _.trim(r[1], '\'"');
-                key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
-            }
-        });
-    }());
-
-    done();
-};
-```
-
-#### Handlebars i18n helper with block expressions
-
-```javascript
-var _ = require('lodash');
-var hash = require('i18next-text').hash['sha1'];
-var customTransform = function(file, enc, done) {
-    var parser = this.parser;
-    var extname = path.extname(file.path);
-    var content = fs.readFileSync(file.path, enc);
-
-    /*
-     * {{i18n 'bar'}}
-     * {{i18n 'bar' defaultKey='foo'}}
-     * {{i18n 'baz' defaultKey='locale:foo'}}
-     * {{i18n defaultKey='noval'}}
-     */
-    (function() {
-        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
-
-            if ( ! _.isUndefined(r[1])) {
-                value = _.trim(r[1], '\'"');
-            }
-
-            var params = parser.parseHashArguments(r[2]);
-            if (_.has(params, 'defaultKey')) {
-                key = params['defaultKey'];
-            }
-                
-            if (_.isUndefined(key) && _.isUndefined(value)) {
-                return;
-            }
-
-            if (_.isUndefined(key)) {
-                key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
-                return;
-            }
-                
-            parser.parseKey(key, value);
-        });
-    }());
-
-    /*
-     * {{#i18n}}Some text{{/i18n}}
-     * {{#i18n this}}Description: {{description}}{{/i18n}}
-     * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
-     */
-    (function() {
-        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
-
-            if ( ! _.isUndefined(r[2])) {
-                value = _.trim(r[2], '\'"');
-            }
-
-            if (_.isUndefined(value)) {
-                return;
-            }
-
-            key = hash(value); // returns a hash value as its default key
-            parser.parseValue(value, key);
-        });
-    }());
-
-    done();
-};
-```
-
-## Grunt Usage
-~TBD~
 
 ## License
 
