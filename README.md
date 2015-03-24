@@ -18,32 +18,43 @@ npm install --save-dev i18next-scanner
 ```
 
 ## Usage
+The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner) is a transform stream. You can use [vinyl-fs](https://github.com/wearefractal/vinyl) to create a readable stream, pipe the stream through [i18next-scanner](https://github.com/cheton/i18next-scanner) to transform your code into an i18n resource object, and write to a destination folder.
+Here is a simple example showing how that works:
 ```javascript
 var i18next = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 
 vfs.src(['path/to/src'])
-    .pipe(i18next(options[, customTransform[, customFlush]]))
+    .pipe(i18next())
     .pipe(vfs.dest('path/to/dest');
 ```
 
 ## Gulp Usage
+Now you are ready to set up a minimal configuration, and get started with Gulp.
+For example:
 ```javascript
 var gulp = require('gulp');
 var i18next = require('i18next-scanner');
 
-gulp.task('i18next-scanner', function() {
+gulp.task('i18next', function() {
     return gulp.src(['src/**/*.{js,html}'])
         .pipe(i18next({
-            lngs: ['en', 'de'],
+            // a list of supported languages
+            lngs: ['en', 'de'], 
+            
+            // the source path is relative to current working directory
             resGetPath: 'assets/i18n/__lng__/__ns__.json',
+            
+            // the destination path is relative to your `gulp.dest()` path
             resSetPath: 'i18n/__lng__/__ns__.json'
         })
         .pipe(gulp.dest('assets'));
 });
 ```
+
+
 ## Grunt Usage
-Add this line to your project's Gruntfile:
+Once you've finished the installation, add this line to your project's Gruntfile:
 ```javascript
 grunt.loadNpmTasks('i18next-scanner');
 ```
@@ -54,7 +65,6 @@ grunt.initConfig({
     i18next: {
         dev: {
             src: 'src/**/*.{js,html}',
-            base: 'src', 
             dest: 'assets',
             options: {
                 lngs: ['en', 'de'],
@@ -69,11 +79,9 @@ grunt.initConfig({
 ## Advanced Usage
 
 ### Customize transform and flush functions
-The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner/) is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
+As mentioned in the [Usage](#usage) section, the main entry function returns a [through2](https://github.com/rvagg/through2) object stream, you can pass in your `transform` and `flush` functions:
 ```javascript
-gulp.src(['src/**/*.{js,html}'], {base: 'src'})
-    .pipe(i18next(options, customTransform, customFlush)
-    .pipe(gulp.dest('assets'));
+i18next(options[, customTransform[, customFlush]])
 ```
 
 ### Usage with i18next-text
@@ -236,7 +244,7 @@ function(options[, customTransform[, customFlush]])
 
 Type: `Array` Default: `['en']`
 
-Provides a list of supported languages by setting the lngs option.
+Provides a list of supported languages.
 
 #### sort
 
