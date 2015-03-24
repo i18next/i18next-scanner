@@ -30,7 +30,7 @@ module.exports = function(options, customTransform, customFlush) {
                 var r = result.match(/data\-i18n=("[^"]*"|'[^']*')/);
                 if (r) {
                     var keys = _.trim(r[1], '\'"');
-                    parser.parseKeys(keys);
+                    parser.parseAttrs(keys);
                 }
             });
         }());
@@ -48,7 +48,7 @@ module.exports = function(options, customTransform, customFlush) {
                 var r = result.match(/i18n\.t\(("[^"]*"|'[^']*')/);
                 if (r) {
                     var key = _.str.trim(r[1], '\'"');
-                    parser.parseKey(key);
+                    parser.parse(key);
                 }
             });
         }());
