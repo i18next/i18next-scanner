@@ -353,7 +353,7 @@ var customTransform = function _transform(file, enc, done) {
 };
 ```
 
-Alternatively, you may call `this.parser.parseValue(value, defaultKey)` to parse a text string with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+Alternatively, you may call `this.parser.parseValue(value, defaultKey)` to add a text string with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```javascript
 var _ = require('lodash');
