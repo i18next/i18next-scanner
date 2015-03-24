@@ -14,29 +14,57 @@ It's available as both Gulp and Grunt plugins.
 
 ## Installation
 ```
-npm install i18next-scanner
+npm install --save-dev i18next-scanner
+```
+
+## Usage
+```javascript
+var i18next = require('i18next-scanner');
+var vfs = require('vinyl-fs');
+
+vfs.src(['path/to/src'])
+    .pipe(i18next(options[, customTransform[, customFlush]]))
+    .pipe(vfs.dest('path/to/dest');
 ```
 
 ## Gulp Usage
 ```javascript
 var gulp = require('gulp');
+var i18next = require('i18next-scanner');
 
 gulp.task('i18next-scanner', function() {
-    var i18next = require('i18next-scanner');
-
-    return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
+    return gulp.src(['src/**/*.{js,html}'])
         .pipe(i18next({
             lngs: ['en', 'de'],
-            defaultValue: '__STRING_NOT_TRANSLATED__',
             resGetPath: 'assets/i18n/__lng__/__ns__.json',
-            resSetPath: 'i18n/__lng__/__ns__.json',
-            ns: 'translation'
+            resSetPath: 'i18n/__lng__/__ns__.json'
         })
         .pipe(gulp.dest('assets'));
 });
 ```
 ## Grunt Usage
-~TBD~
+Add this line to your project's Gruntfile:
+```javascript
+grunt.loadNpmTasks('i18next-scanner');
+```
+
+In your project's Gruntfile, add a section named `i18next` to the data object passed into `grunt.initConfig()`, like so:
+```javascript
+grunt.initConfig({
+    i18next: {
+        dev: {
+            src: 'src/**/*.{js,html}',
+            base: 'src', 
+            dest: 'assets',
+            options: {
+                lngs: ['en', 'de'],
+                resGetPath: 'assets/i18n/__lng__/__ns__.json',
+                resSetPath: 'i18n/__lng__/__ns__.json'
+            }
+        }
+    }
+});
+````
 
 ## Advanced Usage
 
