@@ -61,11 +61,9 @@ gulp.task('i18next-scanner', function() {
 
                 if (_.isUndefined(key)) {
                     key = hash(value); // returns a hash value as default key
-                    parser.parseValue(value, key);
-                    return;
                 }
-                
-                parser.parseKey(key, value);
+
+                parser.parse(key, value);
             });
         }());
 
@@ -93,7 +91,7 @@ gulp.task('i18next-scanner', function() {
                 }
 
                 key = hash(value); // returns a hash value as default key
-                parser.parseValue(value, key);
+                parser.parse(key, value);
             });
         }());
 
@@ -115,7 +113,7 @@ gulp.task('i18next-scanner', function() {
                 if (r) {
                     value = _.trim(r[1], '\'"');
                     key = hash(value); // returns a hash value as default key
-                    parser.parseValue(value, key);
+                    parser.parse(key, value);
                 }
             });
         }());

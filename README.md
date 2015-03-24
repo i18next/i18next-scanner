@@ -14,38 +14,74 @@ It's available as both Gulp and Grunt plugins.
 
 ## Installation
 ```
-npm install i18next-scanner
+npm install --save-dev i18next-scanner
+```
+
+## Usage
+The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner) is a transform stream. You can use [vinyl-fs](https://github.com/wearefractal/vinyl) to create a readable stream, pipe the stream through [i18next-scanner](https://github.com/cheton/i18next-scanner) to transform your code into an i18n resource object, and write to a destination folder.
+Here is a simple example showing how that works:
+```javascript
+var i18next = require('i18next-scanner');
+var vfs = require('vinyl-fs');
+
+vfs.src(['path/to/src'])
+    .pipe(i18next())
+    .pipe(vfs.dest('path/to/dest');
 ```
 
 ## Gulp Usage
+Now you are ready to set up a minimal configuration, and get started with Gulp.
+For example:
 ```javascript
 var gulp = require('gulp');
+var i18next = require('i18next-scanner');
 
-gulp.task('i18next-scanner', function() {
-    var i18next = require('i18next-scanner');
-
-    return gulp.src(['src/**/*.{js,html}'], {base: 'src'})
+gulp.task('i18next', function() {
+    return gulp.src(['src/**/*.{js,html}'])
         .pipe(i18next({
-            lngs: ['en', 'de'],
-            defaultValue: '__STRING_NOT_TRANSLATED__',
+            // a list of supported languages
+            lngs: ['en', 'de'], 
+            
+            // the source path is relative to current working directory
             resGetPath: 'assets/i18n/__lng__/__ns__.json',
-            resSetPath: 'i18n/__lng__/__ns__.json',
-            ns: 'translation'
+            
+            // the destination path is relative to your `gulp.dest()` path
+            resSetPath: 'i18n/__lng__/__ns__.json'
         })
         .pipe(gulp.dest('assets'));
 });
 ```
+
+
 ## Grunt Usage
-~TBD~
+Once you've finished the installation, add this line to your project's Gruntfile:
+```javascript
+grunt.loadNpmTasks('i18next-scanner');
+```
+
+In your project's Gruntfile, add a section named `i18next` to the data object passed into `grunt.initConfig()`, like so:
+```javascript
+grunt.initConfig({
+    i18next: {
+        dev: {
+            src: 'src/**/*.{js,html}',
+            dest: 'assets',
+            options: {
+                lngs: ['en', 'de'],
+                resGetPath: 'assets/i18n/__lng__/__ns__.json',
+                resSetPath: 'i18n/__lng__/__ns__.json'
+            }
+        }
+    }
+});
+````
 
 ## Advanced Usage
 
 ### Customize transform and flush functions
-The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner/) is a transform stream using [through2](https://github.com/rvagg/through2). You can pass in your `transform` and `flush` functions like so:
+As mentioned in the [Usage](#usage) section, the main entry function returns a [through2](https://github.com/rvagg/through2) object stream, you can pass in your `transform` and `flush` functions:
 ```javascript
-gulp.src(['src/**/*.{js,html}'], {base: 'src'})
-    .pipe(i18next(options, customTransform, customFlush)
-    .pipe(gulp.dest('assets'));
+i18next(options[, customTransform[, customFlush]])
 ```
 
 ### Usage with i18next-text
@@ -84,7 +120,7 @@ var customTransform = function(file, enc, done) {
             if (r) {
                 value = _.trim(r[1], '\'"');
                 key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
+                parser.parse(key, value);
             }
         });
     }());
@@ -150,11 +186,9 @@ var customTransform = function(file, enc, done) {
 
             if (_.isUndefined(key)) {
                 key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
-                return;
             }
-                
-            parser.parseKey(key, value);
+
+            parser.parse(key, value);
         });
     }());
 
@@ -174,7 +208,7 @@ var customTransform = function(file, enc, done) {
             }
 
             key = hash(value); // returns a hash value as its default key
-            parser.parseValue(value, key);
+            parser.parse(key, value);
         });
     }());
 
@@ -210,7 +244,7 @@ function(options[, customTransform[, customFlush]])
 
 Type: `Array` Default: `['en']`
 
-Provides a list of supported languages by setting the lngs option.
+Provides a list of supported languages.
 
 #### sort
 
@@ -300,7 +334,7 @@ var customTransform = function _transform(file, enc, done) {
 };
 ```
 
-To parse a translation key, call `this.parser.parseKey(key, defaultValue)`. The `defaultValue` is optional if the key is not assigned with a default value.
+To parse a translation key, call `parser.parse(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```javascript
 var _ = require('lodash');
@@ -312,15 +346,18 @@ var customTransform = function _transform(file, enc, done) {
     // parse the content and loop over the results
 
     _.each(results, function(result) {
-        parser.parseKey(result.key, result.defaultValue || '');
+        var key = result.key;
+        var value = result.defaultValue || '';
+        parser.parse(key, value);
     });
 };
 ```
 
-Alternatively, you may call `this.parser.parseValue(value, defaultKey)` to parse a text string with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+Alternatively, you may call `parser.parse(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```javascript
 var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
@@ -329,8 +366,9 @@ var customTransform = function _transform(file, enc, done) {
     // parse the content and loop over the results
 
     _.each(results, function(result) {
-        var defaultKey = sha1(result.value); // returns a SHA-1 hash value as its default key
-        parser.parseValue(result.value, result.defaultKey || defaultKey);
+        var key = result.defaultKey || hash(result.value);
+        var value = result.value;
+        parser.parse(key, value);
     });
 };
 ```
