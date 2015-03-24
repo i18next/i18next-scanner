@@ -6,7 +6,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var jshint = require('gulp-jshint');
 var errorHandler = require('./gulp/error-handler');
-var hashlib = require('i18next-text').hash;
+var hash = require('i18next-text').hash['sha1'];
 var pkg = require('./package.json');
 var config = require('./gulp/config');
 
@@ -60,7 +60,7 @@ gulp.task('i18next-scanner', function() {
                 }
 
                 if (_.isUndefined(key)) {
-                    key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                    key = hash(value); // returns a hash value as default key
                     parser.parseValue(value, key);
                     return;
                 }
@@ -92,7 +92,7 @@ gulp.task('i18next-scanner', function() {
                     return;
                 }
 
-                key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                key = hash(value); // returns a hash value as default key
                 parser.parseValue(value, key);
             });
         }());
@@ -114,7 +114,7 @@ gulp.task('i18next-scanner', function() {
 
                 if (r) {
                     value = _.trim(r[1], '\'"');
-                    key = hashlib['sha1'](value); // returns a SHA-1 hash value as default key
+                    key = hash(value); // returns a hash value as default key
                     parser.parseValue(value, key);
                 }
             });
