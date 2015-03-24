@@ -1,7 +1,7 @@
 {
   "name": "i18next-scanner",
   "version": "0.1.0",
-  "description": "A text scanner for i18next",
+  "description": "i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/cheton/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./index.js",
