@@ -18,12 +18,14 @@ npm install --save-dev i18next-scanner
 ```
 
 ## Usage
+The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner) is a transform stream. You can use [vinyl-fs](https://github.com/wearefractal/vinyl) to create a readable stream, pipe the stream through `i18next-scanner` for transformation, and write files to a destination path.
+Here is a simple example showing how that works:
 ```javascript
 var i18next = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 
 vfs.src(['path/to/src'])
-    .pipe(i18next(options[, customTransform[, customFlush]]))
+    .pipe(i18next())
     .pipe(vfs.dest('path/to/dest');
 ```
 
@@ -32,7 +34,7 @@ vfs.src(['path/to/src'])
 var gulp = require('gulp');
 var i18next = require('i18next-scanner');
 
-gulp.task('i18next-scanner', function() {
+gulp.task('i18next', function() {
     return gulp.src(['src/**/*.{js,html}'])
         .pipe(i18next({
             lngs: ['en', 'de'],
