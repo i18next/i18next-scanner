@@ -357,6 +357,7 @@ Alternatively, you may call `this.parser.parseValue(value, defaultKey)` to add a
 For example:
 ```javascript
 var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
@@ -365,7 +366,7 @@ var customTransform = function _transform(file, enc, done) {
     // parse the content and loop over the results
 
     _.each(results, function(result) {
-        var defaultKey = sha1(result.value); // returns a SHA-1 hash value as its default key
+        var defaultKey = hash(result.value); // returns a hash value as its default key
         parser.parseValue(result.value, result.defaultKey || defaultKey);
     });
 };
