@@ -112,7 +112,7 @@ var customTransform = function(file, enc, done) {
             if (r) {
                 value = _.trim(r[1], '\'"');
                 key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
+                parser.parse(key, value);
             }
         });
     }());
@@ -178,11 +178,9 @@ var customTransform = function(file, enc, done) {
 
             if (_.isUndefined(key)) {
                 key = hash(value); // returns a hash value as its default key
-                parser.parseValue(value, key);
-                return;
             }
-                
-            parser.parseKey(key, value);
+
+            parser.parse(key, value);
         });
     }());
 
@@ -202,7 +200,7 @@ var customTransform = function(file, enc, done) {
             }
 
             key = hash(value); // returns a hash value as its default key
-            parser.parseValue(value, key);
+            parser.parse(key, value);
         });
     }());
 
@@ -328,7 +326,7 @@ var customTransform = function _transform(file, enc, done) {
 };
 ```
 
-To parse a translation key, call `this.parser.parseKey(key, defaultValue)`. The `defaultValue` is optional if the key is not assigned with a default value.
+To parse a translation key, call `parser.parse(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```javascript
 var _ = require('lodash');
@@ -340,15 +338,18 @@ var customTransform = function _transform(file, enc, done) {
     // parse the content and loop over the results
 
     _.each(results, function(result) {
-        parser.parseKey(result.key, result.defaultValue || '');
+        var key = result.key;
+        var value = result.defaultValue || '';
+        parser.parse(key, value);
     });
 };
 ```
 
-Alternatively, you may call `this.parser.parseValue(value, defaultKey)` to parse a text string with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+Alternatively, you may call `parser.parse(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```javascript
 var _ = require('lodash');
+var hash = require('i18next-text').hash['sha1'];
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
@@ -357,8 +358,9 @@ var customTransform = function _transform(file, enc, done) {
     // parse the content and loop over the results
 
     _.each(results, function(result) {
-        var defaultKey = sha1(result.value); // returns a SHA-1 hash value as its default key
-        parser.parseValue(result.value, result.defaultKey || defaultKey);
+        var key = result.defaultKey || hash(result.value);
+        var value = result.value;
+        parser.parse(key, value);
     });
 };
 ```
