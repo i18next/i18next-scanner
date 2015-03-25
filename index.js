@@ -47,7 +47,7 @@ module.exports = function(options, customTransform, customFlush) {
             _.each(results, function(result) {
                 var r = result.match(/i18n\.t\(("[^"]*"|'[^']*')/);
                 if (r) {
-                    var key = _.str.trim(r[1], '\'"');
+                    var key = _.trim(r[1], '\'"');
                     parser.parse(key);
                 }
             });
