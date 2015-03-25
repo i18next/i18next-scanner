@@ -224,8 +224,9 @@ function(options[, customTransform[, customFlush]])
 ### options
 ```javascript
 {
-    lngs: ['en'],
+    debug: false,
     sort: false,
+    lngs: ['en'],
     defaultValue: '',
     resGetPath: 'i18n/__lng__/__ns__.json',
     resSetPath: 'i18n/__lng__/__ns__.json',
@@ -246,17 +247,17 @@ Type: `Boolean` Default: `false`
 
 Set to `true` to trun on debug output.
 
-#### lngs
-
-Type: `Array` Default: `['en']`
-
-Provides a list of supported languages.
-
 #### sort
 
 Type: `Boolean` Default: `false`
 
 Set to `true` if you want to sort translation keys in ascending order.
+
+#### lngs
+
+Type: `Array` Default: `['en']`
+
+Provides a list of supported languages.
 
 #### defaultValue
 
