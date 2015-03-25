@@ -12,7 +12,7 @@ module.exports = function(grunt) {
         targets.forEach(function(target) {
             vfs.src(target.files || target.src, {base: target.base || '.'})
                 .pipe(i18next(options, target.customTransform, target.customFlush))
-                .pipe(vfs.dest(target.dest))
+                .pipe(vfs.dest(target.dest || '.'))
                 .on('end', function() {
                     done();
                 });
