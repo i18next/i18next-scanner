@@ -82,7 +82,7 @@ module.exports = function(options, customTransform, customFlush) {
 
                     that.push(new File({
                         path: resPath,
-                        contents: new Buffer(str)
+                        contents: new Buffer(str + '\n')
                     }));
                 });
             });
