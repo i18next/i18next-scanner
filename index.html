@@ -163,6 +163,11 @@ i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">
 
             <span class="pl-k">if</span> (r) {
                 value <span class="pl-k">=</span> _.trim(r[<span class="pl-c1">1</span>], <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span>"<span class="pl-pds">'</span></span>);
+
+                <span class="pl-c">// Replace double backslash with single backslash</span>
+                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\\</span><span class="pl-pds">/</span>g</span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\\</span><span class="pl-pds">'</span></span>);
+                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\'</span><span class="pl-pds">/</span></span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span>);                              
+
                 key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
                 parser.<span class="pl-c1">parse</span>(key, value);
             }
@@ -216,6 +221,10 @@ i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">
 <span class="pl-s"></span>
 <span class="pl-s">            if ( ! _.isUndefined(r[1])) {</span>
 <span class="pl-s">                value = _.trim(r[1], <span class="pl-pds">'</span></span>\<span class="pl-s"><span class="pl-pds">'</span>"<span class="pl-pds">'</span></span>);
+
+                <span class="pl-c">// Replace double backslash with single backslash</span>
+                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\\</span><span class="pl-pds">/</span>g</span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\\</span><span class="pl-pds">'</span></span>);
+                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\'</span><span class="pl-pds">/</span></span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span>);                              
             }
 
             <span class="pl-k">var</span> params <span class="pl-k">=</span> parser.parseHashArguments(r[<span class="pl-c1">2</span>]);
@@ -268,8 +277,9 @@ i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">
 <a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>options</h3>
 
 <div class="highlight highlight-javascript"><pre>{
-    lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>],
+    debug<span class="pl-k">:</span> <span class="pl-c1">false</span>,
     sort<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>],
     defaultValue<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
     resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
     resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
@@ -291,18 +301,18 @@ i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">
 <p>Set to <code>true</code> to trun on debug output.</p>
 
 <h4>
-<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
-
-<p>Type: <code>Array</code> Default: <code>['en']</code></p>
-
-<p>Provides a list of supported languages.</p>
-
-<h4>
 <a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>sort</h4>
 
 <p>Type: <code>Boolean</code> Default: <code>false</code></p>
 
 <p>Set to <code>true</code> if you want to sort translation keys in ascending order.</p>
+
+<h4>
+<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
+
+<p>Type: <code>Array</code> Default: <code>['en']</code></p>
+
+<p>Provides a list of supported languages.</p>
 
 <h4>
 <a id="defaultvalue" class="anchor" href="#defaultvalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>defaultValue</h4>
