@@ -119,6 +119,11 @@ var customTransform = function(file, enc, done) {
 
             if (r) {
                 value = _.trim(r[1], '\'"');
+
+                // Replace double backslash with single backslash
+                value = value.replace(/\\\\/g, '\\');
+                value = value.replace(/\\\'/, '\'');                              
+
                 key = hash(value); // returns a hash value as its default key
                 parser.parse(key, value);
             }
@@ -173,6 +178,10 @@ var customTransform = function(file, enc, done) {
 
             if ( ! _.isUndefined(r[1])) {
                 value = _.trim(r[1], '\'"');
+
+                // Replace double backslash with single backslash
+                value = value.replace(/\\\\/g, '\\');
+                value = value.replace(/\\\'/, '\'');                              
             }
 
             var params = parser.parseHashArguments(r[2]);
