@@ -240,6 +240,12 @@ function(options[, customTransform[, customFlush]])
 }
 ```
 
+#### debug
+
+Type: `Boolean` Default: `false`
+
+Set to `true` to trun on debug output.
+
 #### lngs
 
 Type: `Array` Default: `['en']`
@@ -248,7 +254,7 @@ Provides a list of supported languages.
 
 #### sort
 
-Type: `Boolean`  Default: `false`
+Type: `Boolean` Default: `false`
 
 Set to `true` if you want to sort translation keys in ascending order.
 

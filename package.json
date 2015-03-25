@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/cheton/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -38,7 +38,6 @@
   ],
   "dependencies": {
     "colors": "^1.0.3",
-    "debuglog": "^1.0.1",
     "i18next": "^1.7.10",
     "i18next-text": "^0.5.2",
     "lodash": "^3.5.0",
