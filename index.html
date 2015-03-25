@@ -54,24 +54,42 @@
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<pre><code>npm install i18next-scanner
+<pre><code>npm install --save-dev i18next-scanner
 </code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>The main entry function of <a href="https://github.com/cheton/i18next-scanner">i18next-scanner</a> is a transform stream. You can use <a href="https://github.com/wearefractal/vinyl">vinyl-fs</a> to create a readable stream, pipe the stream through <a href="https://github.com/cheton/i18next-scanner">i18next-scanner</a> to transform your code into an i18n resource object, and write to a destination folder.
+Here is a simple example showing how that works:</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
+
+vfs.<span class="pl-c1">src</span>([<span class="pl-s"><span class="pl-pds">'</span>path/to/src<span class="pl-pds">'</span></span>])
+    .pipe(i18next())
+    .pipe(vfs.dest(<span class="pl-s"><span class="pl-pds">'</span>path/to/dest<span class="pl-pds">'</span></span>);</pre></div>
 
 <h2>
 <a id="gulp-usage" class="anchor" href="#gulp-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gulp Usage</h2>
 
+<p>Now you are ready to set up a minimal configuration, and get started with Gulp.
+For example:</p>
+
 <div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> gulp <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gulp<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
 
-gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>() {
-    <span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
-
-    <span class="pl-k">return</span> gulp.<span class="pl-c1">src</span>([<span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>], {base<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>src<span class="pl-pds">'</span></span>})
+gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>() {
+    <span class="pl-k">return</span> gulp.<span class="pl-c1">src</span>([<span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>])
         .pipe(i18next({
-            lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>],
-            defaultValue<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__STRING_NOT_TRANSLATED__<span class="pl-pds">'</span></span>,
+            <span class="pl-c">// a list of supported languages</span>
+            lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>], 
+
+            <span class="pl-c">// the source path is relative to current working directory</span>
             resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-            resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-            ns<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>
+
+            <span class="pl-c">// the destination path is relative to your `gulp.dest()` path</span>
+            resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>
         })
         .pipe(gulp.dest(<span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>));
 });</pre></div>
@@ -79,7 +97,25 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 <h2>
 <a id="grunt-usage" class="anchor" href="#grunt-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grunt Usage</h2>
 
-<p>~TBD~</p>
+<p>Once you've finished the installation, add this line to your project's Gruntfile:</p>
+
+<div class="highlight highlight-javascript"><pre>grunt.loadNpmTasks(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>In your project's Gruntfile, add a section named <code>i18next</code> to the data object passed into <code>grunt.initConfig()</code>, like so:</p>
+
+<div class="highlight highlight-javascript"><pre>grunt.initConfig({
+    i18next<span class="pl-k">:</span> {
+        dev<span class="pl-k">:</span> {
+            src<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>,
+            dest<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>,
+            options<span class="pl-k">:</span> {
+                lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>],
+                resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
+                resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>
+            }
+        }
+    }
+});</pre></div>
 
 <h2>
 <a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advanced Usage</h2>
@@ -87,17 +123,30 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 <h3>
 <a id="customize-transform-and-flush-functions" class="anchor" href="#customize-transform-and-flush-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Customize transform and flush functions</h3>
 
-<p>The main entry function of <a href="https://github.com/cheton/i18next-scanner/">i18next-scanner</a> is a transform stream using <a href="https://github.com/rvagg/through2">through2</a>. You can pass in your <code>transform</code> and <code>flush</code> functions like so:</p>
+<p>As mentioned in the <a href="#usage">Usage</a> section, the main entry function returns a <a href="https://github.com/rvagg/through2">through2</a> object stream, you can pass in your <code>transform</code> and <code>flush</code> functions:</p>
 
-<div class="highlight highlight-javascript"><pre>gulp.<span class="pl-c1">src</span>([<span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>], {base<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>src<span class="pl-pds">'</span></span>})
-    .pipe(i18next(options, customTransform, customFlush)
-    .pipe(gulp.dest(<span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>));</pre></div>
+<div class="highlight highlight-javascript"><pre>i18next(options[, customTransform[, customFlush]])</pre></div>
 
 <h3>
 <a id="usage-with-i18next-text" class="anchor" href="#usage-with-i18next-text" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage with i18next-text</h3>
 
 <h4>
 <a id="example-of-parsing-strings" class="anchor" href="#example-of-parsing-strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example of parsing strings</h4>
+
+<p>You might want to find all occurrences of the <code>i18n._()</code> function in your code.
+For example:</p>
+
+<div class="highlight highlight-javascript"><pre>i18n._(<span class="pl-s"><span class="pl-pds">'</span>This is text value<span class="pl-pds">'</span></span>);
+i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>);
+i18n._(<span class="pl-s"><span class="pl-pds">'</span>text<span class="pl-pds">'</span></span>);
+i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>, { count<span class="pl-k">:</span> <span class="pl-c1">1</span> });
+i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-k">+</span> str); <span class="pl-c">// skip run-time variables</span></pre></div>
+
+<p>The content can be parsed with a regular expression, like below:</p>
+
+<div class="highlight highlight-javascript"><pre>i18n\._\((<span class="pl-s"><span class="pl-pds">"</span>[^<span class="pl-pds">"</span></span>]<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'[^']*')<span class="pl-cce">\s</span>*[<span class="pl-cce">\,\)</span>]</span></pre></div>
+
+<p>The code might look like this:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
 <span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
@@ -106,13 +155,6 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
     <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
     <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
 
-    <span class="pl-c">/*</span>
-<span class="pl-c">     * i18n._('This is text value');</span>
-<span class="pl-c">     * i18n._("text"); // result matched</span>
-<span class="pl-c">     * i18n._('text'); // result matched</span>
-<span class="pl-c">     * i18n._("text", { count: 1 }); // result matched</span>
-<span class="pl-c">     * i18n._("text" + str); // skip run-time variables</span>
-<span class="pl-c">     */</span>
     (<span class="pl-k">function</span>() {
         <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(<span class="pl-sr"><span class="pl-pds">/</span>i18n<span class="pl-cce">\.</span>_<span class="pl-cce">\(</span>("<span class="pl-c1">[<span class="pl-k">^</span>"]</span><span class="pl-k">*</span>"<span class="pl-k">|</span>'<span class="pl-c1">[<span class="pl-k">^</span>']</span><span class="pl-k">*</span>')<span class="pl-c1">\s</span><span class="pl-k">*</span><span class="pl-c1">[<span class="pl-cce">\,\)</span>]</span><span class="pl-pds">/</span>igm</span>) <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
         _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
@@ -122,7 +164,7 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
             <span class="pl-k">if</span> (r) {
                 value <span class="pl-k">=</span> _.trim(r[<span class="pl-c1">1</span>], <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span>"<span class="pl-pds">'</span></span>);
                 key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-                parser.parseValue(value, key);
+                parser.<span class="pl-c1">parse</span>(key, value);
             }
         });
     }());
@@ -131,7 +173,32 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 };</pre></div>
 
 <h4>
-<a id="handlebars-i18n-helper-with-block-expressions" class="anchor" href="#handlebars-i18n-helper-with-block-expressions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handlebars i18n helper with block expressions</h4>
+<a id="handlebars-i18n-helper" class="anchor" href="#handlebars-i18n-helper" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handlebars i18n helper</h4>
+
+<p><strong>i18n function helper</strong></p>
+
+<div class="highlight highlight-hbs"><pre><span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
+<span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
+<span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>locale:foo<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
+<span class="pl-c1">{{</span><span class="pl-v">i18n</span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>noval<span class="pl-pds">'</span></span><span class="pl-c1">}}</span></pre></div>
+
+<p>Using the regular expression for the above:</p>
+
+<div class="highlight highlight-javascript"><pre>{{i18n\s<span class="pl-k">+</span>(<span class="pl-s"><span class="pl-pds">"</span>(?:[^<span class="pl-pds">"</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'(?:[^'<span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*')?([^}]*)}}</span></pre></div>
+
+<p><strong>i18n block helper</strong></p>
+
+<div class="highlight highlight-hbs"><pre><span class="pl-c1">{{#i18n}}</span>Some text<span class="pl-c1">{{/i18n}}</span>
+<span class="pl-c1">{{#i18n</span> <span class="pl-v">this</span><span class="pl-c1">}}</span>Description: <span class="pl-c1">{{</span><span class="pl-v">description</span><span class="pl-c1">}}</span><span class="pl-c1">{{/i18n}}</span>
+<span class="pl-c1">{{#i18n</span> <span class="pl-v">this</span> last-name=lastname<span class="pl-c1">}}</span><span class="pl-c1">{{</span><span class="pl-v">firstname</span><span class="pl-c1">}}</span> ${last-name}<span class="pl-c1">{{/i18n}}</span></pre></div>
+
+<p>Using the regular expression for the above:</p>
+
+<div class="highlight highlight-javascript"><pre>{{#i18n\s<span class="pl-k">*</span>([<span class="pl-k">^</span>}]<span class="pl-k">*</span>)}}((<span class="pl-k">?:</span>(<span class="pl-k">?!</span>{{\/i18n}})(<span class="pl-k">?:</span>.|\n))<span class="pl-k">*</span>){{\/i18n}}</pre></div>
+
+<p><strong>Sample code</strong></p>
+
+<p>The sample code might look like this:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
 <span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
@@ -140,12 +207,7 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
     <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
     <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
 
-    <span class="pl-c">/*</span>
-<span class="pl-c">     * {{i18n 'bar'}}</span>
-<span class="pl-c">     * {{i18n 'bar' defaultKey='foo'}}</span>
-<span class="pl-c">     * {{i18n 'baz' defaultKey='locale:foo'}}</span>
-<span class="pl-c">     * {{i18n defaultKey='noval'}}</span>
-<span class="pl-c">     */</span>
+    <span class="pl-c">// i18n function helper</span>
     (<span class="pl-k">function</span>() {
         <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(/{{i18n\s<span class="pl-k">+</span>(<span class="pl-s"><span class="pl-pds">"</span>(?:[^<span class="pl-pds">"</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'(?:[^'<span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*')?([^}]*)}}/gm) || [];</span>
 <span class="pl-s">        _.each(results, function(result) {</span>
@@ -167,19 +229,13 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 
             <span class="pl-k">if</span> (_.isUndefined(key)) {
                 key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-                parser.parseValue(value, key);
-                <span class="pl-k">return</span>;
             }
 
-            parser.parseKey(key, value);
+            parser.<span class="pl-c1">parse</span>(key, value);
         });
     }());
 
-    <span class="pl-c">/*</span>
-<span class="pl-c">     * {{#i18n}}Some text{{/i18n}}</span>
-<span class="pl-c">     * {{#i18n this}}Description: {{description}}{{/i18n}}</span>
-<span class="pl-c">     * {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}</span>
-<span class="pl-c">     */</span>
+    <span class="pl-c">// i18n block helper</span>
     (<span class="pl-k">function</span>() {
         <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(/{{#i18n\s<span class="pl-k">*</span>([<span class="pl-k">^</span>}]<span class="pl-k">*</span>)}}((<span class="pl-k">?:</span>(<span class="pl-k">?!</span>{{\/i18n}})(<span class="pl-k">?:</span>.|\n))<span class="pl-k">*</span>){{\/i18n}}/gm) <span class="pl-k">||</span> [];
         _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
@@ -195,7 +251,7 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
             }
 
             key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-            parser.parseValue(value, key);
+            parser.<span class="pl-c1">parse</span>(key, value);
         });
     }());
 
@@ -228,16 +284,23 @@ gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span c
 }</pre></div>
 
 <h4>
+<a id="debug" class="anchor" href="#debug" aria-hidden="true"><span class="octicon octicon-link"></span></a>debug</h4>
+
+<p>Type: <code>Boolean</code> Default: <code>false</code></p>
+
+<p>Set to <code>true</code> to trun on debug output.</p>
+
+<h4>
 <a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
 
 <p>Type: <code>Array</code> Default: <code>['en']</code></p>
 
-<p>Provides a list of supported languages by setting the lngs option.</p>
+<p>Provides a list of supported languages.</p>
 
 <h4>
 <a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>sort</h4>
 
-<p>Type: <code>Boolean</code>  Default: <code>false</code></p>
+<p>Type: <code>Boolean</code> Default: <code>false</code></p>
 
 <p>Set to <code>true</code> if you want to sort translation keys in ascending order.</p>
 
@@ -331,7 +394,7 @@ For example:</p>
     done();
 };</pre></div>
 
-<p>To parse a translation key, call <code>this.parser.parseKey(key, defaultValue)</code>. The <code>defaultValue</code> is optional if the key is not assigned with a default value.
+<p>To parse a translation key, call <code>parser.parse(key, defaultValue)</code> to assign the key with an optional <code>defaultValue</code>.
 For example:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
@@ -343,14 +406,17 @@ For example:</p>
     <span class="pl-c">// parse the content and loop over the results</span>
 
     _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        parser.parseKey(result.key, result.<span class="pl-c1">defaultValue</span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>);
+        <span class="pl-k">var</span> key <span class="pl-k">=</span> result.key;
+        <span class="pl-k">var</span> value <span class="pl-k">=</span> result.<span class="pl-c1">defaultValue</span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
+        parser.<span class="pl-c1">parse</span>(key, value);
     });
 };</pre></div>
 
-<p>Alternatively, you may call <code>this.parser.parseValue(value, defaultKey)</code> to parse a text string with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
+<p>Alternatively, you may call <code>parser.parse(defaultKey, value)</code> to assign the value with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
 For example:</p>
 
 <div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
 <span class="pl-k">var</span> customTransform <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
     <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
     <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
@@ -359,8 +425,9 @@ For example:</p>
     <span class="pl-c">// parse the content and loop over the results</span>
 
     _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        <span class="pl-k">var</span> defaultKey <span class="pl-k">=</span> sha1(result.<span class="pl-c1">value</span>); <span class="pl-c">// returns a SHA-1 hash value as its default key</span>
-        parser.parseValue(result.<span class="pl-c1">value</span>, result.defaultKey <span class="pl-k">||</span> defaultKey);
+        <span class="pl-k">var</span> key <span class="pl-k">=</span> result.defaultKey <span class="pl-k">||</span> hash(result.<span class="pl-c1">value</span>);
+        <span class="pl-k">var</span> value <span class="pl-k">=</span> result.<span class="pl-c1">value</span>;
+        parser.<span class="pl-c1">parse</span>(key, value);
     });
 };</pre></div>
 
