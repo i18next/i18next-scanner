@@ -2,7 +2,7 @@
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
-i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.
+i18next-scanner is a transform stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.
 
 It's available as both Gulp and Grunt plugins.
 
