@@ -26,7 +26,7 @@ var vfs = require('vinyl-fs');
 
 vfs.src(['path/to/src'])
     .pipe(i18next())
-    .pipe(vfs.dest('path/to/dest');
+    .pipe(vfs.dest('path/to/dest'));
 ```
 
 ## Gulp Usage
@@ -47,7 +47,7 @@ gulp.task('i18next', function() {
             
             // the destination path is relative to your `gulp.dest()` path
             resSetPath: 'i18n/__lng__/__ns__.json'
-        })
+        }))
         .pipe(gulp.dest('assets'));
 });
 ```
