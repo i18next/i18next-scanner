@@ -47,7 +47,7 @@ gulp.task('i18next', function() {
             
             // the destination path is relative to your `gulp.dest()` path
             resSetPath: 'i18n/__lng__/__ns__.json'
-        })
+        }))
         .pipe(gulp.dest('assets'));
 });
 ```
