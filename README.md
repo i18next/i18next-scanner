@@ -408,7 +408,7 @@ var customFlush = function _flush(done) {
     // loop over the resStore
     _.each(resStore, function(namespaces, lng) {
         _.each(namespaces, function(obj, ns) {
-            // add custom code
+            // add your code
         });
     });
     
