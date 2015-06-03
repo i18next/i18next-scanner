@@ -346,10 +346,10 @@ var customTransform = function _transform(file, enc, done) {
     var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
 
-    // add custom code
-
+    // add your code
     done();
 };
+
 vfs.src(['path/to/src'])
     .pipe(i18next(options, customTransform))
     .pipe(vfs.dest('path/to/dest'));
@@ -365,7 +365,6 @@ var customTransform = function _transform(file, enc, done) {
     var results = [];
 
     // parse the content and loop over the results
-
     _.each(results, function(result) {
         var key = result.key;
         var value = result.defaultValue || '';
@@ -385,7 +384,6 @@ var customTransform = function _transform(file, enc, done) {
     var results = [];
 
     // parse the content and loop over the results
-
     _.each(results, function(result) {
         var key = result.defaultKey || hash(result.value);
         var value = result.value;
@@ -416,6 +414,7 @@ var customFlush = function _flush(done) {
     
     done();
 };
+
 vfs.src(['path/to/src'])
     .pipe(i18next(options, customTransform, customFlush))
     .pipe(vfs.dest('path/to/dest'));
