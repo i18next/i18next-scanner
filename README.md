@@ -26,7 +26,7 @@ var vfs = require('vinyl-fs');
 
 vfs.src(['path/to/src'])
     .pipe(i18next())
-    .pipe(vfs.dest('path/to/dest');
+    .pipe(vfs.dest('path/to/dest'));
 ```
 
 ## Gulp Usage
@@ -339,6 +339,8 @@ For example:
 The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
 ```javascript
+var i18next = require('i18next-scanner');
+var vfs = require('vinyl-fs');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var extname = path.extname(file.path);
@@ -348,6 +350,9 @@ var customTransform = function _transform(file, enc, done) {
 
     done();
 };
+vfs.src(['path/to/src'])
+    .pipe(i18next(options, customTransform))
+    .pipe(vfs.dest('path/to/dest'));
 ```
 
 To parse a translation key, call `parser.parse(key, defaultValue)` to assign the key with an optional `defaultValue`.
@@ -394,6 +399,8 @@ The optional `customFlush` function is provided as the last argument, it is call
 For example:
 ```javascript
 var _ = require('lodash');
+var i18next = require('i18next-scanner');
+var vfs = require('vinyl-fs');
 var customFlush = function _flush(done) {
     var that = this;
     var resStore = parser.toObject({
@@ -409,6 +416,9 @@ var customFlush = function _flush(done) {
     
     done();
 };
+vfs.src(['path/to/src'])
+    .pipe(i18next(options, customTransform, customFlush))
+    .pipe(vfs.dest('path/to/dest'));
 ```
 
 ## License
