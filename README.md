@@ -99,7 +99,7 @@ i18n._("text" + str); // skip run-time variables
 
 The content can be parsed with a regular expression, like below:
 ```javascript
-i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]
+i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]
 ```
 
 The code might look like this:
@@ -112,10 +112,10 @@ var customTransform = function(file, enc, done) {
     var content = fs.readFileSync(file.path, enc);
 
     (function() {
-        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
+        var results = content.match(/i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
             var key, value;
-            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+            var r = result.match(/i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]/) || '';
 
             if (r) {
                 value = _.trim(r[1], '\'"');
