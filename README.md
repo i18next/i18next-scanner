@@ -7,6 +7,7 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 It's available as both Gulp and Grunt plugins.
 
 ## Features
+* Support React JSX. See the [Usage with React JSX](https://github.com/cheton/i18next-scanner/#usage-with-react-jsx) section for details. 
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
 * Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
@@ -82,6 +83,31 @@ grunt.initConfig({
 As mentioned in the [Usage](#usage) section, the main entry function returns a [through2](https://github.com/rvagg/through2) object stream, you can pass in your `transform` and `flush` functions:
 ```javascript
 i18next(options[, customTransform[, customFlush]])
+```
+
+### Usage with React JSX
+An example of resource file:
+```json
+{           
+    "app": {
+        "name": "My App"
+    },
+    "key": "__myVar__ are important"
+}
+```
+
+Use `i18n.t()` in your React JSX code:
+```javascript
+var App = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <h1>{i18n.t('app.name')}</h1> // "My App"
+                <p>{i18n.t('key', {myVar:'variables'})}</p> // "variables are important"
+            </div>
+        );
+    }
+});
 ```
 
 ### Usage with i18next-text
