@@ -7,7 +7,7 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 It's available as both Gulp and Grunt plugins.
 
 ## Features
-* Support React JSX.
+* Support React JSX. See the [Usage section](https://github.com/cheton/i18next-scanner/#usage-with-react-jsx) for details. 
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
 * Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
