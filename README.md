@@ -98,8 +98,11 @@ An example of resource file:
 
 Use `i18n.t()` in your React JSX code:
 ```javascript
-var App = React.createClass({
-    render: function() {
+import i18n from 'i18next';
+import React from 'react';
+
+class App extends React.Component {
+    render() {
         return (
             <div>
                 <h1>{i18n.t('app.name')}</h1> // "My App"
@@ -107,7 +110,7 @@ var App = React.createClass({
             </div>
         );
     }
-});
+}
 ```
 
 ### Usage with i18next-text
