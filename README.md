@@ -1,4 +1,4 @@
-# i18next-scanner [![build status](https://travis-ci.org/cheton/i18next-scanner.svg?branch=master)](https://travis-ci.org/cheton/i18next-scanner)
+# i18next-scanner [![build status](https://travis-ci.org/i18next/i18next-scanner.svg)](https://travis-ci.org/i18next/i18next-scanner)
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
