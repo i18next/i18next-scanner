@@ -15,11 +15,9 @@ It's available as both Gulp and Grunt plugins.
 
 ## Examples
 Check out some examples:
- * API options:
-  https://github.com/cheton/webappengine/blob/master/gulp/config.js#L190
-
+* [API options](https://github.com/cheton/webappengine/blob/master/gulp/config.js#L190)
 * A gulp task that supports [i18next-text](https://github.com/cheton/i18next-text) and Handlebars template
-  https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js
+  https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js#L104
 
 ## Installation
 ```
