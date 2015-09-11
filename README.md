@@ -1,4 +1,4 @@
-# i18next-scanner [![build status](https://travis-ci.org/i18next/i18next-scanner.svg)](https://travis-ci.org/i18next/i18next-scanner)
+# i18next-scanner [![build status](https://travis-ci.org/i18next/i18next-scanner.svg)](https://travis-ci.org/i18next/i18next-scanner) [![Coverage Status](https://coveralls.io/repos/i18next/i18next-scanner/badge.svg)](https://coveralls.io/r/i18next/i18next-scanner)
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
