@@ -13,6 +13,14 @@ It's available as both Gulp and Grunt plugins.
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
 
+## Examples
+Check out some examples here:
+ * Configuration options:
+  https://github.com/cheton/webappengine/blob/master/gulp/config.js#L180
+
+* Gulp task:
+  https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js
+
 ## Installation
 ```
 npm install --save-dev i18next-scanner
