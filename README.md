@@ -14,12 +14,9 @@ It's available as both Gulp and Grunt plugins.
 * Support custom transform and flush functions.
 
 ## Examples
-Check out some examples here:
- * Configuration options:
-  https://github.com/cheton/webappengine/blob/master/gulp/config.js#L180
-
-* Gulp task:
-  https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js
+Check out some examples:
+* [API options](https://github.com/cheton/webappengine/blob/master/gulp/config.js#L190)
+* A gulp task that uses a [custom transform](#customtransform) to scan strings for [i18next-text](https://github.com/cheton/i18next-text) and Handlebars template: https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js#L104
 
 ## Installation
 ```
@@ -121,7 +118,7 @@ class App extends React.Component {
 }
 ```
 
-### Usage with i18next-text
+### Usage with [i18next-text](https://github.com/cheton/i18next-text)
 
 #### Example of parsing strings
 You might want to find all occurrences of the `i18n._()` function in your code.
