@@ -7,10 +7,16 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 It's available as both Gulp and Grunt plugins.
 
 ## Features
+* Support React JSX. See the [Usage with React JSX](https://github.com/cheton/i18next-scanner/#usage-with-react-jsx) section for details. 
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
 * Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
+
+## Examples
+Check out some examples:
+* [API options](https://github.com/cheton/webappengine/blob/master/gulp/config.js#L190)
+* A gulp task that uses a [custom transform](#customtransform) to scan strings for [i18next-text](https://github.com/cheton/i18next-text) and Handlebars template: https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js#L104
 
 ## Installation
 ```
@@ -84,7 +90,35 @@ As mentioned in the [Usage](#usage) section, the main entry function returns a [
 i18next(options[, customTransform[, customFlush]])
 ```
 
-### Usage with i18next-text
+### Usage with React JSX
+An example of resource file:
+```json
+{           
+    "app": {
+        "name": "My App"
+    },
+    "key": "__myVar__ are important"
+}
+```
+
+Use `i18n.t()` in your React JSX code:
+```javascript
+import i18n from 'i18next';
+import React from 'react';
+
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>{i18n.t('app.name')}</h1> // "My App"
+                <p>{i18n.t('key', {myVar:'variables'})}</p> // "variables are important"
+            </div>
+        );
+    }
+}
+```
+
+### Usage with [i18next-text](https://github.com/cheton/i18next-text)
 
 #### Example of parsing strings
 You might want to find all occurrences of the `i18n._()` function in your code.
@@ -99,7 +133,7 @@ i18n._("text" + str); // skip run-time variables
 
 The content can be parsed with a regular expression, like below:
 ```javascript
-i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]
+i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]
 ```
 
 The code might look like this:
@@ -112,10 +146,10 @@ var customTransform = function(file, enc, done) {
     var content = fs.readFileSync(file.path, enc);
 
     (function() {
-        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
+        var results = content.match(/i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
             var key, value;
-            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+            var r = result.match(/i18n\._\(("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')\s*[\,\)]/) || '';
 
             if (r) {
                 value = _.trim(r[1], '\'"');
