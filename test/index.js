@@ -14,7 +14,7 @@ var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
-    var parseResults = [
+    var results = [
         ['Key', 'Value']
     ];
 
@@ -37,7 +37,7 @@ var customTransform = function _transform(file, enc, done) {
                 key = hash(value); // returns a hash value as its default key
 
                 parser.parse(key, value);
-                parseResults.push([key, _.isUndefined(value) ? '' : value ]);
+                results.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
             }
         });
     }());
@@ -71,7 +71,7 @@ var customTransform = function _transform(file, enc, done) {
             }
 
             parser.parse(key, value);
-            parseResults.push([key, _.isUndefined(value) ? '' : value ]);
+            results.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
     }());
 
@@ -93,12 +93,12 @@ var customTransform = function _transform(file, enc, done) {
             key = hash(value); // returns a hash value as its default key
 
             parser.parse(key, value);
-            parseResults.push([key, _.isUndefined(value) ? '' : value ]);
+            results.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
     }());
 
-    if (_.size(parseResults) > 1) {
-        gutil.log('result of ' + JSON.stringify(file.relative) + ':\n' + table(parseResults, {'hsep': ' | '}));
+    if (_.size(results) > 1) {
+        gutil.log('result of ' + JSON.stringify(file.relative) + ':\n' + table(results, {'hsep': ' | '}));
     }
 
     done();
