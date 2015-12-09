@@ -1,4 +1,4 @@
-# i18next-scanner [![build status](https://travis-ci.org/cheton/i18next-scanner.svg?branch=master)](https://travis-ci.org/cheton/i18next-scanner) [![Coverage Status](https://coveralls.io/repos/cheton/i18next-scanner/badge.svg?branch=master&service=github)](https://coveralls.io/github/cheton/i18next-scanner?branch=master)
+# i18next-scanner [![build status](https://travis-ci.org/i18next/i18next-scanner.svg?branch=master)](https://travis-ci.org/i18next/i18next-scanner) [![Coverage Status](https://coveralls.io/repos/i18next/i18next-scanner/badge.svg?branch=master&service=github)](https://coveralls.io/github/i18next/i18next-scanner?branch=master)
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
@@ -7,7 +7,7 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 It's available as both Gulp and Grunt plugins.
 
 ## Features
-* Support React JSX. See the [Usage with React JSX](https://github.com/cheton/i18next-scanner/#usage-with-react-jsx) section for details. 
+* Support React JSX. See the [Usage with React JSX](https://github.com/i18next/i18next-scanner/#usage-with-react-jsx) section for details. 
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
 * Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
@@ -24,7 +24,7 @@ npm install --save-dev i18next-scanner
 ```
 
 ## Usage
-The main entry function of [i18next-scanner](https://github.com/cheton/i18next-scanner) is a transform stream. You can use [vinyl-fs](https://github.com/wearefractal/vinyl) to create a readable stream, pipe the stream through [i18next-scanner](https://github.com/cheton/i18next-scanner) to transform your code into an i18n resource object, and write to a destination folder.
+The main entry function of [i18next-scanner](https://github.com/i18next/i18next-scanner) is a transform stream. You can use [vinyl-fs](https://github.com/wearefractal/vinyl) to create a readable stream, pipe the stream through [i18next-scanner](https://github.com/i18next/i18next-scanner) to transform your code into an i18n resource object, and write to a destination folder.
 Here is a simple example showing how that works:
 ```javascript
 var i18next = require('i18next-scanner');
@@ -458,4 +458,4 @@ vfs.src(['path/to/src'])
 
 Copyright (c) 2015 Cheton Wu
 
-Licensed under the [MIT License](https://github.com/cheton/i18next-scanner/blob/master/LICENSE).
+Licensed under the [MIT License](https://github.com/i18next/i18next-scanner/blob/master/LICENSE).
