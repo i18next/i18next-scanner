@@ -2,7 +2,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var vfs = require('vinyl-fs');
-var File = require('vinyl');
+var VirtualFile = require('vinyl');
 var through = require('through2');
 
 /**
@@ -80,7 +80,7 @@ module.exports = function(options, customTransform, customFlush) {
                         .replace(regex.ns, ns);
                     var str = JSON.stringify(obj, null, 4); // 4 spaces
 
-                    that.push(new File({
+                    that.push(new VirtualFile({
                         path: resPath,
                         contents: new Buffer(str + '\n')
                     }));
