@@ -42,7 +42,7 @@
     "gulp": "^3.9.0",
     "gulp-jshint": "^2.0.0",
     "gulp-util": "^3.0.7",
-    "jshint": "^2.9.1-rc1",
+    "jshint": "2.x",
     "run-sequence": "^1.1.5",
     "sha1": "^1.1.1",
     "tap": "^2.3.1",
