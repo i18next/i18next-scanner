@@ -456,6 +456,6 @@ vfs.src(['path/to/src'])
 
 ## License
 
-Copyright (c) 2015 Cheton Wu
+Copyright (c) 2015-2016 Cheton Wu
 
 Licensed under the [MIT License](https://github.com/i18next/i18next-scanner/blob/master/LICENSE).
