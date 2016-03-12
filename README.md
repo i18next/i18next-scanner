@@ -322,13 +322,13 @@ The target path of resource files. The `resSetPath` is relative to current worki
 
 #### nsseparator
 
-Type: `String` Default: `':'`
+Type: `String` or `false` Default: `':'`
 
 The namespace separator.
 
 #### keyseparator
 
-Type: `String` Default: `'.'`
+Type: `String` or `false` Default: `'.'`
 
 The key separator.
 
