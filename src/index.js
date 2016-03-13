@@ -12,17 +12,11 @@ const transform = (parser, customTransform) => {
         const extname = path.extname(file.path);
 
         if (_.includes(options.attr.list, extname)) {
-            // FIXME
-            console.log(options.attr.list, extname);
-
             // Parse data attribute from HTML files
             parser.parseHTML(content);
         }
 
         if (_.includes(options.func.list, extname)) {
-            // FIXME
-            console.log(options.func.list, extname);
-
             // Parse translation function from source code
             parser.parseCode(content);
         }
