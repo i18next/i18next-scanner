@@ -2,7 +2,7 @@
 
 var gulp = require('gulp');
 var test = require('tap').test;
-var i18nextScanner = require('../');
+var i18nextScanner = require('../lib');
 var customTransform = require('./utils/transform');
 
 test('setup', function(t) {
