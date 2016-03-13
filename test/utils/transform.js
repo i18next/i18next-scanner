@@ -33,7 +33,7 @@ module.exports = function _transform(file, enc, done) {
 
                 key = hash(value); // returns a hash value as its default key
 
-                parser.parse(key, value);
+                parser.parseKey(key, value);
 
                 tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
             }
@@ -68,7 +68,7 @@ module.exports = function _transform(file, enc, done) {
                 key = hash(value); // returns a hash value as its default key
             }
 
-            parser.parse(key, value);
+            parser.parseKey(key, value);
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
@@ -91,7 +91,7 @@ module.exports = function _transform(file, enc, done) {
 
             key = hash(value); // returns a hash value as its default key
 
-            parser.parse(key, value);
+            parser.parseKey(key, value);
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });

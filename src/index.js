@@ -1,70 +1,30 @@
 import _ from 'lodash';
 import fs from 'fs';
+import path from 'path';
 import VirtualFile from 'vinyl';
 import through2 from 'through2';
 import Parser from './parser';
 
-// <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
-// </div>
-const parseAttributes = (attributes, content, callback) => {
-    const matchPattern = _(attributes)
-        .map((attr) => ('(?:' + attr + ')'))
-        .value()
-        .join('|')
-        .replace(/\./g, '\\.');
-    const pattern = '[^a-zA-Z0-9_](?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
-    const results = content.match(new RegExp(pattern, 'gim')) || [];
-    results.forEach((result) => {
-        const r = result.match(new RegExp(pattern));
-        if (!r) {
-            return;
-        }
-
-        const keys = _.trim(r[1], '\'"');
-        callback(keys);
-    });
-};
-
-// i18next.t('ns:foo.bar') // matched
-// i18next.t("ns:foo.bar") // matched
-// i18next.t('ns:foo.bar') // matched
-// i18next.t("ns:foo.bar", { count: 1 }); // matched
-// i18next.t("ns:foo.bar" + str); // not matched
-const parseFunctions = (functions, content, callback) => {
-    const matchPattern = _(functions)
-        .map((func) => ('(?:' + func + ')'))
-        .value()
-        .join('|')
-        .replace(/\./g, '\\.');
-    const pattern = '[^a-zA-Z0-9_](?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
-    const results = content.match(new RegExp(pattern, 'gim')) || [];
-    results.forEach((result) => {
-        const r = result.match(new RegExp(pattern));
-        if (!r) {
-            return;
-        }
-
-        const key = _.trim(r[1], '\'"');
-        callback(key);
-    });
-};
-
 const transform = (parser, customTransform) => {
     return function _transform(file, enc, done) {
         const { options } = parser;
-        const { attributes, functions } = options;
         const content = fs.readFileSync(file.path, enc);
+        const extname = path.extname(file.path);
 
-        { // Parse selector attribute
-            parseAttributes(attributes, content, (keys) => {
-                parser.parseAttrs(keys);
-            });
+        if (_.includes(options.attr.list, extname)) {
+            // FIXME
+            console.log(options.attr.list, extname);
+
+            // Parse data attribute from HTML files
+            parser.parseHTML(content);
         }
 
-        { // Parse translation function
-            parseFunctions(functions, content, (key) => {
-                parser.parse(key);
-            });
+        if (_.includes(options.func.list, extname)) {
+            // FIXME
+            console.log(options.func.list, extname);
+
+            // Parse translation function from source code
+            parser.parseCode(content);
         }
 
         if (typeof customTransform === 'function') {
@@ -89,7 +49,7 @@ const flush = (parser, customFlush) => {
         }
 
         // Flush to resource store
-        const resStore = parser.toObject({ sort });
+        const resStore = parser.getResourceStore({ sort });
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
             Object.keys(namespaces).forEach((ns) => {
@@ -136,5 +96,3 @@ module.exports.createStream = createStream;
 
 // Parser
 module.exports.Parser = Parser;
-module.exports.parseAttributes = parseAttributes;
-module.exports.parseFunctions = parseFunctions;

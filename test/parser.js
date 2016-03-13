@@ -15,8 +15,8 @@ t.test('disabled nsseparator', function(t){
         nsSeparator: false,
         keySeparator: '.'
     }));
-    parser.parse('foo:bar', '');
-    t.same(parser.resStore, {
+    parser.parseKey('foo:bar', '');
+    t.same(parser.getResourceStore(), {
         en: {
             translation: {
                 'foo:bar': ''
@@ -31,11 +31,11 @@ t.test('disabled keyseparator', function(t){
         nsSeparator: ':',
         keySeparator: false
     }));
-    parser.parse('Creating...', '');
-    t.same(parser.resStore, {
+    parser.parseKey('Creating...', '');
+    t.same(parser.getResourceStore(), {
         en: {
             translation: {
-                'Creating...': ''
+                'Creating...': 'Creating...'
             }
         }
     }, 'The key should not use default keyseparator . to split');
@@ -47,9 +47,9 @@ t.test('default nsseparator', function(t){
         nsSeparator: ':',
         keySeparator: '.'
     }));
-    parser.parse('translation:key1.key2', '');
-    console.log(util.inspect(parser.resStore));
-    t.same(parser.resStore, {
+    parser.parseKey('translation:key1.key2', '');
+    console.log(util.inspect(parser.getResourceStore()));
+    t.same(parser.getResourceStore(), {
         en: {
             translation: {
                 'key1': {
@@ -66,9 +66,9 @@ t.test('default keyseparator', function(t){
         nsSeparator: ':',
         keySeparator: '.'
     }));
-    parser.parse('key1.key2', '');
-    console.log(util.inspect(parser.resStore));
-    t.same(parser.resStore, {
+    parser.parseKey('key1.key2', '');
+    console.log(util.inspect(parser.getResourceStore()));
+    t.same(parser.getResourceStore(), {
         en: {
             translation: {
                 'key1': {

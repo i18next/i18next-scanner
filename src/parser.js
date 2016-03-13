@@ -2,7 +2,69 @@
 import _ from 'lodash';
 import fs from 'fs';
 
+const defaults = {
+    // Debug output
+    debug: false,
+
+    // HTML attributes to parse
+    attr: {
+        list: ['data-i18n'],
+        extensions: ['.html']
+    },
+
+    // Function names to parse
+    func: {
+        list: ['i18next.t', 'i18n.t'],
+        extensions: ['.js', '.jsx']
+    },
+
+    // Provides a list of supported languages by setting the lngs option.
+    lngs: ['en'],
+
+    // Sorts the keys in ascending order.
+    sort: false,
+
+    // Provides a default value if a value is not specified.
+    defaultValue: '',
+
+    // The resGetPath is the source i18n path, it is relative to current working directory.
+    resGetPath: 'i18n/__lng__/__ns__.json',
+
+    // The resSetPath is the target i18n path, it is relative to your gulp.dest path.
+    resSetPath: 'i18n/__lng__/__ns__.json',
+
+    // Changes namespace and/or key separator by setting nsSeparator and/or keySeparator options.
+    nsSeparator: ':',
+    keySeparator: '.',
+
+    // Changes pre-/suffix for variables by setting interpolationPrefix and interpolationSuffix options.
+    interpolationPrefix: '__',
+    interpolationSuffix: '__',
+
+    ns: {
+        // Provides a list of namespaces by setting the namespaces option.
+        namespaces: [],
+        // Changes the default namespace by setting the ns.defaultNs option.
+        defaultNs: 'translation'
+    }
+};
+
 const transformOptions = (options) => {
+    // Attribute
+    if (_.isUndefined(_.get(options, 'attr.list'))) {
+        _.set(options, 'attr.list', defaults.attr.list);
+    }
+    if (_.isUndefined(_.get(options, 'attr.extensions'))) {
+        _.set(options, 'attr.extensions', defaults.attr.extensions);
+    }
+    // Function
+    if (_.isUndefined(_.get(options, 'func.list'))) {
+        _.set(options, 'func.list', defaults.func.list);
+    }
+    if (_.isUndefined(_.get(options, 'func.extensions'))) {
+        _.set(options, 'func.extensions', defaults.func.extensions);
+    }
+
     // Accept both nsseparator or nsSeparator
     if (!_.isUndefined(options.nsseparator)) {
         options.nsSeparator = options.nsseparator;
@@ -52,50 +114,11 @@ const unquote = (str, quoteChar) => {
 };
 
 /**
- * Creates a new parser
- * @constructor
- */
+* Creates a new parser
+* @constructor
+*/
 class Parser {
-    options = {
-        // Debug output
-        debug: false,
-
-        // HTML attributes to parse
-        attributes: ['data-i18n'],
-
-        // Function names to parse
-        functions: ['i18next.t', 'i18n.t'],
-
-        // Provides a list of supported languages by setting the lngs option.
-        lngs: ['en'],
-
-        // Sorts the keys in ascending order.
-        sort: false,
-
-        // Provides a default value if a value is not specified.
-        defaultValue: '',
-
-        // The resGetPath is the source i18n path, it is relative to current working directory.
-        resGetPath: 'i18n/__lng__/__ns__.json',
-
-        // The resSetPath is the target i18n path, it is relative to your gulp.dest path.
-        resSetPath: 'i18n/__lng__/__ns__.json',
-
-        // Changes namespace and/or key separator by setting nsSeparator and/or keySeparator options.
-        nsSeparator: ':',
-        keySeparator: '.',
-
-        // Changes pre-/suffix for variables by setting interpolationPrefix and interpolationSuffix options.
-        interpolationPrefix: '__',
-        interpolationSuffix: '__',
-
-        ns: {
-            // Provides a list of namespaces by setting the namespaces option.
-            namespaces: [],
-            // Changes the default namespace by setting the ns.defaultNs option.
-            defaultNs: 'translation'
-        }
-    };
+    options = Object.assign({}, defaults);
     resStore = {};
 
     constructor(options) {
@@ -141,10 +164,117 @@ class Parser {
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
     }
+    // Returns I18n resource store containing translation information
+    // @param {object} [options] The options object
+    // @param {boolean} [options.sort] True to sort object by key
+    // @return {object}
+    getResourceStore(options = {}) {
+        const { sort } = options;
+        const resStore = Object.assign({}, this.resStore);
+
+        if (!!sort) { // sort by key
+            Object.keys(resStore).forEach((lng) => {
+                const namespaces = resStore[lng];
+
+                Object.keys(namespaces).forEach((ns) => {
+                    resStore[lng][ns] = _(namespaces[ns])
+                        .toPairs()
+                        .sortBy((pair) => pair[0])
+                        .reduce((memo, pair) => {
+                            const [key, value] = pair;
+                            memo[key] = value;
+                            return memo;
+                        }, {})
+                        .value();
+                });
+            });
+        }
+
+        return resStore;
+    }
+    // i18next.t('ns:foo.bar') // matched
+    // i18next.t("ns:foo.bar") // matched
+    // i18next.t('ns:foo.bar') // matched
+    // i18next.t("ns:foo.bar", { count: 1 }); // matched
+    // i18next.t("ns:foo.bar" + str); // not matched
+    parseCode(content, options = {}, customHandler = null) {
+        if (_.isFunction(options)) {
+            customHandler = options;
+            options = {};
+        }
+
+        const funcs = options.list || this.options.func.list;
+        const matchPattern = _(funcs)
+            .map((func) => ('(?:' + func + ')'))
+            .value()
+            .join('|')
+            .replace(/\./g, '\\.');
+        const pattern = '[^a-zA-Z0-9_](?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
+        const results = content.match(new RegExp(pattern, 'gim')) || [];
+        results.forEach((result) => {
+            const r = result.match(new RegExp(pattern));
+            if (!r) {
+                return;
+            }
+
+            const key = _.trim(r[1], '\'"');
+
+            if (customHandler) {
+                customHandler(key);
+                return;
+            }
+
+            this.parseKey(key);
+        });
+    }
+    // Parses translation keys from `data-i18n` attribute in HTML
+    // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
+    // </div>
+    parseHTML(content, options = {}, customHandler = null) {
+        if (_.isFunction(options)) {
+            customHandler = options;
+            options = {};
+        }
+
+        const attrs = options.list || this.options.attr.list;
+        const matchPattern = _(attrs)
+            .map((attr) => ('(?:' + attr + ')'))
+            .value()
+            .join('|')
+            .replace(/\./g, '\\.');
+        const pattern = '[^a-zA-Z0-9_](?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
+        const results = content.match(new RegExp(pattern, 'gim')) || [];
+        results.forEach((result) => {
+            const r = result.match(new RegExp(pattern));
+            if (!r) {
+                return;
+            }
+
+            const attr = _.trim(r[1], '\'"');
+            const keys = (attr.indexOf(';') >= 0) ? attr.split(';') : [attr];
+            keys.forEach((key) => {
+                //let attr = 'text';
+                key = _.trim(key);
+                if (key.length === 0) {
+                    return;
+                }
+                if (key.indexOf('[') === 0) {
+                    let parts = key.split(']');
+                    key = parts[1];
+                    //attr = parts[0].substr(1, parts[0].length - 1);
+                }
+                if (key.indexOf(';') === (key.length - 1)) {
+                    key = key.substr(0, key.length - 2);
+                }
+
+                this.parseKey(key);
+            });
+        });
+    }
     // Parses a translation key and stores the key-value pairs to i18n resource store
     // @param {string} key The translation key
     // @param {string} [defaultValue] The key's value
-    parse(key, defaultValue) {
+    parseKey(key, defaultValue) {
         const options = this.options;
 
         let ns = _.isString(options.ns) ? options.ns : options.ns.defaultNs;
@@ -188,7 +318,11 @@ class Parser {
                 Object.keys(keys).forEach((index) => {
                     const elem = keys[index];
                     if (index >= (keys.length - 1)) {
-                        res[elem] = _.isUndefined(defaultValue) ? options.defaultValue : defaultValue;
+                        if (options.keySeparator === false) {
+                            res[elem] = elem;
+                        } else {
+                            res[elem] = _.isUndefined(defaultValue) ? options.defaultValue : defaultValue;
+                        }
                     } else {
                         res[elem] = res[elem] || {};
                         res = res[elem];
@@ -208,35 +342,6 @@ class Parser {
                 });
                 console.error(msg);
             }
-        });
-    }
-    // Parses translation keys from `data-i18n` attribute in HTML
-    // @param {string} attrs A semicolon-separated list of attributes
-    parseAttrs(attrs) {
-        let keys = [];
-
-        if (attrs.indexOf(';') <= attrs.length - 1) {
-            keys = attrs.split(';');
-        } else {
-            keys = [attrs];
-        }
-
-        keys.forEach((key) => {
-            //let attr = 'text';
-            key = _.trim(key);
-            if (key.length === 0) {
-                return;
-            }
-            if (key.indexOf('[') === 0) {
-                let parts = key.split(']');
-                key = parts[1];
-                //attr = parts[0].substr(1, parts[0].length - 1);
-            }
-            if (key.indexOf(';') === (key.length - 1)) {
-                key = key.substr(0, key.length - 2);
-            }
-
-            this.parse(key);
         });
     }
     // Parses hash arguments for Handlebars block helper
@@ -286,35 +391,7 @@ class Parser {
     toJSON(options = {}) {
         const { replacer, space } = options;
 
-        return JSON.stringify(this.toObject(options), replacer, space);
-    }
-    // Returns an Object containing translation information
-    // @param {object} [options] The options object
-    // @param {boolean} [options.sort] True to sort object by key
-    // @return {object}
-    toObject(options = {}) {
-        const { sort } = options;
-        const resStore = _.clone(this.resStore);
-
-        if (!!sort) { // sort by key
-            Object.keys(resStore).forEach((lng) => {
-                const namespaces = resStore[lng];
-
-                Object.keys(namespaces).forEach((ns) => {
-                    resStore[lng][ns] = _(namespaces[ns])
-                        .toPairs()
-                        .sortBy((pair) => pair[0])
-                        .reduce((memo, pair) => {
-                            const [key, value] = pair;
-                            memo[key] = value;
-                            return memo;
-                        }, {})
-                        .value();
-                });
-            });
-        }
-
-        return resStore;
+        return JSON.stringify(this.getResourceStore(options), replacer, space);
     }
 }
 
