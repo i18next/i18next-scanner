@@ -3,26 +3,14 @@ var fs = require('fs');
 var path = require('path');
 var gulp = require('gulp');
 var del = require('del');
-var runSequence = require('run-sequence');
-var jshint = require('gulp-jshint');
-var errorHandler = require('./gulp/error-handler');
 var sha1 = require('sha1');
-var pkg = require('./package.json');
 var config = require('./gulp/config');
 
 gulp.task('clean', function(callback) {
     del(config.clean.files, callback);
 });
 
-gulp.task('jshint', function() {
-    return gulp.src(config.jshint.src)
-        .pipe(jshint(config.jshint.options))
-        .pipe(jshint.reporter('default', {verbose: true}))
-        .pipe(jshint.reporter('fail'))
-            .on('error', errorHandler.error);
-});
-
-gulp.task('i18next-scanner', function() {
+gulp.task('i18next-scanner', ['clean'], function() {
     var i18next = require('./index');
 
     var customTransform = function(file, enc, done) {
@@ -121,12 +109,10 @@ gulp.task('i18next-scanner', function() {
         done();
     };
 
-    return gulp.src(config.i18next.src, {base: config.i18next.base})
+    return gulp.src(config.i18next.src, { base: config.i18next.base })
         .pipe(i18next(config.i18next.options, customTransform))
         .pipe(gulp.dest('assets'));
 });
 
-gulp.task('build', ['jshint'], function(callback) {
-    runSequence('clean', 'i18next-scanner', callback);
-});
+gulp.task('build', ['i18next-scanner']);
 gulp.task('default', ['build']);
