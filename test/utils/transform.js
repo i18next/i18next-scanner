@@ -1,29 +1,27 @@
 'use strict';
 
-var _ = require('lodash');
-var fs = require('fs');
-var gutil = require('gulp-util');
-var path = require('path');
-var hash = require('sha1');
-var table = require('text-table');
+import _ from 'lodash';
+import fs from 'fs';
+import gutil from 'gulp-util';
+import path from 'path';
+import hash from 'sha1';
+import table from 'text-table';
 
-module.exports = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var extname = path.extname(file.path);
-    var content = fs.readFileSync(file.path, enc);
-    var tableData = [
+const transform = function(file, enc, done) {
+    const parser = this.parser;
+    const extname = path.extname(file.path);
+    const content = fs.readFileSync(file.path, enc);
+    const tableData = [
         ['Key', 'Value']
     ];
 
     gutil.log('parsing ' + JSON.stringify(file.relative) + ':');
 
-    // Using i18next-text
-    (function() {
-        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
+    { // Using i18next-text
+        const results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
         _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
-
+            let key, value;
+            const r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
             if (r) {
                 value = _.trim(r[1], '\'"');
 
@@ -38,15 +36,13 @@ module.exports = function _transform(file, enc, done) {
                 tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
             }
         });
-    }());
+    }
 
-    // i18n function helper
-    (function() {
-        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
+    { // i18n function helper
+        const results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
         _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
-
+            let key, value;
+            const r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
             if ( ! _.isUndefined(r[1])) {
                 value = _.trim(r[1], '\'"');
 
@@ -55,7 +51,7 @@ module.exports = function _transform(file, enc, done) {
                 value = value.replace(/\\\'/, '\'');
             }
 
-            var params = parser.parseHashArguments(r[2]);
+            const params = parser.parseHashArguments(r[2]);
             if (_.has(params, 'defaultKey')) {
                 key = params['defaultKey'];
             }
@@ -72,14 +68,13 @@ module.exports = function _transform(file, enc, done) {
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
-    }());
+    }
 
-    // i18n block helper
-    (function() {
-        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
+    { // i18n block helper
+        const results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
         _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
+            let key, value;
+            const r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
 
             if ( ! _.isUndefined(r[2])) {
                 value = _.trim(r[2], '\'"');
@@ -95,7 +90,7 @@ module.exports = function _transform(file, enc, done) {
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
-    }());
+    }
 
     if (_.size(tableData) > 1) {
         gutil.log('result of ' + JSON.stringify(file.relative) + ':\n' + table(tableData, {'hsep': ' | '}));

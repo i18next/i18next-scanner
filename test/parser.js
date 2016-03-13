@@ -1,17 +1,17 @@
-'use strict';
+import tap from 'tap';
+import util from 'util';
+import { Parser } from '../lib';
 
-var t = require('tap');
-var Parser = require('../').Parser;
-var util = require('util');
-
-var defaults = {
+const defaults = {
     lngs: ['en'],
 };
 
+const t = tap;
+
 t.plan(4);
 
-t.test('disabled nsseparator', function(t){
-    var parser = new Parser(Object.assign({}, defaults, {
+t.test('disabled nsseparator', (t) => {
+    const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: false,
         keySeparator: '.'
     }));
@@ -26,8 +26,8 @@ t.test('disabled nsseparator', function(t){
     t.end();
 });
 
-t.test('disabled keyseparator', function(t){
-    var parser = new Parser(Object.assign({}, defaults, {
+t.test('disabled keyseparator', (t) => {
+    const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: false
     }));
@@ -42,8 +42,8 @@ t.test('disabled keyseparator', function(t){
     t.end();
 });
 
-t.test('default nsseparator', function(t){
-    var parser = new Parser(Object.assign({}, defaults, {
+t.test('default nsseparator', (t) => {
+    const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: '.'
     }));
@@ -61,8 +61,8 @@ t.test('default nsseparator', function(t){
     t.end();
 });
 
-t.test('default keyseparator', function(t){
-    var parser = new Parser(Object.assign({}, defaults, {
+t.test('default keyseparator', (t) => {
+    const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: '.'
     }));

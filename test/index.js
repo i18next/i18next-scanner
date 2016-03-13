@@ -1,9 +1,9 @@
-'use strict';
+import gulp from 'gulp';
+import tap from 'tap';
+import scanner from '../lib';
+import customTransform from './utils/transform';
 
-var gulp = require('gulp');
-var test = require('tap').test;
-var i18nextScanner = require('../lib');
-var customTransform = require('./utils/transform');
+const test = tap.test;
 
 test('setup', function(t) {
     t.end();
@@ -14,13 +14,13 @@ test('teardown', function(t) {
 });
 
 test('Gulp usage', function(t) {
-    var options = {
+    const options = {
         lngs: ['en','de'],
         defaultValue: '__STRING_NOT_TRANSLATED__',
         resGetPath: 'i18n/__lng__/__ns__.json',
         resSetPath: 'i18n/__lng__/__ns__.savedMissing.json',
-        nsseparator: ':', // namespace separator
-        keyseparator: '.', // key separator
+        nsSeparator: ':', // namespace separator
+        keySeparator: '.', // key separator
         interpolationPrefix: '__',
         interpolationSuffix: '__',
         ns: {
@@ -32,7 +32,7 @@ test('Gulp usage', function(t) {
         }
     };
     gulp.src('test/fixtures/modules/**/*.{js,hbs}')
-        .pipe(i18nextScanner(options, customTransform))
+        .pipe(scanner(options, customTransform))
         .pipe(gulp.dest('./output'))
         .on('end', function() {
             t.end();
