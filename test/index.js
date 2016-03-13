@@ -1,9 +1,7 @@
 import gulp from 'gulp';
-import tap from 'tap';
+import { test } from 'tap';
 import scanner from '../lib';
 import customTransform from './utils/transform';
-
-const test = tap.test;
 
 test('setup', function(t) {
     t.end();

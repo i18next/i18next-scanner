@@ -1,4 +1,4 @@
-import tap from 'tap';
+import { test } from 'tap';
 import util from 'util';
 import { Parser } from '../lib';
 
@@ -6,11 +6,7 @@ const defaults = {
     lngs: ['en'],
 };
 
-const t = tap;
-
-t.plan(4);
-
-t.test('disabled nsseparator', (t) => {
+test('disabled nsseparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: false,
         keySeparator: '.'
@@ -26,7 +22,7 @@ t.test('disabled nsseparator', (t) => {
     t.end();
 });
 
-t.test('disabled keyseparator', (t) => {
+test('disabled keyseparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: false
@@ -42,7 +38,7 @@ t.test('disabled keyseparator', (t) => {
     t.end();
 });
 
-t.test('default nsseparator', (t) => {
+test('default nsseparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: '.'
@@ -61,7 +57,7 @@ t.test('default nsseparator', (t) => {
     t.end();
 });
 
-t.test('default keyseparator', (t) => {
+test('default keyseparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: '.'
