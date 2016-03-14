@@ -130,16 +130,16 @@ grunt.initConfig({
 
 There are two ways to use i18next-scanner:
 
-* Standard API
+#### Standard API
 ```js
 var Parser = require('i18next-scanner').Parser;
 var parser = new Parser(options);
 ````
 
-* Transform Stream API
+#### Transform Stream API
 ```js
 var scanner = require('i18next-scanner');
-scanner.createStream(options[, customTransform[, customFlush]])
+scanner.createStream(options, customTransform, customFlush);
 ```
 
 Below are the configuration options with their default values:
@@ -198,8 +198,9 @@ If an `Object` is supplied, you can either specify a list of data attributes and
         extensions: ['.html', '.htm']
     }
 }
+```
 
-Setting false will not parse attribute.
+You can set attr to false to disable parsing attribute as below:
 ```js
 {
     attr: false
@@ -218,8 +219,9 @@ If an `Object` is supplied, you can either specify a list of translation functio
         extensions: ['.js', '.jsx']
     }
 }
+```
 
-Setting false will not parse translation functions.
+You can set func to false to disable parsing translation function as below:
 ```js
 {
     func: false
@@ -236,7 +238,7 @@ An array of supported languages.
 
 Type: `String` or `Array` Default: `['translation']`
 
-string or array of namespaces
+A namespace string or an array of namespaces.
 
 #### defaultNs
 
