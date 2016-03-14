@@ -300,7 +300,7 @@ interpolation options
 ### customTransform
 The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
-```javascript
+```js
 var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 var customTransform = function _transform(file, enc, done) {
@@ -318,7 +318,7 @@ vfs.src(['/path/to/src'])
 
 To parse a translation key, call `parser.parseKey(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
-```javascript
+```js
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
@@ -335,14 +335,14 @@ var customTransform = function _transform(file, enc, done) {
 Alternatively, you may call `parser.parseKey(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```js
-var sha1 = require('sha1');
+var hash = require('sha1');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
     
     parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
         var value = key;
-        var defaultKey = sha1(value);
+        var defaultKey = hash(value);
         parser.parseKey(defaultKey, value);
     });
     
@@ -421,7 +421,7 @@ _t("text" + str); // skip run-time variables
 
 The content can be parsed using the parser API:
 ```javascript
-parseCode(content, options = {}, customHandler = null)
+parser.parseCode(content, options = {}, customHandler = null)
 ```
 
 The code might look like this:
@@ -431,8 +431,7 @@ var hash = require('sha1');
 
 var parser = new Parser();
 var content = fs.readFileSync('/path/to/app.js', 'utf-8');
-
-parse.parseCode(content, { list: ['_t'] }, function(key) {
+parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
     var value = key;
     var defaultKey = hash(value); // returns a hash value as its default key
     parser.parseKey(defaultKey, value);
@@ -451,10 +450,10 @@ var customTransform = function(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
 
-    parse.parseCode(content, { list: ['_t'] }, function(key) {
+    parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
         var value = key;
         var defaultKey = hash(value); // returns a hash value as its default key
-        parser.parseKey(defaultKey, value);
+        parserr.parseKey(defaultKey, value);
     });
 
     done();
@@ -482,7 +481,11 @@ gulp.src(src)
 ```
 
 #### Handlebars Helper
+
+Use the `Handlebars.registerHelper` method to register the `i18n` helper:
+
 ```js
+var handlebars = require('handlebars');
 var i18next = require('i18next');
 
 var handlebarsHelper = function(context, options) {
@@ -520,11 +523,6 @@ var handlebarsHelper = function(context, options) {
 
     return result;
 };
-```
-
-Use the `Handlebars.registerHelper` method to register the `i18n` helper:
-```js
-var handlebars = require('handlebars');
 
 handlebars.registerHelper('i18n', handlebarsHelper);
 ```
