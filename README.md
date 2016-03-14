@@ -126,186 +126,6 @@ grunt.initConfig({
 });
 ```
 
-## Advanced Usage
-
-### Usage with React JSX
-An example of resource file:
-```json
-{           
-    "app": {
-        "name": "My App"
-    },
-    "key": "__myVar__ are important"
-}
-```
-
-Use `i18next.t()` in your React JSX code:
-```js
-import i18next from 'i18next';
-import React from 'react';
-
-class App extends React.Component {
-    render() {
-        return (
-            <div>
-                <h1>{i18n.t('app.name')}</h1> // "My App"
-                <p>{i18n.t('key', { myVar:'variables' })}</p> // "variables are important"
-            </div>
-        );
-    }
-}
-```
-
-### Gettext Style i18n
-
-You might want to find all occurrences of the `_t()` function in your code.
-For example:
-```javascript
-_t('This is text value');
-_t("text");
-_t('text');
-_t("text", { count: 1 });
-_t("text" + str); // skip run-time variables
-```
-
-The content can be parsed using the parser API:
-```javascript
-parseCode(content, options = {}, customHandler = null)
-```
-
-The code might look like this:
-```javascript
-var Parser = require('i18next-scanner').Parser;
-var hash = require('sha1');
-
-var parser = new Parser();
-var content = fs.readFileSync('/path/to/app.js', 'utf-8');
-
-parse.parseCode(content, { list: ['_t'] }, function(key) {
-    var value = key;
-    var defaultKey = hash(value); // returns a hash value as its default key
-    parser.parseKey(defaultKey, value);
-});
-
-console.log(parser.getResourceStore());
-```
-
-Usage with Gulp:
-```js
-var gulp = require('gulp');
-var hash = require('sha1');
-var scanner = require('i18next-scanner');
-
-var customTransform = function(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
-
-    parse.parseCode(content, { list: ['_t'] }, function(key) {
-        var value = key;
-        var defaultKey = hash(value); // returns a hash value as its default key
-        parser.parseKey(defaultKey, value);
-    });
-
-    done();
-};
-
-gulp.src(src)
-    .pipe(scanner(options, customTransform))
-    .pipe(dest);
-```
-
-### Handlebars i18n helper
-**i18n function helper**
-```hbs
-{{i18n 'bar'}}
-{{i18n 'bar' defaultKey='foo'}}
-{{i18n 'baz' defaultKey='locale:foo'}}
-{{i18n defaultKey='noval'}}
-```
-Using the regular expression for the above:
-```javascript
-{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}
-```
-
-**i18n block helper**
-```hbs
-{{#i18n}}Some text{{/i18n}}
-{{#i18n this}}Description: {{description}}{{/i18n}}
-{{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
-```
-Using the regular expression for the above:
-```javascript
-{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}
-```
-
-**Sample code**
-
-The sample code might look like this:
-```javascript
-var _ = require('lodash');
-var hash = require('sha1');
-
-var customTransform = function(file, enc, done) {
-    var parser = this.parser;
-    var extname = path.extname(file.path);
-    var content = fs.readFileSync(file.path, enc);
-
-    // i18n function helper
-    (function() {
-        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
-
-            if ( ! _.isUndefined(r[1])) {
-                value = _.trim(r[1], '\'"');
-
-                // Replace double backslash with single backslash
-                value = value.replace(/\\\\/g, '\\');
-                value = value.replace(/\\\'/, '\'');                              
-            }
-
-            var params = parser.parseHashArguments(r[2]);
-            if (_.has(params, 'defaultKey')) {
-                key = params['defaultKey'];
-            }
-                
-            if (_.isUndefined(key) && _.isUndefined(value)) {
-                return;
-            }
-
-            if (_.isUndefined(key)) {
-                key = hash(value); // returns a hash value as its default key
-            }
-
-            parser.parseKey(key, value);
-        });
-    }());
-
-    // i18n block helper
-    (function() {
-        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
-
-            if ( ! _.isUndefined(r[2])) {
-                value = _.trim(r[2], '\'"');
-            }
-
-            if (_.isUndefined(value)) {
-                return;
-            }
-
-            key = hash(value); // returns a hash value as its default key
-            parser.parseKey(key, value);
-        });
-    }());
-
-    done();
-};
-```
-
 ## API Options
 
 There are two ways to use i18next-scanner:
@@ -495,7 +315,6 @@ var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
-    var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
 
     // add your code
@@ -527,7 +346,7 @@ var customTransform = function _transform(file, enc, done) {
 
 Alternatively, you may call `parser.parseKey(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
-```javascript
+```js
 var _ = require('lodash');
 var sha1 = require('sha1');
 var customTransform = function _transform(file, enc, done) {
@@ -547,7 +366,7 @@ var customTransform = function _transform(file, enc, done) {
 ### customFlush
 The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
 For example:
-```javascript
+```js
 var _ = require('lodash');
 var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
@@ -568,6 +387,186 @@ var customFlush = function _flush(done) {
 vfs.src(['/path/to/src'])
     .pipe(scanner(options, customTransform, customFlush))
     .pipe(vfs.dest('/path/to/dest'));
+```
+
+## Supplement
+
+### React
+An example of resource file:
+```json
+{           
+    "app": {
+        "name": "My App"
+    },
+    "key": "__myVar__ are important"
+}
+```
+
+Use `i18next.t()` in your React JSX code:
+```js
+import i18next from 'i18next';
+import React from 'react';
+
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>{i18next.t('app.name')}</h1> // "My App"
+                <p>{i18next.t('key', { myVar:'variables' })}</p> // "variables are important"
+            </div>
+        );
+    }
+}
+```
+
+### Gettext Style i18n
+
+You might want to find all occurrences of the `_t()` function in your code.
+For example:
+```javascript
+_t('This is text value');
+_t("text");
+_t('text');
+_t("text", { count: 1 });
+_t("text" + str); // skip run-time variables
+```
+
+The content can be parsed using the parser API:
+```javascript
+parseCode(content, options = {}, customHandler = null)
+```
+
+The code might look like this:
+```javascript
+var Parser = require('i18next-scanner').Parser;
+var hash = require('sha1');
+
+var parser = new Parser();
+var content = fs.readFileSync('/path/to/app.js', 'utf-8');
+
+parse.parseCode(content, { list: ['_t'] }, function(key) {
+    var value = key;
+    var defaultKey = hash(value); // returns a hash value as its default key
+    parser.parseKey(defaultKey, value);
+});
+
+console.log(parser.getResourceStore());
+```
+
+Usage with Gulp:
+```js
+var gulp = require('gulp');
+var hash = require('sha1');
+var scanner = require('i18next-scanner');
+
+var customTransform = function(file, enc, done) {
+    var parser = this.parser;
+    var content = fs.readFileSync(file.path, enc);
+
+    parse.parseCode(content, { list: ['_t'] }, function(key) {
+        var value = key;
+        var defaultKey = hash(value); // returns a hash value as its default key
+        parser.parseKey(defaultKey, value);
+    });
+
+    done();
+};
+
+gulp.src(src)
+    .pipe(scanner(options, customTransform))
+    .pipe(dest);
+```
+
+### Handlebars i18n helper
+**i18n function helper**
+```hbs
+{{i18n 'bar'}}
+{{i18n 'bar' defaultKey='foo'}}
+{{i18n 'baz' defaultKey='locale:foo'}}
+{{i18n defaultKey='noval'}}
+```
+Using the regular expression for the above:
+```javascript
+{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}
+```
+
+**i18n block helper**
+```hbs
+{{#i18n}}Some text{{/i18n}}
+{{#i18n this}}Description: {{description}}{{/i18n}}
+{{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
+```
+Using the regular expression for the above:
+```javascript
+{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}
+```
+
+**Sample code**
+
+The sample code might look like this:
+```javascript
+var _ = require('lodash');
+var hash = require('sha1');
+
+var customTransform = function(file, enc, done) {
+    var parser = this.parser;
+    var extname = path.extname(file.path);
+    var content = fs.readFileSync(file.path, enc);
+
+    // i18n function helper
+    (function() {
+        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
+        _.each(results, function(result) {
+            var key, value;
+            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
+
+            if ( ! _.isUndefined(r[1])) {
+                value = _.trim(r[1], '\'"');
+
+                // Replace double backslash with single backslash
+                value = value.replace(/\\\\/g, '\\');
+                value = value.replace(/\\\'/, '\'');                              
+            }
+
+            var params = parser.parseHashArguments(r[2]);
+            if (_.has(params, 'defaultKey')) {
+                key = params['defaultKey'];
+            }
+                
+            if (_.isUndefined(key) && _.isUndefined(value)) {
+                return;
+            }
+
+            if (_.isUndefined(key)) {
+                key = hash(value); // returns a hash value as its default key
+            }
+
+            parser.parseKey(key, value);
+        });
+    }());
+
+    // i18n block helper
+    (function() {
+        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
+        _.each(results, function(result) {
+            var key, value;
+            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
+
+            if ( ! _.isUndefined(r[2])) {
+                value = _.trim(r[2], '\'"');
+            }
+
+            if (_.isUndefined(value)) {
+                return;
+            }
+
+            key = hash(value); // returns a hash value as its default key
+            parser.parseKey(key, value);
+        });
+    }());
+
+    done();
+};
 ```
 
 ## License
