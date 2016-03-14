@@ -47,7 +47,7 @@ const flush = (parser, customFlush) => {
             const namespaces = resStore[lng];
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
-                const resPath = parser.getResourceSavePath();
+                const resPath = parser.getResourceSavePath(lng, ns);
                 const str = JSON.stringify(obj, null, options.resource.jsonIndent);
 
                 this.push(new VirtualFile({

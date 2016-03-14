@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 import _ from 'lodash';
 import fs from 'fs';
+import util from 'util';
 
 const defaults = {
     debug: false, // verbose logging
@@ -28,7 +29,8 @@ const defaults = {
     // resource
     resource: {
         loadPath: 'i18n/__lng__/__ns__.json', // the source resource path (relative to current working directory)
-        savePath: 'i18n/__lng__/__ns__.json' // the target resource path (relative to the path specified with `gulp.dest(path)`)
+        savePath: 'i18n/__lng__/__ns__.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
+        jsonIndent: 2
     },
 
     keySeparator: '.', // char to separate keys
@@ -49,12 +51,24 @@ const transformOptions = (options) => {
     if (_.isUndefined(_.get(options, 'attr.extensions'))) {
         _.set(options, 'attr.extensions', defaults.attr.extensions);
     }
+
     // Function
     if (_.isUndefined(_.get(options, 'func.list'))) {
         _.set(options, 'func.list', defaults.func.list);
     }
+
+    // Resource
     if (_.isUndefined(_.get(options, 'func.extensions'))) {
         _.set(options, 'func.extensions', defaults.func.extensions);
+    }
+    if (_.isUndefined(_.get(options, 'resource.loadPath'))) {
+        _.set(options, 'resource.loadPath', defaults.resource.loadPath);
+    }
+    if (_.isUndefined(_.get(options, 'resource.savePath'))) {
+        _.set(options, 'resource.savePath', defaults.resource.savePath);
+    }
+    if (_.isUndefined(_.get(options, 'resource.jsonIndent'))) {
+        _.set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
     }
 
     // Accept both nsseparator or nsSeparator
@@ -127,7 +141,7 @@ class Parser {
             });
         });
 
-        this.debuglog('[i18next-scanner] Parser(options):', this.options);
+        this.debuglog('[i18next-scanner] Parser(options): ' + JSON.stringify(this.options));
     }
     debuglog(...args) {
         const { debug } = this.options;
