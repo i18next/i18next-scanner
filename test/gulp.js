@@ -6,7 +6,7 @@ import customTransform from './utils/transform';
 
 test('Gulp usage', function(t) {
     const options = {
-        debug: true,
+        debug: false,
         lngs: ['en','de'],
         ns: ['resource'],
         defaultNs: 'resource',
