@@ -1,51 +1,57 @@
 import { test } from 'tap';
 import util from 'util';
-import { Parser } from '../lib';
+import { Parser } from '../src';
 
-const defaults = {
-    lngs: ['en'],
-};
+const defaults = {};
 
-test('disabled nsseparator', (t) => {
+test('disable nsSeparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: false,
         keySeparator: '.'
     }));
     parser.parseKey('foo:bar', '');
-    t.same(parser.getResourceStore(), {
+
+    const resStore = parser.getResourceStore();
+
+    t.same(resStore, {
         en: {
             translation: {
                 'foo:bar': ''
             }
         }
-    }, 'The ns should not use default nsseparator : to split');
+    }, 'The key should not use default nsSeparator : to split');
     t.end();
 });
 
-test('disabled keyseparator', (t) => {
+test('disable keySeparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: false
     }));
     parser.parseKey('Creating...', '');
-    t.same(parser.getResourceStore(), {
+
+    const resStore = parser.getResourceStore();
+
+    t.same(resStore, {
         en: {
             translation: {
                 'Creating...': 'Creating...'
             }
         }
-    }, 'The key should not use default keyseparator . to split');
+    }, 'The key should not use default keySeparator . to split');
     t.end();
 });
 
-test('default nsseparator', (t) => {
+test('default nsSeparator', (t) => {
     const parser = new Parser(Object.assign({}, defaults, {
         nsSeparator: ':',
         keySeparator: '.'
     }));
     parser.parseKey('translation:key1.key2', '');
-    console.log(util.inspect(parser.getResourceStore()));
-    t.same(parser.getResourceStore(), {
+
+    const resStore = parser.getResourceStore();
+
+    t.same(resStore, {
         en: {
             translation: {
                 'key1': {
@@ -53,7 +59,7 @@ test('default nsseparator', (t) => {
                 }
             }
         }
-    }, 'The ns should use default nsseparator : to split');
+    }, 'The key should use default nsSeparator : to split');
     t.end();
 });
 
@@ -63,8 +69,10 @@ test('default keyseparator', (t) => {
         keySeparator: '.'
     }));
     parser.parseKey('key1.key2', '');
-    console.log(util.inspect(parser.getResourceStore()));
-    t.same(parser.getResourceStore(), {
+
+    const resStore = parser.getResourceStore();
+
+    t.same(resStore, {
         en: {
             translation: {
                 'key1': {
@@ -72,6 +80,6 @@ test('default keyseparator', (t) => {
                 }
             }
         }
-    }, 'The key should use default keyseparator . to split');
+    }, 'The key should use default keySeparator . to split');
     t.end();
 });

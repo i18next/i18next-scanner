@@ -1,32 +1,23 @@
 import gulp from 'gulp';
 import { test } from 'tap';
-import scanner from '../lib';
+import scanner from '../src';
 import customTransform from './utils/transform';
-
-test('setup', function(t) {
-    t.end();
-});
-
-test('teardown', function(t) {
-    t.end();
-});
 
 test('Gulp usage', function(t) {
     const options = {
         lngs: ['en','de'],
+        ns: ['translation', 'locale'],
+        defaultNs: 'translation',
         defaultValue: '__STRING_NOT_TRANSLATED__',
-        resGetPath: 'i18n/__lng__/__ns__.json',
-        resSetPath: 'i18n/__lng__/__ns__.savedMissing.json',
+        resource: {
+            loadPath: 'i18n/__lng__/__ns__.json',
+            savePath: 'i18n/__lng__/__ns__.savedMissing.json'
+        },
         nsSeparator: ':', // namespace separator
         keySeparator: '.', // key separator
-        interpolationPrefix: '__',
-        interpolationSuffix: '__',
-        ns: {
-            namespaces: [
-                'translation',
-                'locale'
-            ],
-            defaultNs: 'translation'
+        interpolation: {
+            prefix: '__',
+            suffix: '__'
         }
     };
     gulp.src('test/fixtures/modules/**/*.{js,hbs}')

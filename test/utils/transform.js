@@ -17,28 +17,17 @@ const transform = function(file, enc, done) {
 
     gutil.log('parsing ' + JSON.stringify(file.relative) + ':');
 
-    { // Using i18next-text
-        const results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
-        _.each(results, function(result) {
-            let key, value;
-            const r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
-            if (r) {
-                value = _.trim(r[1], '\'"');
+    { // Using Gettext style i18n
+        parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
+            const value = key;
+            key = hash(value); // returns a hash value as its default key
+            parser.parseKey(key, value);
 
-                // Replace double backslash with single backslash
-                value = value.replace(/\\\\/g, '\\');
-                value = value.replace(/\\\'/, '\'');
-
-                key = hash(value); // returns a hash value as its default key
-
-                parser.parseKey(key, value);
-
-                tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
-            }
+            tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
     }
 
-    { // i18n function helper
+    { // Handlebars - i18n function helper
         const results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
         _.each(results, function(result) {
             let key, value;
@@ -70,7 +59,7 @@ const transform = function(file, enc, done) {
         });
     }
 
-    { // i18n block helper
+    { // Handlebars - i18n block helper
         const results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
         _.each(results, function(result) {
             let key, value;
