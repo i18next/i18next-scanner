@@ -21,14 +21,14 @@ const defaults = {
 
     ns: [], // string or array of namespaces
 
-    defaultNs: 'translation' // default namespace used if not passed to translation function
+    defaultNs: 'translation', // default namespace used if not passed to translation function
 
     defaultValue: '', // default value used if not passed to `parseKey()`
 
     // resource
     resource: {
         loadPath: 'i18n/__lng__/__ns__.json', // the source resource path (relative to current working directory)
-        savePath: 'i18n/__lng__/__ns__.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
+        savePath: 'i18n/__lng__/__ns__.json' // the target resource path (relative to the path specified with `gulp.dest(path)`)
     },
 
     keySeparator: '.', // char to separate keys
@@ -37,7 +37,7 @@ const defaults = {
     // interpolation options
     interpolation: {
         prefix: '__', // prefix for interpolation
-        suffix: '__', // suffix for interpolation
+        suffix: '__' // suffix for interpolation
     }
 };
 
@@ -77,19 +77,11 @@ const transformOptions = (options) => {
         options.keySeparator = false;
     }
 
-    if (_.isString(options.ns)) {
-        options.ns = {
-            namespaces: [],
-            defaultNs: options.ns
-        };
+    if (!_.isArray(options.ns)) {
+        options.ns = [options.ns];
     }
 
-    if (!_.isArray(options.ns.namespaces)) {
-        options.ns.namespaces = [];
-    }
-    console.assert(_.isArray(options.ns.namespaces), 'The ns.namespaces option should be an array of strings');
-
-    options.ns.namespaces = _(options.ns.namespaces.concat(options.ns.defaultNs))
+    options.ns = _(options.ns.concat(options.defaultNs))
         .flatten()
         .union()
         .value();
@@ -117,7 +109,7 @@ class Parser {
         this.options = transformOptions(_.extend({}, this.options, options));
 
         const lngs = this.options.lngs;
-        const namespaces = this.options.ns.namespaces;
+        const namespaces = this.options.ns;
 
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
@@ -196,13 +188,13 @@ class Parser {
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar", { count: 1 }); // matched
     // i18next.t("ns:foo.bar" + str); // not matched
-    parseFuncFromString(content, options = {}, customHandler = null) {
-        if (_.isFunction(options)) {
-            customHandler = options;
-            options = {};
+    parseFuncFromString(content, opts = {}, customHandler = null) {
+        if (_.isFunction(opts)) {
+            customHandler = opts;
+            opts = {};
         }
 
-        const funcs = options.list || this.options.func.list;
+        const funcs = opts.list || this.options.func.list;
         const matchPattern = _(funcs)
             .map((func) => ('(?:' + func + ')'))
             .value()
@@ -229,13 +221,13 @@ class Parser {
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
-    parseAttrFromString(content, options = {}, customHandler = null) {
-        if (_.isFunction(options)) {
-            customHandler = options;
-            options = {};
+    parseAttrFromString(content, opts = {}, customHandler = null) {
+        if (_.isFunction(opts)) {
+            customHandler = opts;
+            opts = {};
         }
 
-        const attrs = options.list || this.options.attr.list;
+        const attrs = opts.list || this.options.attr.list;
         const matchPattern = _(attrs)
             .map((attr) => ('(?:' + attr + ')'))
             .value()
@@ -281,7 +273,7 @@ class Parser {
     parseKey(key, defaultValue) {
         const options = this.options;
 
-        let ns = _.isString(options.ns) ? options.ns : options.ns.defaultNs;
+        let ns = options.defaultNs;
         console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
         // http://i18next.com/translate/keyBasedFallback/
@@ -339,12 +331,7 @@ class Parser {
                     JSON.stringify(this.getResourceLoadPath(lng, ns))
                 );
             } else { // skip the namespace that is not defined in the i18next options
-                const msg = 'Ensure the namespace "' + ns + '" exists in ns.namespaces: ' + JSON.stringify({
-                    ns: ns,
-                    key: key,
-                    defaultValue: defaultValue
-                });
-                console.error(msg);
+                console.log('The namespace "' + ns + '" does not exist:', { key, defaultValue });
             }
         });
     }

@@ -33,18 +33,18 @@ var content = '';
 // Parse Translation Function
 // i18next.t('key');
 content = fs.readFileSync('/path/to/app.js', 'utf-8');
-parse.parseFuncFromString(content);
-parse.parseFuncFromString(content, { list: ['i18next.t']}); // override default list
-parse.parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
-parse.parseFuncFromString(content, customHandler); // pass a custom handler
+parser.parseFuncFromString(content);
+parser.parseFuncFromString(content, { list: ['i18next.t']}); // override default list
+parser.parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
+parser.parseFuncFromString(content, customHandler); // pass a custom handler
 
-// Parse Attribute
+// Parse HTML Attribute
 // <div data-i18n="key"></div>
 content = fs.readFileSync('/path/to/index.html', 'utf-8');
-parse.parseAttrFromString(content);
-parse.parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
-parse.parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
-parse.parseAttrFromString(content, customHandler); // pass a custom handler
+parser.parseAttrFromString(content);
+parser.parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
+parser.parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
+parser.parseAttrFromString(content, customHandler); // pass a custom handler
 
 console.log(parser.getResourceStore());
 ```
@@ -182,7 +182,7 @@ Set to `true` if you want to sort translation keys in ascending order.
 
 Type: `Object` or `false`
 
-If an `Object` is supplied, you can either specify a list of data attributes and extensions, or override the default.
+If an `Object` is supplied, you can either specify a list of attributes and extensions, or override the default.
 ```js
 { // Default
     attr: {
