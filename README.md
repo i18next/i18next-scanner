@@ -192,7 +192,7 @@ If an `Object` is supplied, you can either specify a list of data attributes and
 }
 ```
 
-You can set attr to false to disable parsing attribute as below:
+You can set attr to `false` to disable parsing attribute as below:
 ```js
 {
     attr: false
@@ -213,7 +213,7 @@ If an `Object` is supplied, you can either specify a list of translation functio
 }
 ```
 
-You can set func to false to disable parsing translation function as below:
+You can set func to `false` to disable parsing translation function as below:
 ```js
 {
     func: false
@@ -270,9 +270,7 @@ Type: `String` or `false` Default: `'.'`
 
 Key separator used in translation keys.
 
-Set to false to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature  is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210).
-
-Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Set to `false` to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
 
 #### nsSeparator
 
@@ -280,9 +278,7 @@ Type: `String` or `false` Default: `':'`
 
 Namespace separator used in translation keys.
 
-Set to false to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210).
-
-Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Set to `false` to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
 
 #### interpolation
 
@@ -323,37 +319,34 @@ vfs.src(['/path/to/src'])
 To parse a translation key, call `parser.parseKey(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```javascript
-var _ = require('lodash');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
-    var results = [];
-
-    // parse the content and loop over the results
-    _.each(results, function(result) {
-        var key = result.key;
-        var value = result.defaultValue || '';
-        parser.parseKey(key, value);
+    
+    parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
+        var defaultValue = '__L10N__';
+        parser.parseKey(key, defaultValue);
     });
+    
+    done();
 };
 ```
 
 Alternatively, you may call `parser.parseKey(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```js
-var _ = require('lodash');
 var sha1 = require('sha1');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
-    var results = [];
-
-    // parse the content and loop over the results
-    _.each(results, function(result) {
-        var key = result.defaultKey || hash(result.value);
-        var value = result.value;
-        parser.parseKey(key, value);
+    
+    parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
+        var value = key;
+        var defaultKey = sha1(value);
+        parser.parseKey(defaultKey, value);
     });
+    
+    done();
 };
 ```
 
@@ -361,7 +354,6 @@ var customTransform = function _transform(file, enc, done) {
 The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
 For example:
 ```js
-var _ = require('lodash');
 var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 var customFlush = function _flush(done) {
@@ -369,8 +361,10 @@ var customFlush = function _flush(done) {
     var resStore = parser.getResourceStore();
 
     // loop over the resStore
-    _.each(resStore, function(namespaces, lng) {
-        _.each(namespaces, function(obj, ns) {
+    Object.keys(resStore).forEach(function(lng) {
+        var namespaces = resStore[lng];
+        Object.keys(namespaces).forEach(function(ns) {
+            var obj = namespaces[ns];
             // add your code
         });
     });
