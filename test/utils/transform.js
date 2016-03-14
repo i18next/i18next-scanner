@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import fs from 'fs';
 import gutil from 'gulp-util';
@@ -87,3 +85,5 @@ const transform = function(file, enc, done) {
 
     done();
 };
+
+export default transform;
