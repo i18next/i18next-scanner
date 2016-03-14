@@ -3,49 +3,41 @@ import _ from 'lodash';
 import fs from 'fs';
 
 const defaults = {
-    // Debug output
-    debug: false,
+    debug: false, // verbose logging
 
-    // HTML attributes to parse
-    attr: {
+    sort: false, // sort keys in alphabetical order
+
+    attr: { // HTML attributes to parse
         list: ['data-i18n'],
-        extensions: ['.html']
+        extensions: ['.html', '.htm']
     },
 
-    // Function names to parse
-    func: {
+    func: { // function names to parse
         list: ['i18next.t', 'i18n.t'],
         extensions: ['.js', '.jsx']
     },
 
-    // Provides a list of supported languages by setting the lngs option.
-    lngs: ['en'],
+    lngs: ['en'], // array of supported languages
 
-    // Sorts the keys in ascending order.
-    sort: false,
+    ns: [], // string or array of namespaces
 
-    // Provides a default value if a value is not specified.
-    defaultValue: '',
+    defaultNs: 'translation' // default namespace used if not passed to translation function
 
-    // The resGetPath is the source i18n path, it is relative to current working directory.
-    resGetPath: 'i18n/__lng__/__ns__.json',
+    defaultValue: '', // default value used if not passed to `parseKey()`
 
-    // The resSetPath is the target i18n path, it is relative to your gulp.dest path.
-    resSetPath: 'i18n/__lng__/__ns__.json',
+    // resource
+    resource: {
+        loadPath: 'i18n/__lng__/__ns__.json', // the source resource path (relative to current working directory)
+        savePath: 'i18n/__lng__/__ns__.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
+    },
 
-    // Changes namespace and/or key separator by setting nsSeparator and/or keySeparator options.
-    nsSeparator: ':',
-    keySeparator: '.',
+    keySeparator: '.', // char to separate keys
+    nsSeparator: ':', // char to split namespace from key
 
-    // Changes pre-/suffix for variables by setting interpolationPrefix and interpolationSuffix options.
-    interpolationPrefix: '__',
-    interpolationSuffix: '__',
-
-    ns: {
-        // Provides a list of namespaces by setting the namespaces option.
-        namespaces: [],
-        // Changes the default namespace by setting the ns.defaultNs option.
-        defaultNs: 'translation'
+    // interpolation options
+    interpolation: {
+        prefix: '__', // prefix for interpolation
+        suffix: '__', // suffix for interpolation
     }
 };
 
@@ -130,7 +122,7 @@ class Parser {
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
             namespaces.forEach((ns) => {
-                const resPath = this.getResourcePath(lng, ns);
+                const resPath = this.getResourceLoadPath(lng, ns);
                 this.resStore[lng][ns] = {};
                 try {
                     const stat = fs.statSync(resPath);
@@ -143,10 +135,7 @@ class Parser {
             });
         });
 
-        this.debuglog('parser initialization:', JSON.stringify({
-            options: this.options,
-            resStore: this.resStore
-        }, null, 2));
+        this.debuglog('[i18next-scanner] Parser(options):', this.options);
     }
     debuglog(...args) {
         const { debug } = this.options;
@@ -154,22 +143,32 @@ class Parser {
             console.log.apply(this, args);
         }
     }
-    getResourcePath(lng, ns) {
-        const { interpolationPrefix, interpolationSuffix, resGetPath } = this.options;
+    getResourceLoadPath(lng, ns) {
+        const options = this.options;
         const regex = {
-            lng: new RegExp(_.escapeRegExp(interpolationPrefix + 'lng' + interpolationSuffix), 'g'),
-            ns: new RegExp(_.escapeRegExp(interpolationPrefix + 'ns' + interpolationSuffix), 'g')
+            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
-        return resGetPath
+        return options.resource.loadPath
+            .replace(regex.lng, lng)
+            .replace(regex.ns, ns);
+    }
+    getResourceSavePath(lng, ns) {
+        const options = this.options;
+        const regex = {
+            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
+        };
+        return options.resource.savePath
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
     }
     // Returns I18n resource store containing translation information
-    // @param {object} [options] The options object
-    // @param {boolean} [options.sort] True to sort object by key
+    // @param {object} [opts] The opts object
+    // @param {boolean} [opts.sort] True to sort object by key
     // @return {object}
-    getResourceStore(options = {}) {
-        const { sort } = options;
+    getResourceStore(opts = {}) {
+        const { sort } = opts;
         const resStore = Object.assign({}, this.resStore);
 
         if (!!sort) { // sort by key
@@ -197,7 +196,7 @@ class Parser {
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar", { count: 1 }); // matched
     // i18next.t("ns:foo.bar" + str); // not matched
-    parseCode(content, options = {}, customHandler = null) {
+    parseFunctions(content, options = {}, customHandler = null) {
         if (_.isFunction(options)) {
             customHandler = options;
             options = {};
@@ -230,7 +229,7 @@ class Parser {
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
-    parseHTML(content, options = {}, customHandler = null) {
+    parseAttributes(content, options = {}, customHandler = null) {
         if (_.isFunction(options)) {
             customHandler = options;
             options = {};
@@ -265,6 +264,11 @@ class Parser {
                 }
                 if (key.indexOf(';') === (key.length - 1)) {
                     key = key.substr(0, key.length - 2);
+                }
+
+                if (customHandler) {
+                    customHandler(key);
+                    return;
                 }
 
                 this.parseKey(key);
@@ -310,7 +314,7 @@ class Parser {
                 this.debuglog('Found a value %s associated with the key %s in %s.',
                     JSON.stringify(_.get(this.resStore, lookupKey)),
                     JSON.stringify(keys.join(options.keySeparator || '')),
-                    JSON.stringify(this.getResourcePath(lng, ns))
+                    JSON.stringify(this.getResourceLoadPath(lng, ns))
                 );
             } else if (_.isObject(this.resStore[lng][ns])) {
                 // Adding a new entry
@@ -332,7 +336,7 @@ class Parser {
                 this.debuglog('Adding a new entry {%s:%s} to %s.',
                     JSON.stringify(keys.join(options.keySeparator || '')),
                     JSON.stringify(_.get(this.resStore, lookupKey)),
-                    JSON.stringify(this.getResourcePath(lng, ns))
+                    JSON.stringify(this.getResourceLoadPath(lng, ns))
                 );
             } else { // skip the namespace that is not defined in the i18next options
                 const msg = 'Ensure the namespace "' + ns + '" exists in ns.namespaces: ' + JSON.stringify({

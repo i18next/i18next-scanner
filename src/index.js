@@ -11,14 +11,14 @@ const transform = (parser, customTransform) => {
         const content = fs.readFileSync(file.path, enc);
         const extname = path.extname(file.path);
 
-        if (_.includes(options.attr.list, extname)) {
-            // Parse data attribute from HTML files
-            parser.parseHTML(content);
+        if (_.isObject(options.attr) && _.includes(options.attr.list, extname)) {
+            // Parse data attribute (e.g. data-i18n="key")
+            parser.parseAttributes(content);
         }
 
-        if (_.includes(options.func.list, extname)) {
-            // Parse translation function from source code
-            parser.parseCode(content);
+        if (_.isObject(options.func) && _.includes(options.func.list, extname)) {
+            // Parse translation function (e.g. i18next.t('key'))
+            parser.parseFunctions(content);
         }
 
         if (typeof customTransform === 'function') {
@@ -34,7 +34,6 @@ const transform = (parser, customTransform) => {
 const flush = (parser, customFlush) => {
     return function _flush(done) {
         const { options } = parser;
-        const { sort, interpolationPrefix, interpolationSuffix, resSetPath } = options;
 
         if (typeof customFlush === 'function') {
             this.parser = parser;
@@ -43,19 +42,13 @@ const flush = (parser, customFlush) => {
         }
 
         // Flush to resource store
-        const resStore = parser.getResourceStore({ sort });
+        const resStore = parser.getResourceStore({ sort: options.sort });
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
-                const regex = {
-                    lng: new RegExp(_.escapeRegExp(interpolationPrefix + 'lng' + interpolationSuffix), 'g'),
-                    ns: new RegExp(_.escapeRegExp(interpolationPrefix + 'ns' + interpolationSuffix), 'g')
-                };
-                const resPath = resSetPath
-                    .replace(regex.lng, lng)
-                    .replace(regex.ns, ns);
-                const str = JSON.stringify(obj, null, 4);
+                const resPath = parser.getResourceSavePath();
+                const str = JSON.stringify(obj, null, options.resource.jsonIndent);
 
                 this.push(new VirtualFile({
                     path: resPath,
