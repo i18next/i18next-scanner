@@ -465,17 +465,13 @@ gulp.src(src)
     .pipe(dest);
 ```
 
-### Handlebars i18n helper
+### Handlebars
 **i18n function helper**
 ```hbs
 {{i18n 'bar'}}
 {{i18n 'bar' defaultKey='foo'}}
 {{i18n 'baz' defaultKey='locale:foo'}}
 {{i18n defaultKey='noval'}}
-```
-Using the regular expression for the above:
-```javascript
-{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}
 ```
 
 **i18n block helper**
@@ -484,12 +480,66 @@ Using the regular expression for the above:
 {{#i18n this}}Description: {{description}}{{/i18n}}
 {{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
 ```
-Using the regular expression for the above:
-```javascript
-{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}
+
+#### Handlebars Helper
+```js
+var handlebarsHelper = function(context, options) {
+        var defaultValue;
+
+        if ((typeof context === 'object') && (typeof options === 'undefined')) {
+            // {{i18n defaultKey='loading'}}
+            options = context;
+            context = undefined;
+        }
+
+        if ((typeof options === 'object') && (typeof options.fn === 'function')) {
+            // {{#i18n}}<span>Some text</span>{{/i18n}}
+            // {{#i18n this}}<p>Description: {{description}}</p>{{/i18n}}
+            defaultValue = options.fn(context);
+        } else if (typeof context === 'string') {
+            // {{i18n 'Basic Example'}}
+            // {{i18n '__first-name__ __last-name__' first-name=firstname last-name=lastname}}
+            // {{i18n 'English' defaultKey='locale:language.en-US'}}
+            defaultValue = context;
+        }
+
+        options = options || {};
+        options.hash = options.hash || {};
+
+        var opts = i18n.functions.extend({ defaultValue: defaultValue }, options.hash);
+        var defaultKey = options.hash.defaultKey;
+        var result;
+
+        if (typeof defaultKey === 'undefined') {
+            result = i18n._(defaultValue, opts);
+        } else {
+            result = i18n.t(defaultKey, opts);
+        }
+
+        return result;
+    };
 ```
 
-**Sample code**
+Use the `Handlebars.registerHelper` method to register the `i18n` helper:
+```js
+var handlebars = require('handlebars');
+
+handlebars.registerHelper('i18n', handlebarsHelper);
+```
+
+By default, Handlebars will escape the returned result by default.
+If you want to generate HTML, you have to return a `new Handlebars.SafeString(result)` like  so:
+```js
+var handlebars = require('handlebars');
+
+handlebars.registerHelper('i18n', function() {
+    var result = handlebarsHelper.apply(this, arguments);
+    return new handlebars.SafeString(result);
+});
+```
+In such a circumstance, you will want to manually escape parameters.
+
+#### Example
 
 The sample code might look like this:
 ```javascript
