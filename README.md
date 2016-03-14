@@ -36,19 +36,23 @@ var customHandler = function(key) {
 var parser = new Parser();
 var content = '';
 
-// translation function: i18next.t('key');
+// Parse Translation Function
+// Example:
+//   i18next.t('key');
 content = fs.readFileSync('/path/to/app.js', 'utf-8');
-parse.parseFunctions(content);
-parse.parseFunctions(content, { list: ['i18next.t']}); // override default list
-parse.parseFunctions(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
-parse.parseFunctions(content, customHandler); // pass a custom handler
+parse.parseFuncFromString(content);
+parse.parseFuncFromString(content, { list: ['i18next.t']}); // override default list
+parse.parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
+parse.parseFuncFromString(content, customHandler); // pass a custom handler
 
-// data attribute: <div data-i18n="key"></div>
+// Parse Attribute
+// Example:
+//   <div data-i18n="key"></div>
 content = fs.readFileSync('/path/to/index.html', 'utf-8');
-parse.parseAttributes(content);
-parse.parseAttributes(content, { list: ['data-i18n'] }); // override default list
-parse.parseAttributes(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
-parse.parseAttributes(content, customHandler); // pass a custom handler
+parse.parseAttrFromString(content);
+parse.parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
+parse.parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
+parse.parseAttrFromString(content, customHandler); // pass a custom handler
 
 console.log(parser.getResourceStore());
 ```
@@ -124,12 +128,6 @@ grunt.initConfig({
 
 ## Advanced Usage
 
-### Customize transform and flush functions
-As mentioned in the [Usage](#usage) section, the main entry function returns a [through2](https://github.com/rvagg/through2) object stream, you can pass in your `transform` and `flush` functions:
-```js
-scanner(options[, customTransform[, customFlush]])
-```
-
 ### Usage with React JSX
 An example of resource file:
 ```json
@@ -141,9 +139,9 @@ An example of resource file:
 }
 ```
 
-Use `i18n.t()` in your React JSX code:
+Use `i18next.t()` in your React JSX code:
 ```js
-import i18n from 'i18next';
+import i18next from 'i18next';
 import React from 'react';
 
 class App extends React.Component {
@@ -312,13 +310,13 @@ var customTransform = function(file, enc, done) {
 
 There are two ways to use i18next-scanner:
 
-1. Standard API
+* Standard API
 ```js
 var Parser = require('i18next-scanner').Parser;
 var parser = new Parser(options);
 ````
 
-2. Transform Stream API
+* Transform Stream API
 ```js
 var scanner = require('i18next-scanner');
 scanner.createStream(options[, customTransform[, customFlush]])
@@ -326,7 +324,7 @@ scanner.createStream(options[, customTransform[, customFlush]])
 
 Below are the configuration options with their default values:
 
-### Default options
+### Default Options
 ```javascript
 {
     debug: false,
@@ -493,7 +491,7 @@ interpolation options
 The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
 ```javascript
-var i18next = require('i18next-scanner');
+var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
@@ -504,12 +502,12 @@ var customTransform = function _transform(file, enc, done) {
     done();
 };
 
-vfs.src(['path/to/src'])
-    .pipe(i18next(options, customTransform))
+vfs.src(['/path/to/src'])
+    .pipe(scanner(options, customTransform))
     .pipe(vfs.dest('path/to/dest'));
 ```
 
-To parse a translation key, call `parser.parse(key, defaultValue)` to assign the key with an optional `defaultValue`.
+To parse a translation key, call `parser.parseKey(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```javascript
 var _ = require('lodash');
@@ -522,16 +520,16 @@ var customTransform = function _transform(file, enc, done) {
     _.each(results, function(result) {
         var key = result.key;
         var value = result.defaultValue || '';
-        parser.parse(key, value);
+        parser.parseKey(key, value);
     });
 };
 ```
 
-Alternatively, you may call `parser.parse(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+Alternatively, you may call `parser.parseKey(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```javascript
 var _ = require('lodash');
-var hash = require('i18next-text').hash['sha1'];
+var sha1 = require('sha1');
 var customTransform = function _transform(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
@@ -541,7 +539,7 @@ var customTransform = function _transform(file, enc, done) {
     _.each(results, function(result) {
         var key = result.defaultKey || hash(result.value);
         var value = result.value;
-        parser.parse(key, value);
+        parser.parseKey(key, value);
     });
 };
 ```
@@ -551,13 +549,11 @@ The optional `customFlush` function is provided as the last argument, it is call
 For example:
 ```javascript
 var _ = require('lodash');
-var i18next = require('i18next-scanner');
+var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
 var customFlush = function _flush(done) {
-    var that = this;
-    var resStore = parser.toObject({
-        sort: !!parser.options.sort
-     });
+    var parser = this.parser;
+    var resStore = parser.getResourceStore();
 
     // loop over the resStore
     _.each(resStore, function(namespaces, lng) {
@@ -569,9 +565,9 @@ var customFlush = function _flush(done) {
     done();
 };
 
-vfs.src(['path/to/src'])
-    .pipe(i18next(options, customTransform, customFlush))
-    .pipe(vfs.dest('path/to/dest'));
+vfs.src(['/path/to/src'])
+    .pipe(scanner(options, customTransform, customFlush))
+    .pipe(vfs.dest('/path/to/dest'));
 ```
 
 ## License
