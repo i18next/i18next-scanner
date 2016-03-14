@@ -196,7 +196,7 @@ class Parser {
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar", { count: 1 }); // matched
     // i18next.t("ns:foo.bar" + str); // not matched
-    parseFunctions(content, options = {}, customHandler = null) {
+    parseFuncFromString(content, options = {}, customHandler = null) {
         if (_.isFunction(options)) {
             customHandler = options;
             options = {};
@@ -229,7 +229,7 @@ class Parser {
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
-    parseAttributes(content, options = {}, customHandler = null) {
+    parseAttrFromString(content, options = {}, customHandler = null) {
         if (_.isFunction(options)) {
             customHandler = options;
             options = {};

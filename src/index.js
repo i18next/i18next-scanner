@@ -12,13 +12,13 @@ const transform = (parser, customTransform) => {
         const extname = path.extname(file.path);
 
         if (_.isObject(options.attr) && _.includes(options.attr.list, extname)) {
-            // Parse data attribute (e.g. data-i18n="key")
-            parser.parseAttributes(content);
+            // Parse attribute (e.g. data-i18n="key")
+            parser.parseAttrFromString(content);
         }
 
         if (_.isObject(options.func) && _.includes(options.func.list, extname)) {
             // Parse translation function (e.g. i18next.t('key'))
-            parser.parseFunctions(content);
+            parser.parseFuncFromString(content);
         }
 
         if (typeof customTransform === 'function') {
