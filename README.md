@@ -7,16 +7,10 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 It's available as both Gulp and Grunt plugins.
 
 ## Features
-* Support React JSX. See the [Usage with React JSX](https://github.com/i18next/i18next-scanner/#usage-with-react-jsx) section for details. 
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
-* Support [i18next-text](https://github.com/cheton/i18next-text) to write your code without the need to maintain i18n keys.
+* Support [Key Based Fallback](http://i18next.com/translate/keyBasedFallback/) to write your code without the need to maintain i18n keys.
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
-
-## Examples
-Check out some examples:
-* [API options](https://github.com/cheton/webappengine/blob/master/gulp/config.js#L190)
-* A gulp task that uses a [custom transform](#customtransform) to scan strings for [i18next-text](https://github.com/cheton/i18next-text) and Handlebars template: https://github.com/cheton/webappengine/blob/master/gulp/tasks/i18next.js#L104
 
 ## Installation
 ```
@@ -37,8 +31,7 @@ var parser = new Parser();
 var content = '';
 
 // Parse Translation Function
-// Example:
-//   i18next.t('key');
+// i18next.t('key');
 content = fs.readFileSync('/path/to/app.js', 'utf-8');
 parse.parseFuncFromString(content);
 parse.parseFuncFromString(content, { list: ['i18next.t']}); // override default list
@@ -46,8 +39,7 @@ parse.parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // ov
 parse.parseFuncFromString(content, customHandler); // pass a custom handler
 
 // Parse Attribute
-// Example:
-//   <div data-i18n="key"></div>
+// <div data-i18n="key"></div>
 content = fs.readFileSync('/path/to/index.html', 'utf-8');
 parse.parseAttrFromString(content);
 parse.parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
@@ -72,7 +64,7 @@ vfs.src(['/path/to/src'])
     .pipe(vfs.dest('/path/to/dest'));
 ```
 
-Alternatively, you can get a stream by calling createStream() as show below:
+Alternatively, you can get a transform stream by calling createStream() as show below:
 ```js
 vfs.src(['/path/to/src'])
     .pipe(scanner.createStream(options))
@@ -139,7 +131,7 @@ var parser = new Parser(options);
 #### Transform Stream API
 ```js
 var scanner = require('i18next-scanner');
-scanner.createStream(options, customTransform, customFlush);
+scanner.createStream(options, customTransform /* optional */, customFlush /* optional */);
 ```
 
 Below are the configuration options with their default values:
