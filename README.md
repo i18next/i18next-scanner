@@ -280,7 +280,7 @@ Key separator used in translation keys.
 
 Set to false to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature  is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210).
 
-See <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
 
 #### nsSeparator
 
@@ -290,7 +290,7 @@ Namespace separator used in translation keys.
 
 Set to false to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210).
 
-See <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
 
 #### interpolation
 
