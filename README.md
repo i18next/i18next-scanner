@@ -483,41 +483,43 @@ gulp.src(src)
 
 #### Handlebars Helper
 ```js
+var i18next = require('i18next');
+
 var handlebarsHelper = function(context, options) {
-        var defaultValue;
+    var defaultValue;
 
-        if ((typeof context === 'object') && (typeof options === 'undefined')) {
-            // {{i18n defaultKey='loading'}}
-            options = context;
-            context = undefined;
-        }
+    if ((typeof context === 'object') && (typeof options === 'undefined')) {
+        // {{i18n defaultKey='loading'}}
+        options = context;
+        context = undefined;
+    }
 
-        if ((typeof options === 'object') && (typeof options.fn === 'function')) {
-            // {{#i18n}}<span>Some text</span>{{/i18n}}
-            // {{#i18n this}}<p>Description: {{description}}</p>{{/i18n}}
-            defaultValue = options.fn(context);
-        } else if (typeof context === 'string') {
-            // {{i18n 'Basic Example'}}
-            // {{i18n '__first-name__ __last-name__' first-name=firstname last-name=lastname}}
-            // {{i18n 'English' defaultKey='locale:language.en-US'}}
-            defaultValue = context;
-        }
+    if ((typeof options === 'object') && (typeof options.fn === 'function')) {
+        // {{#i18n}}<span>Some text</span>{{/i18n}}
+        // {{#i18n this}}<p>Description: {{description}}</p>{{/i18n}}
+        defaultValue = options.fn(context);
+    } else if (typeof context === 'string') {
+        // {{i18n 'Basic Example'}}
+        // {{i18n '__first-name__ __last-name__' first-name=firstname last-name=lastname}}
+        // {{i18n 'English' defaultKey='locale:language.en-US'}}
+        defaultValue = context;
+    }
 
-        options = options || {};
-        options.hash = options.hash || {};
+    options = options || {};
+    options.hash = options.hash || {};
 
-        var opts = i18n.functions.extend({ defaultValue: defaultValue }, options.hash);
-        var defaultKey = options.hash.defaultKey;
-        var result;
+    var opts = i18n.functions.extend({ defaultValue: defaultValue }, options.hash);
+    var defaultKey = options.hash.defaultKey;
+    var result;
 
-        if (typeof defaultKey === 'undefined') {
-            result = i18n._(defaultValue, opts);
-        } else {
-            result = i18n.t(defaultKey, opts);
-        }
+    if (typeof defaultKey === 'undefined') {
+        result = i18next.t(defaultValue, opts);
+    } else {
+        result = i18next.t(defaultKey, opts);
+    }
 
-        return result;
-    };
+    return result;
+};
 ```
 
 Use the `Handlebars.registerHelper` method to register the `i18n` helper:
