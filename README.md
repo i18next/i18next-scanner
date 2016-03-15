@@ -128,25 +128,175 @@ grunt.initConfig({
 });
 ```
 
-## API Options
+## API
 
 There are two ways to use i18next-scanner:
 
-#### Standard API
+### Standard API
 ```js
 var Parser = require('i18next-scanner').Parser;
 var parser = new Parser(options);
+
+var code = "i18next.t('key'); ...";
+parser.parseFuncFromString(content); 
+
+var html = '<div data-i18n="key"></div>';
+parser.parseAttrFromString(html);
+
+parser.get();
 ````
 
-#### Transform Stream API
+#### parser.parseFuncFromString
+Parse translation key from JS function
+```js
+parser.parseFuncFromString(content)
+
+parser.parseFuncFromString(content, { list: ['_t'] });
+
+parser.parseFuncFromString(content, function(key) {
+    var defaultValue = key; // use key as the value
+    parser.set(key, defaultValue);
+});
+
+parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
+    parset.set(key); // use defaultValue
+});
+```
+
+#### parser.parseAttrFromString
+Parse translation key from HTML attribute
+```js
+parser.parseAttrFromString(content)
+
+parser.parseAttrFromString(content, { list: ['data-i18n'] });
+
+parser.parseAttrFromString(content, function(key) {
+    var defaultValue = key; // use key as the value
+    parser.set(key, defaultValue);
+});
+
+parser.parseAttrFromString(content, { list: ['data-i18n'] }, function(key) {
+    parset.set(key); // use defaultValue
+});
+```
+
+#### parser.get
+Get the value of a translation key or the whole i18n resource store
+```js
+// Returns the whole i18n resource store
+parser.get();
+
+// Returns the resource store with the top-level keys sorted by alphabetical order 
+parser.get({ sort: true });
+
+// Returns a value in fallback language (@see options.fallbackLng) with namespace and key
+parser.get('ns:key');
+
+// Returns a value with namespace, key, and lng
+parser.get('ns:key', { lng: 'en' });
+```
+#### parser.set
+Set a translation key with an optional defaultValue to i18n resource store
+
+```js
+// Set translation key
+parser.set(key);
+
+// Set translation key with its defaultValue
+parser.set(key, defaultValue);
+```
+
+### Transform Stream API
 ```js
 var scanner = require('i18next-scanner');
 scanner.createStream(options, customTransform /* optional */, customFlush /* optional */);
 ```
 
+#### customTransform
+The optional `customTransform` function is provided as the 2nd argument for the transform stream API. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
+For example:
+```js
+var scanner = require('i18next-scanner');
+var vfs = require('vinyl-fs');
+var customTransform = function _transform(file, enc, done) {
+    var parser = this.parser;
+    var content = fs.readFileSync(file.path, enc);
+
+    // add your code
+    done();
+};
+
+vfs.src(['/path/to/src'])
+    .pipe(scanner(options, customTransform))
+    .pipe(vfs.dest('path/to/dest'));
+```
+
+To parse a translation key, call `parser.set(key, defaultValue)` to assign the key with an optional `defaultValue`.
+For example:
+```js
+var customTransform = function _transform(file, enc, done) {
+    var parser = this.parser;
+    var content = fs.readFileSync(file.path, enc);
+    
+    parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
+        var defaultValue = '__L10N__';
+        parser.set(key, defaultValue);
+    });
+    
+    done();
+};
+```
+
+Alternatively, you may call `parser.set(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+For example:
+```js
+var hash = require('sha1');
+var customTransform = function _transform(file, enc, done) {
+    var parser = this.parser;
+    var content = fs.readFileSync(file.path, enc);
+    
+    parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
+        var value = key;
+        var defaultKey = hash(value);
+        parser.set(defaultKey, value);
+    });
+    
+    done();
+};
+```
+
+#### customFlush
+The optional `customFlush` function is provided as the last argument for the transform stream API, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
+For example:
+```js
+var scanner = require('i18next-scanner');
+var vfs = require('vinyl-fs');
+var customFlush = function _flush(done) {
+    var parser = this.parser;
+    var resStore = parser.getResourceStore();
+
+    // loop over the resStore
+    Object.keys(resStore).forEach(function(lng) {
+        var namespaces = resStore[lng];
+        Object.keys(namespaces).forEach(function(ns) {
+            var obj = namespaces[ns];
+            // add your code
+        });
+    });
+    
+    done();
+};
+
+vfs.src(['/path/to/src'])
+    .pipe(scanner(options, customTransform, customFlush))
+    .pipe(vfs.dest('/path/to/dest'));
+```
+
+
+## Default Options
+
 Below are the configuration options with their default values:
 
-### Default Options
 ```javascript
 {
     debug: false,
@@ -305,86 +455,6 @@ interpolation options
         suffix: '}}'
     }
 }
-```
-
-### customTransform
-The optional `customTransform` function is provided as the 2nd argument for the transform stream API. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
-For example:
-```js
-var scanner = require('i18next-scanner');
-var vfs = require('vinyl-fs');
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
-
-    // add your code
-    done();
-};
-
-vfs.src(['/path/to/src'])
-    .pipe(scanner(options, customTransform))
-    .pipe(vfs.dest('path/to/dest'));
-```
-
-To parse a translation key, call `parser.set(key, defaultValue)` to assign the key with an optional `defaultValue`.
-For example:
-```js
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
-    
-    parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
-        var defaultValue = '__L10N__';
-        parser.set(key, defaultValue);
-    });
-    
-    done();
-};
-```
-
-Alternatively, you may call `parser.set(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
-For example:
-```js
-var hash = require('sha1');
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
-    
-    parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
-        var value = key;
-        var defaultKey = hash(value);
-        parser.set(defaultKey, value);
-    });
-    
-    done();
-};
-```
-
-### customFlush
-The optional `customFlush` function is provided as the last argument for the transform stream API, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
-For example:
-```js
-var scanner = require('i18next-scanner');
-var vfs = require('vinyl-fs');
-var customFlush = function _flush(done) {
-    var parser = this.parser;
-    var resStore = parser.getResourceStore();
-
-    // loop over the resStore
-    Object.keys(resStore).forEach(function(lng) {
-        var namespaces = resStore[lng];
-        Object.keys(namespaces).forEach(function(ns) {
-            var obj = namespaces[ns];
-            // add your code
-        });
-    });
-    
-    done();
-};
-
-vfs.src(['/path/to/src'])
-    .pipe(scanner(options, customTransform, customFlush))
-    .pipe(vfs.dest('/path/to/dest'));
 ```
 
 ## Integration Guide
