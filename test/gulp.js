@@ -15,8 +15,8 @@ test('Gulp usage', function(t) {
         defaultNs: 'resource',
         defaultValue: '__STRING_NOT_TRANSLATED__',
         resource: {
-            loadPath: path.resolve(__dirname, 'fixtures/i18n/{{lng}}/{{ns}}.json'),
-            savePath: 'i18n/{{lng}}/{{ns}}.json'
+            loadPath: path.resolve(__dirname, 'fixtures/i18n/__lng__/__ns__.json'),
+            savePath: 'i18n/__lng__/__ns__.json'
         },
         nsSeparator: ':', // namespace separator
         keySeparator: '.', // key separator
