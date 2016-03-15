@@ -8,7 +8,7 @@ It's available as both Gulp and Grunt plugins.
 
 ## Features
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
-* Support [Key Based Fallback](http://i18next.com/translate/keyBasedFallback/) to write your code without the need to maintain i18n keys.
+* Support [Key Based Fallback](http://i18next.com/translate/keyBasedFallback/) to write your code without the need to maintain i18n keys. This feature is available since [i18next@^2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210)
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
 
@@ -377,9 +377,9 @@ vfs.src(['/path/to/src'])
     .pipe(vfs.dest('/path/to/dest'));
 ```
 
-## Supplement
+## Integration
 
-### React
+### React Integration
 An example of resource file:
 ```json
 {           
@@ -407,10 +407,11 @@ class App extends React.Component {
 }
 ```
 
-### Gettext Style i18n
+### Gettext Style Integration
 
-You might want to find all occurrences of the `_t()` function in your code.
-For example:
+First, you have to upgrade i18next to v2.1.0 at least to support the <strong>Key Based Fallback</strong> feature.
+
+Here is an example of finding all occurrences of the `_t()` function in your code:
 ```javascript
 _t('This is text value');
 _t("text");
@@ -425,17 +426,19 @@ parser.parseCode(content, options = {}, customHandler = null)
 ```
 
 The code might look like this:
-```javascript
+```js
 var Parser = require('i18next-scanner').Parser;
-var hash = require('sha1');
 
-var parser = new Parser();
-var content = fs.readFileSync('/path/to/app.js', 'utf-8');
-parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
-    var value = key;
-    var defaultKey = hash(value); // returns a hash value as its default key
-    parser.parseKey(defaultKey, value);
+///
+// You have to use i18next@^2.1.0, and set both nsSeparator and keySeparator to false
+///
+var parser = new Parser({
+    nsSeparator: false,
+    keySeparator: false
 });
+
+var content = fs.readFileSync('/path/to/app.js', 'utf-8');
+parser.parseFuncFromString(content, { list: ['_t'] });
 
 console.log(parser.getResourceStore());
 ```
@@ -443,18 +446,13 @@ console.log(parser.getResourceStore());
 Usage with Gulp:
 ```js
 var gulp = require('gulp');
-var hash = require('sha1');
 var scanner = require('i18next-scanner');
 
 var customTransform = function(file, enc, done) {
     var parser = this.parser;
     var content = fs.readFileSync(file.path, enc);
 
-    parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
-        var value = key;
-        var defaultKey = hash(value); // returns a hash value as its default key
-        parserr.parseKey(defaultKey, value);
-    });
+    parser.parseFuncFromString(content, { list: ['_t'] });
 
     done();
 };
@@ -464,20 +462,39 @@ gulp.src(src)
     .pipe(dest);
 ```
 
-### Handlebars
-**i18n function helper**
+### Handlebars Integration
+
+Here is an example of what our template file might look like:
+
+**function helper**
 ```hbs
 {{i18n 'bar'}}
 {{i18n 'bar' defaultKey='foo'}}
-{{i18n 'baz' defaultKey='locale:foo'}}
+{{i18n 'baz' defaultKey='namespace:foo'}}
 {{i18n defaultKey='noval'}}
+{{i18n 'Basic Example'}}
+{{i18n '__first-name__ __last-name__' first-name=firstname last-name=lastname}}
+{{i18n 'English' defaultKey='locale:language.en-US'}}
+{{i18n defaultKey='loading'}}
 ```
 
-**i18n block helper**
+**block helper**
 ```hbs
 {{#i18n}}Some text{{/i18n}}
 {{#i18n this}}Description: {{description}}{{/i18n}}
-{{#i18n this last-name=lastname}}{{firstname}} ${last-name}{{/i18n}}
+{{#i18n this last-name=lastname}}{{firstname}} __last-name__{{/i18n}}
+```
+
+You can compile the template string into a Handlebars template function, and then render the template by passing a data object (a.k.a. context) into that function:
+```js
+var source = fs.readFileSync('/path/to/your/handlebars-template.hbs'), 'utf-8');
+var template = handlebars.compile(source);
+var context = {
+    'firstname':'Foo',
+    'lastname':'Bar',
+    'description': 'Foo Bar Test'
+};
+console.log(template(context));
 ```
 
 #### Handlebars Helper
@@ -551,7 +568,7 @@ var customTransform = function(file, enc, done) {
     var extname = path.extname(file.path);
     var content = fs.readFileSync(file.path, enc);
 
-    // i18n function helper
+    // function helper
     (function() {
         var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
         _.each(results, function(result) {
@@ -583,7 +600,7 @@ var customTransform = function(file, enc, done) {
         });
     }());
 
-    // i18n block helper
+    // block helper
     (function() {
         var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
         _.each(results, function(result) {
