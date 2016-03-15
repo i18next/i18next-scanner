@@ -14,7 +14,7 @@ test('parse translation function', (t) => {
 
     // i18next.t('key');
     const content = '
-    content = fs.readFileSync('./app.js', 'utf-8');
+    content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.js'), 'utf-8');
     parser
         .parseFuncFromString(content, customHandler) // pass a custom handler
         .parseFuncFromString(content, { list: ['i18next.t']}) // override `func.list`
