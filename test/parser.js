@@ -59,7 +59,7 @@ test('parse HTML attribute', (t) => {
         parser.set(key, defaultValue);
     };
 
-    // i18next.t('key');
+    // <div data-i18n="key"></div>
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
     parser
         .parseAttrFromString(content, customHandler) // pass a custom handler
