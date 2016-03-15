@@ -1,6 +1,6 @@
 'use strict';
 
-var i18next = require('..');
+var i18next = require('../lib');
 var vfs = require('vinyl-fs');
 
 module.exports = function(grunt) {
