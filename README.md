@@ -384,7 +384,7 @@ vfs.src(['/path/to/src'])
 ```
 
 ## Integration Guide
-Checkout the [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) for integration with React, Gettext Style i18n, and Handlebars.
+Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) to learn how to integrate with React, Gettext Style i18n, and Handlebars.
 
 ## License
 
