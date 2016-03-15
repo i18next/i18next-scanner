@@ -42,12 +42,12 @@ const flush = (parser, customFlush) => {
         }
 
         // Flush to resource store
-        const resStore = parser.getResourceStore({ sort: options.sort });
+        const resStore = parser.get({ sort: options.sort });
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
-                const resPath = parser.getResourceSavePath(lng, ns);
+                const resPath = parser.formatResourceSavePath(lng, ns);
                 const str = JSON.stringify(obj, null, options.resource.jsonIndent);
 
                 this.push(new VirtualFile({
