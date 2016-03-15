@@ -1,7 +1,6 @@
 /* eslint no-console: 0 */
 import _ from 'lodash';
 import fs from 'fs';
-import util from 'util';
 
 const defaults = {
     debug: false, // verbose logging
