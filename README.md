@@ -2,7 +2,7 @@
 
 [![NPM](https://nodei.co/npm/i18next-scanner.png?downloads=true&stars=true)](https://nodei.co/npm/i18next-scanner/)
 
-i18next-scanner is a transform stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.
+Scan your code, extract translation keys/values, and merge them into i18n resource files.
 
 ## Notice
 There is a major breaking change since v1.0, and the API interface and options are not compatible with v0.x.
