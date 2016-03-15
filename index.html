@@ -1,522 +1,524 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="I18next-scanner : i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>I18next-scanner</title>
+    <meta charset="UTF-8">
+    <title>I18next-scanner by i18next</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">I18next-scanner</h1>
+      <h2 class="project-tagline">i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.</h2>
+      <a href="https://github.com/i18next/i18next-scanner" class="btn">View on GitHub</a>
+      <a href="https://github.com/i18next/i18next-scanner/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/i18next/i18next-scanner/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/cheton/i18next-scanner">View on GitHub</a>
-
-          <h1 id="project_title">I18next-scanner</h1>
-          <h2 id="project_tagline">i18next-scanner is a transfrom stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/cheton/i18next-scanner/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/cheton/i18next-scanner/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a id="i18next-scanner-" class="anchor" href="#i18next-scanner-" aria-hidden="true"><span class="octicon octicon-link"></span></a>i18next-scanner <a href="https://travis-ci.org/cheton/i18next-scanner"><img src="https://travis-ci.org/cheton/i18next-scanner.svg?branch=master" alt="build status"></a>
+    <section class="main-content">
+      <h1>
+<a id="i18next-scanner--" class="anchor" href="#i18next-scanner--" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>i18next-scanner <a href="https://travis-ci.org/i18next/i18next-scanner"><img src="https://travis-ci.org/i18next/i18next-scanner.svg?branch=master" alt="build status"></a> <a href="https://coveralls.io/github/i18next/i18next-scanner?branch=master"><img src="https://coveralls.io/repos/i18next/i18next-scanner/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a>
 </h1>
 
 <p><a href="https://nodei.co/npm/i18next-scanner/"><img src="https://nodei.co/npm/i18next-scanner.png?downloads=true&amp;stars=true" alt="NPM"></a></p>
 
-<p>i18next-scanner is a transform stream that can scan your code, extract translation keys/values, and merge them into i18n resource files.</p>
-
-<p>It's available as both Gulp and Grunt plugins.</p>
+<p>Scan your code, extract translation keys/values, and merge them into i18n resource files.</p>
 
 <h2>
-<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+<a id="notice" class="anchor" href="#notice" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notice</h2>
+
+<p>There is a major breaking change since v1.0, and the API interface and options are not compatible with v0.x.</p>
+
+<p>Checkout <a href="https://github.com/i18next/i18next-scanner/wiki/Migration-Guide">Migration Guide</a> for doing migration from earlier versions.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-<li>Support React JSX. See the <a href="https://github.com/cheton/i18next-scanner/#usage-with-react-jsx">Usage with React JSX</a> section for details. </li>
 <li>Fully compatible with <a href="https://github.com/i18next/i18next">i18next</a> - a full-featured i18n javascript library for translating your webapplication.</li>
-<li>Support <a href="https://github.com/cheton/i18next-text">i18next-text</a> to write your code without the need to maintain i18n keys.</li>
+<li>Support <a href="http://i18next.com/translate/keyBasedFallback/">Key Based Fallback</a> to write your code without the need to maintain i18n keys. This feature is available since <a href="https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210">i18next@^2.1.0</a>
+</li>
+<li>A standalone parser API</li>
 <li>A transform stream that works with both Gulp and Grunt task runner.</li>
 <li>Support custom transform and flush functions.</li>
 </ul>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
 <pre><code>npm install --save-dev i18next-scanner
 </code></pre>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-<p>The main entry function of <a href="https://github.com/cheton/i18next-scanner">i18next-scanner</a> is a transform stream. You can use <a href="https://github.com/wearefractal/vinyl">vinyl-fs</a> to create a readable stream, pipe the stream through <a href="https://github.com/cheton/i18next-scanner">i18next-scanner</a> to transform your code into an i18n resource object, and write to a destination folder.
-Here is a simple example showing how that works:</p>
+<h3>
+<a id="standard-api" class="anchor" href="#standard-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Standard API</h3>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> fs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> Parser <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>).<span class="pl-smi">Parser</span>;
+
+<span class="pl-k">var</span> <span class="pl-en">customHandler</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+    <span class="pl-k">var</span> defaultValue <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>__TRANSLATION__<span class="pl-pds">'</span></span>; <span class="pl-c">// optional default value</span>
+    <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key, defaultValue);
+};
+
+<span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Parser</span>();
+<span class="pl-k">var</span> content <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
+
+<span class="pl-c">// Parse Translation Function</span>
+<span class="pl-c">// i18next.t('key');</span>
+content <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-s"><span class="pl-pds">'</span>/path/to/app.js<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>utf-8<span class="pl-pds">'</span></span>);
+parser
+    .<span class="pl-en">parseFuncFromString</span>(content, customHandler) <span class="pl-c">// pass a custom handler</span>
+    .<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18next.t<span class="pl-pds">'</span></span>]}) <span class="pl-c">// override `func.list`</span>
+    .<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18next.t<span class="pl-pds">'</span></span>]}, customHandler)
+    .<span class="pl-en">parseFuncFromString</span>(content); <span class="pl-c">// using default options and handler</span>
+
+<span class="pl-c">// Parse HTML Attribute</span>
+<span class="pl-c">// &lt;div data-i18n="key"&gt;&lt;/div&gt;</span>
+content <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-s"><span class="pl-pds">'</span>/path/to/index.html<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>utf-8<span class="pl-pds">'</span></span>);
+parser
+    .<span class="pl-en">parseAttrFromString</span>(content, customHandler) <span class="pl-c">// pass a custom handler</span>
+    .<span class="pl-en">parseAttrFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>] }) <span class="pl-c">// override `attr.list`</span>
+    .<span class="pl-en">parseAttrFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>] }, customHandler)
+    .<span class="pl-en">parseAttrFromString</span>(content); <span class="pl-c">// using default options and handler</span>
+
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">parser</span>.<span class="pl-en">get</span>());
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">parser</span>.<span class="pl-en">get</span>({ sort<span class="pl-k">:</span> <span class="pl-c1">true</span> }));
+<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">parser</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>translation:key<span class="pl-pds">'</span></span>, { lng<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>}));</pre></div>
+
+<h3>
+<a id="transform-stream-api" class="anchor" href="#transform-stream-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Transform Stream API</h3>
+
+<p>The main entry function of <a href="https://github.com/i18next/i18next-scanner">i18next-scanner</a> is a transform stream. You can use <a href="https://github.com/wearefractal/vinyl">vinyl-fs</a> to create a readable stream, pipe the stream through <a href="https://github.com/i18next/i18next-scanner">i18next-scanner</a> to transform your code into an i18n resource object, and write to a destination folder.</p>
+
+<p>Here is a simple example showing how that works:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> scanner <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
 <span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> options <span class="pl-k">=</span> {
+    <span class="pl-c">// See options at https://github.com/i18next/i18next-scanner#options</span>
+};
+<span class="pl-smi">vfs</span>.<span class="pl-en">src</span>([<span class="pl-s"><span class="pl-pds">'</span>/path/to/src<span class="pl-pds">'</span></span>])
+    .<span class="pl-en">pipe</span>(<span class="pl-en">scanner</span>(options))
+    .<span class="pl-en">pipe</span>(<span class="pl-smi">vfs</span>.<span class="pl-en">dest</span>(<span class="pl-s"><span class="pl-pds">'</span>/path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
 
-vfs.src([<span class="pl-s"><span class="pl-pds">'</span>path/to/src<span class="pl-pds">'</span></span>])
-    .pipe(i18next())
-    .pipe(vfs.dest(<span class="pl-s"><span class="pl-pds">'</span>path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
+<p>Alternatively, you can get a transform stream by calling createStream() as show below:</p>
 
-<h2>
-<a id="gulp-usage" class="anchor" href="#gulp-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gulp Usage</h2>
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">vfs</span>.<span class="pl-en">src</span>([<span class="pl-s"><span class="pl-pds">'</span>/path/to/src<span class="pl-pds">'</span></span>])
+    .<span class="pl-en">pipe</span>(<span class="pl-smi">scanner</span>.<span class="pl-en">createStream</span>(options))
+    .<span class="pl-en">pipe</span>(<span class="pl-smi">vfs</span>.<span class="pl-en">dest</span>(<span class="pl-s"><span class="pl-pds">'</span>/path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
 
-<p>Now you are ready to set up a minimal configuration, and get started with Gulp.
-For example:</p>
+<h3>
+<a id="gulp" class="anchor" href="#gulp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Gulp</h3>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> gulp <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gulp<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<p>Now you are ready to set up a minimal configuration, and get started with Gulp. For example:</p>
 
-gulp.task(<span class="pl-s"><span class="pl-pds">'</span>i18next<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>() {
-    <span class="pl-k">return</span> gulp.src([<span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>])
-        .pipe(i18next({
-            <span class="pl-c">// a list of supported languages</span>
-            lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>], 
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> gulp <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>gulp<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> scanner <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
 
-            <span class="pl-c">// the source path is relative to current working directory</span>
-            resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
+<span class="pl-smi">gulp</span>.<span class="pl-en">task</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>() {
+    <span class="pl-k">return</span> <span class="pl-smi">gulp</span>.<span class="pl-en">src</span>([<span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>])
+        .<span class="pl-en">pipe</span>(<span class="pl-en">scanner</span>({
+            lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>], <span class="pl-c">// supported languages</span>
+            resource<span class="pl-k">:</span> {
+                <span class="pl-c">// the source path is relative to current working directory</span>
+                loadPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
 
-            <span class="pl-c">// the destination path is relative to your `gulp.dest()` path</span>
-            resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>
+                <span class="pl-c">// the destination path is relative to your `gulp.dest()` path</span>
+                savePath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>
+            }
         }))
-        .pipe(gulp.dest(<span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>));
+        .<span class="pl-en">pipe</span>(<span class="pl-smi">gulp</span>.<span class="pl-en">dest</span>(<span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>));
 });</pre></div>
 
-<h2>
-<a id="grunt-usage" class="anchor" href="#grunt-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grunt Usage</h2>
+<h3>
+<a id="grunt" class="anchor" href="#grunt" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Grunt</h3>
 
 <p>Once you've finished the installation, add this line to your project's Gruntfile:</p>
 
-<div class="highlight highlight-javascript"><pre>grunt.loadNpmTasks(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);</pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">grunt</span>.<span class="pl-en">loadNpmTasks</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);</pre></div>
 
 <p>In your project's Gruntfile, add a section named <code>i18next</code> to the data object passed into <code>grunt.initConfig()</code>, like so:</p>
 
-<div class="highlight highlight-javascript"><pre>grunt.initConfig({
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">grunt</span>.<span class="pl-en">initConfig</span>({
     i18next<span class="pl-k">:</span> {
         dev<span class="pl-k">:</span> {
             src<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>src/**/*.{js,html}<span class="pl-pds">'</span></span>,
             dest<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets<span class="pl-pds">'</span></span>,
             options<span class="pl-k">:</span> {
                 lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>de<span class="pl-pds">'</span></span>],
-                resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-                resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>
+                resource<span class="pl-k">:</span> {
+                    loadPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>assets/i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
+                    savePath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>
+                }
             }
         }
     }
 });</pre></div>
 
 <h2>
-<a id="advanced-usage" class="anchor" href="#advanced-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Advanced Usage</h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API</h2>
+
+<p>There are two ways to use i18next-scanner:</p>
 
 <h3>
-<a id="customize-transform-and-flush-functions" class="anchor" href="#customize-transform-and-flush-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Customize transform and flush functions</h3>
+<a id="standard-api-1" class="anchor" href="#standard-api-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Standard API</h3>
 
-<p>As mentioned in the <a href="#usage">Usage</a> section, the main entry function returns a <a href="https://github.com/rvagg/through2">through2</a> object stream, you can pass in your <code>transform</code> and <code>flush</code> functions:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> Parser <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>).<span class="pl-smi">Parser</span>;
+<span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Parser</span>(options);
 
-<div class="highlight highlight-javascript"><pre>i18next(options[, customTransform[, customFlush]])</pre></div>
+<span class="pl-k">var</span> code <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>i18next.t('key'); ...<span class="pl-pds">"</span></span>;
+<span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content); 
 
-<h3>
-<a id="usage-with-react-jsx" class="anchor" href="#usage-with-react-jsx" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage with React JSX</h3>
+<span class="pl-k">var</span> html <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;div data-i18n="key"&gt;&lt;/div&gt;<span class="pl-pds">'</span></span>;
+<span class="pl-smi">parser</span>.<span class="pl-en">parseAttrFromString</span>(html);
 
-<p>An example of resource file:</p>
+<span class="pl-smi">parser</span>.<span class="pl-en">get</span>();</pre></div>
 
-<div class="highlight highlight-json"><pre>{           
-    <span class="pl-s"><span class="pl-pds">"</span>app<span class="pl-pds">"</span></span>: {
-        <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>My App<span class="pl-pds">"</span></span>
-    },
-    <span class="pl-s"><span class="pl-pds">"</span>key<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>__myVar__ are important<span class="pl-pds">"</span></span>
-}</pre></div>
+<h4>
+<a id="parserparsefuncfromstring" class="anchor" href="#parserparsefuncfromstring" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>parser.parseFuncFromString</h4>
 
-<p>Use <code>i18n.t()</code> in your React JSX code:</p>
+<p>Parse translation key from JS function</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> App <span class="pl-k">=</span> React.createClass({
-    <span class="pl-en">render</span><span class="pl-k">:</span> <span class="pl-k">function</span>() {
-        <span class="pl-k">return</span> (
-            <span class="pl-k">&lt;</span>div<span class="pl-k">&gt;</span>
-                <span class="pl-k">&lt;</span>h1<span class="pl-k">&gt;</span>{i18n.t(<span class="pl-s"><span class="pl-pds">'</span>app.name<span class="pl-pds">'</span></span>)}<span class="pl-k">&lt;</span>/h1<span class="pl-k">&gt;</span> <span class="pl-c">// "My App"</span>
-                <span class="pl-k">&lt;</span>p<span class="pl-k">&gt;</span>{i18n.t(<span class="pl-s"><span class="pl-pds">'</span>key<span class="pl-pds">'</span></span>, {myVar<span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">'</span>variables<span class="pl-pds">'</span></span>})}<span class="pl-k">&lt;</span>/p<span class="pl-k">&gt;</span> <span class="pl-c">// "variables are important"</span>
-            <span class="pl-k">&lt;</span>/div<span class="pl-k">&gt;</span>
-        );
-    }
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content)
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>_t<span class="pl-pds">'</span></span>] });
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+    <span class="pl-k">var</span> defaultValue <span class="pl-k">=</span> key; <span class="pl-c">// use key as the value</span>
+    <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key, defaultValue);
+});
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>_t<span class="pl-pds">'</span></span>] }, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+    <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key); <span class="pl-c">// use defaultValue</span>
 });</pre></div>
 
-<h3>
-<a id="usage-with-i18next-text" class="anchor" href="#usage-with-i18next-text" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage with i18next-text</h3>
+<h4>
+<a id="parserparseattrfromstring" class="anchor" href="#parserparseattrfromstring" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>parser.parseAttrFromString</h4>
+
+<p>Parse translation key from HTML attribute</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">parser</span>.<span class="pl-en">parseAttrFromString</span>(content)
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseAttrFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>] });
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseAttrFromString</span>(content, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+    <span class="pl-k">var</span> defaultValue <span class="pl-k">=</span> key; <span class="pl-c">// use key as the value</span>
+    <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key, defaultValue);
+});
+
+<span class="pl-smi">parser</span>.<span class="pl-en">parseAttrFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>] }, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+    <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key); <span class="pl-c">// use defaultValue</span>
+});</pre></div>
 
 <h4>
-<a id="example-of-parsing-strings" class="anchor" href="#example-of-parsing-strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example of parsing strings</h4>
+<a id="parserget" class="anchor" href="#parserget" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>parser.get</h4>
 
-<p>You might want to find all occurrences of the <code>i18n._()</code> function in your code.
+<p>Get the value of a translation key or the whole i18n resource store</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// Returns the whole i18n resource store</span>
+<span class="pl-smi">parser</span>.<span class="pl-en">get</span>();
+
+<span class="pl-c">// Returns the resource store with the top-level keys sorted by alphabetical order </span>
+<span class="pl-smi">parser</span>.<span class="pl-en">get</span>({ sort<span class="pl-k">:</span> <span class="pl-c1">true</span> });
+
+<span class="pl-c">// Returns a value in fallback language (@see options.fallbackLng) with namespace and key</span>
+<span class="pl-smi">parser</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>ns:key<span class="pl-pds">'</span></span>);
+
+<span class="pl-c">// Returns a value with namespace, key, and lng</span>
+<span class="pl-smi">parser</span>.<span class="pl-en">get</span>(<span class="pl-s"><span class="pl-pds">'</span>ns:key<span class="pl-pds">'</span></span>, { lng<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span> });</pre></div>
+
+<h4>
+<a id="parserset" class="anchor" href="#parserset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>parser.set</h4>
+
+<p>Set a translation key with an optional defaultValue to i18n resource store</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">// Set translation key</span>
+<span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key);
+
+<span class="pl-c">// Set translation key with its defaultValue</span>
+<span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key, defaultValue);</pre></div>
+
+<h3>
+<a id="transform-stream-api-1" class="anchor" href="#transform-stream-api-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Transform Stream API</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> scanner <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<span class="pl-smi">scanner</span>.<span class="pl-en">createStream</span>(options, customTransform <span class="pl-c">/* optional */</span>, customFlush <span class="pl-c">/* optional */</span>);</pre></div>
+
+<h4>
+<a id="customtransform" class="anchor" href="#customtransform" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>customTransform</h4>
+
+<p>The optional <code>customTransform</code> function is provided as the 2nd argument for the transform stream API. It must have the following signature: <code>function (file, encoding, done) {}</code>. A minimal implementation should call the <code>done()</code> function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:</p>
 
-<div class="highlight highlight-javascript"><pre>i18n._(<span class="pl-s"><span class="pl-pds">'</span>This is text value<span class="pl-pds">'</span></span>);
-i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>);
-i18n._(<span class="pl-s"><span class="pl-pds">'</span>text<span class="pl-pds">'</span></span>);
-i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span>, { count<span class="pl-k">:</span> <span class="pl-c1">1</span> });
-i18n._(<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-k">+</span> str); <span class="pl-c">// skip run-time variables</span></pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> scanner <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">parser</span>;
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-smi">file</span>.<span class="pl-smi">path</span>, enc);
 
-<p>The content can be parsed with a regular expression, like below:</p>
+    <span class="pl-c">// add your code</span>
+    <span class="pl-en">done</span>();
+};
 
-<div class="highlight highlight-javascript"><pre>i18n\._\((<span class="pl-s"><span class="pl-pds">"</span>(?:[^<span class="pl-pds">"</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'(?:[^'<span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*')<span class="pl-cce">\s</span>*[<span class="pl-cce">\,\)</span>]</span></pre></div>
+<span class="pl-smi">vfs</span>.<span class="pl-en">src</span>([<span class="pl-s"><span class="pl-pds">'</span>/path/to/src<span class="pl-pds">'</span></span>])
+    .<span class="pl-en">pipe</span>(<span class="pl-en">scanner</span>(options, customTransform))
+    .<span class="pl-en">pipe</span>(<span class="pl-smi">vfs</span>.<span class="pl-en">dest</span>(<span class="pl-s"><span class="pl-pds">'</span>path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
 
-<p>The code might look like this:</p>
+<p>To parse a translation key, call <code>parser.set(key, defaultValue)</code> to assign the key with an optional <code>defaultValue</code>.
+For example:</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
-<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">parser</span>;
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-smi">file</span>.<span class="pl-smi">path</span>, enc);
 
-    (<span class="pl-k">function</span>() {
-        <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(<span class="pl-sr"><span class="pl-pds">/</span>i18n<span class="pl-cce">\.</span>_<span class="pl-cce">\(</span>("(?:<span class="pl-c1">[<span class="pl-k">^</span>"<span class="pl-cce">\\</span>]</span><span class="pl-k">|</span><span class="pl-cce">\\</span><span class="pl-c1">.</span>)<span class="pl-k">*</span>"<span class="pl-k">|</span>'(?:<span class="pl-c1">[<span class="pl-k">^</span>'<span class="pl-cce">\\</span>]</span><span class="pl-k">|</span><span class="pl-cce">\\</span><span class="pl-c1">.</span>)<span class="pl-k">*</span>')<span class="pl-c1">\s</span><span class="pl-k">*</span><span class="pl-c1">[<span class="pl-cce">\,\)</span>]</span><span class="pl-pds">/</span>igm</span>) <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
-        _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-            <span class="pl-k">var</span> key, value;
-            <span class="pl-k">var</span> r <span class="pl-k">=</span> result.<span class="pl-c1">match</span>(<span class="pl-sr"><span class="pl-pds">/</span>i18n<span class="pl-cce">\.</span>_<span class="pl-cce">\(</span>("(?:<span class="pl-c1">[<span class="pl-k">^</span>"<span class="pl-cce">\\</span>]</span><span class="pl-k">|</span><span class="pl-cce">\\</span><span class="pl-c1">.</span>)<span class="pl-k">*</span>"<span class="pl-k">|</span>'(?:<span class="pl-c1">[<span class="pl-k">^</span>'<span class="pl-cce">\\</span>]</span><span class="pl-k">|</span><span class="pl-cce">\\</span><span class="pl-c1">.</span>)<span class="pl-k">*</span>')<span class="pl-c1">\s</span><span class="pl-k">*</span><span class="pl-c1">[<span class="pl-cce">\,\)</span>]</span><span class="pl-pds">/</span></span>) <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
+    <span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18n.t<span class="pl-pds">'</span></span>] }, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+        <span class="pl-k">var</span> defaultValue <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>__L10N__<span class="pl-pds">'</span></span>;
+        <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(key, defaultValue);
+    });
 
-            <span class="pl-k">if</span> (r) {
-                value <span class="pl-k">=</span> _.trim(r[<span class="pl-c1">1</span>], <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span>"<span class="pl-pds">'</span></span>);
+    <span class="pl-en">done</span>();
+};</pre></div>
 
-                <span class="pl-c">// Replace double backslash with single backslash</span>
-                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\\</span><span class="pl-pds">/</span>g</span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\\</span><span class="pl-pds">'</span></span>);
-                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\'</span><span class="pl-pds">/</span></span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span>);                              
+<p>Alternatively, you may call <code>parser.set(defaultKey, value)</code> to assign the value with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
+For example:</p>
 
-                key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-                parser.<span class="pl-c1">parse</span>(key, value);
-            }
-        });
-    }());
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">parser</span>;
+    <span class="pl-k">var</span> content <span class="pl-k">=</span> <span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-smi">file</span>.<span class="pl-smi">path</span>, enc);
 
-    done();
+    <span class="pl-smi">parser</span>.<span class="pl-en">parseFuncFromString</span>(content, { list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18n._<span class="pl-pds">'</span></span>] }, <span class="pl-k">function</span>(<span class="pl-smi">key</span>) {
+        <span class="pl-k">var</span> value <span class="pl-k">=</span> key;
+        <span class="pl-k">var</span> defaultKey <span class="pl-k">=</span> <span class="pl-en">hash</span>(value);
+        <span class="pl-smi">parser</span>.<span class="pl-en">set</span>(defaultKey, value);
+    });
+
+    <span class="pl-en">done</span>();
 };</pre></div>
 
 <h4>
-<a id="handlebars-i18n-helper" class="anchor" href="#handlebars-i18n-helper" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handlebars i18n helper</h4>
+<a id="customflush" class="anchor" href="#customflush" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>customFlush</h4>
 
-<p><strong>i18n function helper</strong></p>
+<p>The optional <code>customFlush</code> function is provided as the last argument for the transform stream API, it is called just prior to the stream ending. You can implement your <code>customFlush</code> function to override the default <code>flush</code> function. When everything's done, call the <code>done()</code> function to indicate the stream is finished.
+For example:</p>
 
-<div class="highlight highlight-hbs"><pre><span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
-<span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>bar<span class="pl-pds">'</span></span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>foo<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
-<span class="pl-c1">{{</span><span class="pl-v">i18n</span> <span class="pl-s"><span class="pl-pds">'</span>baz<span class="pl-pds">'</span></span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>locale:foo<span class="pl-pds">'</span></span><span class="pl-c1">}}</span>
-<span class="pl-c1">{{</span><span class="pl-v">i18n</span> defaultKey=<span class="pl-s"><span class="pl-pds">'</span>noval<span class="pl-pds">'</span></span><span class="pl-c1">}}</span></pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> scanner <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
+<span class="pl-k">var</span> <span class="pl-en">customFlush</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_flush</span>(<span class="pl-smi">done</span>) {
+    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">parser</span>;
+    <span class="pl-k">var</span> resStore <span class="pl-k">=</span> <span class="pl-smi">parser</span>.<span class="pl-en">getResourceStore</span>();
 
-<p>Using the regular expression for the above:</p>
-
-<div class="highlight highlight-javascript"><pre>{{i18n\s<span class="pl-k">+</span>(<span class="pl-s"><span class="pl-pds">"</span>(?:[^<span class="pl-pds">"</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'(?:[^'<span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*')?([^}]*)}}</span></pre></div>
-
-<p><strong>i18n block helper</strong></p>
-
-<div class="highlight highlight-hbs"><pre><span class="pl-c1">{{#i18n}}</span>Some text<span class="pl-c1">{{/i18n}}</span>
-<span class="pl-c1">{{#i18n</span> <span class="pl-v">this</span><span class="pl-c1">}}</span>Description: <span class="pl-c1">{{</span><span class="pl-v">description</span><span class="pl-c1">}}</span><span class="pl-c1">{{/i18n}}</span>
-<span class="pl-c1">{{#i18n</span> <span class="pl-v">this</span> <span class="pl-c1">last-name</span>=lastname<span class="pl-c1">}}</span><span class="pl-c1">{{</span><span class="pl-v">firstname</span><span class="pl-c1">}}</span> ${last-name}<span class="pl-c1">{{/i18n}}</span></pre></div>
-
-<p>Using the regular expression for the above:</p>
-
-<div class="highlight highlight-javascript"><pre>{{#i18n\s<span class="pl-k">*</span>([<span class="pl-k">^</span>}]<span class="pl-k">*</span>)}}((<span class="pl-k">?:</span>(<span class="pl-k">?!</span>{{\/i18n}})(<span class="pl-k">?:</span>.|\n))<span class="pl-k">*</span>){{\/i18n}}</pre></div>
-
-<p><strong>Sample code</strong></p>
-
-<p>The sample code might look like this:</p>
-
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
-<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-
-    <span class="pl-c">// i18n function helper</span>
-    (<span class="pl-k">function</span>() {
-        <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(/{{i18n\s<span class="pl-k">+</span>(<span class="pl-s"><span class="pl-pds">"</span>(?:[^<span class="pl-pds">"</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">"</span>|'(?:[^'<span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*')?([^}]*)}}/gm) || [];</span>
-<span class="pl-s">        _.each(results, function(result) {</span>
-<span class="pl-s">            var key, value;</span>
-<span class="pl-s">            var r = result.match(/{{i18n<span class="pl-cce">\s</span>+(<span class="pl-pds">"</span></span>(<span class="pl-k">?:</span>[<span class="pl-k">^</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\\</span>]|<span class="pl-cce">\\</span>.)*<span class="pl-pds">"</span></span>|<span class="pl-s"><span class="pl-pds">'</span>(?:[^<span class="pl-pds">'</span></span>\\]|\\.)<span class="pl-k">*</span><span class="pl-s"><span class="pl-pds">'</span>)?([^}]*)}}/m) || [];</span>
-<span class="pl-s"></span>
-<span class="pl-s">            if ( ! _.isUndefined(r[1])) {</span>
-<span class="pl-s">                value = _.trim(r[1], <span class="pl-pds">'</span></span>\<span class="pl-s"><span class="pl-pds">'</span>"<span class="pl-pds">'</span></span>);
-
-                <span class="pl-c">// Replace double backslash with single backslash</span>
-                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\\</span><span class="pl-pds">/</span>g</span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\\</span><span class="pl-pds">'</span></span>);
-                value <span class="pl-k">=</span> value.<span class="pl-c1">replace</span>(<span class="pl-sr"><span class="pl-pds">/</span><span class="pl-cce">\\\'</span><span class="pl-pds">/</span></span>, <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span><span class="pl-pds">'</span></span>);                              
-            }
-
-            <span class="pl-k">var</span> params <span class="pl-k">=</span> parser.parseHashArguments(r[<span class="pl-c1">2</span>]);
-            <span class="pl-k">if</span> (_.has(params, <span class="pl-s"><span class="pl-pds">'</span>defaultKey<span class="pl-pds">'</span></span>)) {
-                key <span class="pl-k">=</span> params[<span class="pl-s"><span class="pl-pds">'</span>defaultKey<span class="pl-pds">'</span></span>];
-            }
-
-            <span class="pl-k">if</span> (_.isUndefined(key) <span class="pl-k">&amp;&amp;</span> _.isUndefined(value)) {
-                <span class="pl-k">return</span>;
-            }
-
-            <span class="pl-k">if</span> (_.isUndefined(key)) {
-                key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-            }
-
-            parser.<span class="pl-c1">parse</span>(key, value);
+    <span class="pl-c">// loop over the resStore</span>
+    <span class="pl-c1">Object</span>.<span class="pl-en">keys</span>(resStore).<span class="pl-en">forEach</span>(<span class="pl-k">function</span>(<span class="pl-smi">lng</span>) {
+        <span class="pl-k">var</span> namespaces <span class="pl-k">=</span> resStore[lng];
+        <span class="pl-c1">Object</span>.<span class="pl-en">keys</span>(namespaces).<span class="pl-en">forEach</span>(<span class="pl-k">function</span>(<span class="pl-smi">ns</span>) {
+            <span class="pl-k">var</span> obj <span class="pl-k">=</span> namespaces[ns];
+            <span class="pl-c">// add your code</span>
         });
-    }());
+    });
 
-    <span class="pl-c">// i18n block helper</span>
-    (<span class="pl-k">function</span>() {
-        <span class="pl-k">var</span> results <span class="pl-k">=</span> content.<span class="pl-c1">match</span>(/{{#i18n\s<span class="pl-k">*</span>([<span class="pl-k">^</span>}]<span class="pl-k">*</span>)}}((<span class="pl-k">?:</span>(<span class="pl-k">?!</span>{{\/i18n}})(<span class="pl-k">?:</span>.|\n))<span class="pl-k">*</span>){{\/i18n}}/gm) <span class="pl-k">||</span> [];
-        _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-            <span class="pl-k">var</span> key, value;
-            <span class="pl-k">var</span> r <span class="pl-k">=</span> result.<span class="pl-c1">match</span>(/{{#i18n\s<span class="pl-k">*</span>([<span class="pl-k">^</span>}]<span class="pl-k">*</span>)}}((<span class="pl-k">?:</span>(<span class="pl-k">?!</span>{{\/i18n}})(<span class="pl-k">?:</span>.|\n))<span class="pl-k">*</span>){{\/i18n}}/m) <span class="pl-k">||</span> [];
+    <span class="pl-en">done</span>();
+};
 
-            <span class="pl-k">if</span> ( <span class="pl-k">!</span> _.isUndefined(r[<span class="pl-c1">2</span>])) {
-                value <span class="pl-k">=</span> _.trim(r[<span class="pl-c1">2</span>], <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\'</span>"<span class="pl-pds">'</span></span>);
-            }
-
-            <span class="pl-k">if</span> (_.isUndefined(value)) {
-                <span class="pl-k">return</span>;
-            }
-
-            key <span class="pl-k">=</span> hash(value); <span class="pl-c">// returns a hash value as its default key</span>
-            parser.<span class="pl-c1">parse</span>(key, value);
-        });
-    }());
-
-    done();
-};</pre></div>
+<span class="pl-smi">vfs</span>.<span class="pl-en">src</span>([<span class="pl-s"><span class="pl-pds">'</span>/path/to/src<span class="pl-pds">'</span></span>])
+    .<span class="pl-en">pipe</span>(<span class="pl-en">scanner</span>(options, customTransform, customFlush))
+    .<span class="pl-en">pipe</span>(<span class="pl-smi">vfs</span>.<span class="pl-en">dest</span>(<span class="pl-s"><span class="pl-pds">'</span>/path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
 
 <h2>
-<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h2>
+<a id="default-options" class="anchor" href="#default-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Default Options</h2>
 
-<pre><code>function(options[, customTransform[, customFlush]])
-</code></pre>
+<p>Below are the configuration options with their default values:</p>
 
-<h3>
-<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>options</h3>
-
-<div class="highlight highlight-javascript"><pre>{
+<div class="highlight highlight-source-js"><pre>{
     debug<span class="pl-k">:</span> <span class="pl-c1">false</span>,
     sort<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+    attr<span class="pl-k">:</span> {
+        list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>],
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>.html<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>.htm<span class="pl-pds">'</span></span>]
+    },
+    func<span class="pl-k">:</span> {
+        list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18next.t<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>i18n.t<span class="pl-pds">'</span></span>],
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>.js<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>.jsx<span class="pl-pds">'</span></span>]
+    },
     lngs<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>en<span class="pl-pds">'</span></span>],
+    ns<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>],
+    defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>,
     defaultValue<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>,
-    resGetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-    resSetPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/__lng__/__ns__.json<span class="pl-pds">'</span></span>,
-    nsseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>:<span class="pl-pds">'</span></span>,
-    keyseparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>,
-    interpolationPrefix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
-    interpolationSuffix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>__<span class="pl-pds">'</span></span>,
-    ns<span class="pl-k">:</span> {
-        namespaces<span class="pl-k">:</span> [],
-        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>translation<span class="pl-pds">'</span></span>
+    resource<span class="pl-k">:</span> {
+        loadPath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
+        savePath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
+    },
+    nsSeparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>:<span class="pl-pds">'</span></span>,
+    keySeparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>,
+    interpolation<span class="pl-k">:</span> {
+        pefix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>{{<span class="pl-pds">'</span></span>,
+        suffix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>}}<span class="pl-pds">'</span></span>
     }
 }</pre></div>
 
 <h4>
-<a id="debug" class="anchor" href="#debug" aria-hidden="true"><span class="octicon octicon-link"></span></a>debug</h4>
+<a id="debug" class="anchor" href="#debug" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>debug</h4>
 
 <p>Type: <code>Boolean</code> Default: <code>false</code></p>
 
 <p>Set to <code>true</code> to trun on debug output.</p>
 
 <h4>
-<a id="sort" class="anchor" href="#sort" aria-hidden="true"><span class="octicon octicon-link"></span></a>sort</h4>
+<a id="sort" class="anchor" href="#sort" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>sort</h4>
 
 <p>Type: <code>Boolean</code> Default: <code>false</code></p>
 
 <p>Set to <code>true</code> if you want to sort translation keys in ascending order.</p>
 
 <h4>
-<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span class="octicon octicon-link"></span></a>lngs</h4>
+<a id="attr" class="anchor" href="#attr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>attr</h4>
 
-<p>Type: <code>Array</code> Default: <code>['en']</code></p>
+<p>Type: <code>Object</code> or <code>false</code></p>
 
-<p>Provides a list of supported languages.</p>
+<p>If an <code>Object</code> is supplied, you can either specify a list of attributes and extensions, or override the default.</p>
 
-<h4>
-<a id="defaultvalue" class="anchor" href="#defaultvalue" aria-hidden="true"><span class="octicon octicon-link"></span></a>defaultValue</h4>
-
-<p>Type: <code>String</code> Default: <code>''</code></p>
-
-<p>Provides a default value if a value is not specified.</p>
-
-<h4>
-<a id="resgetpath" class="anchor" href="#resgetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resGetPath</h4>
-
-<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
-
-<p>The source path of resource files. The <code>resGetPath</code> is relative to current working directory.</p>
-
-<h4>
-<a id="ressetpath" class="anchor" href="#ressetpath" aria-hidden="true"><span class="octicon octicon-link"></span></a>resSetPath</h4>
-
-<p>Type: <code>String</code> Default: <code>'i18n/__lng__/__ns__.json'</code></p>
-
-<p>The target path of resource files. The <code>resSetPath</code> is relative to current working directory or your <code>gulp.dest()</code> path.</p>
-
-<h4>
-<a id="nsseparator" class="anchor" href="#nsseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>nsseparator</h4>
-
-<p>Type: <code>String</code> Default: <code>':'</code></p>
-
-<p>The namespace separator.</p>
-
-<h4>
-<a id="keyseparator" class="anchor" href="#keyseparator" aria-hidden="true"><span class="octicon octicon-link"></span></a>keyseparator</h4>
-
-<p>Type: <code>String</code> Default: <code>'.'</code></p>
-
-<p>The key separator.</p>
-
-<h4>
-<a id="interpolationprefix" class="anchor" href="#interpolationprefix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationPrefix</h4>
-
-<p>Type: <code>String</code> Default: <code>'__'</code></p>
-
-<p>The prefix for variables.</p>
-
-<h4>
-<a id="interpolationsuffix" class="anchor" href="#interpolationsuffix" aria-hidden="true"><span class="octicon octicon-link"></span></a>interpolationSuffix</h4>
-
-<p>Type: <code>String</code> Default: <code>'__'</code></p>
-
-<p>The suffix for variables.</p>
-
-<h4>
-<a id="ns" class="anchor" href="#ns" aria-hidden="true"><span class="octicon octicon-link"></span></a>ns</h4>
-
-<p>Type: <code>Object</code> or <code>String</code></p>
-
-<p>If an <code>Object</code> is supplied, you can either specify a list of namespaces, or override the default namespace.
-For example:</p>
-
-<div class="highlight highlight-javascript"><pre>{
-    ns<span class="pl-k">:</span> {
-        namespaces<span class="pl-k">:</span> [ <span class="pl-c">// Default: []</span>
-            <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span>,
-            <span class="pl-s"><span class="pl-pds">'</span>locale<span class="pl-pds">'</span></span>
-        ],
-        defaultNs<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
+<div class="highlight highlight-source-js"><pre>{ <span class="pl-c">// Default</span>
+    attr<span class="pl-k">:</span> {
+        list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>data-i18n<span class="pl-pds">'</span></span>],
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>.html<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>.htm<span class="pl-pds">'</span></span>]
     }
 }</pre></div>
 
-<p>If a <code>String</code> is supplied instead, it will become the default namespace.
-For example:</p>
+<p>You can set attr to <code>false</code> to disable parsing attribute as below:</p>
 
-<div class="highlight highlight-javascript"><pre>{
-    ns<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>resource<span class="pl-pds">'</span></span> <span class="pl-c">// Default: 'translation'</span>
+<div class="highlight highlight-source-js"><pre>{
+    attr<span class="pl-k">:</span> <span class="pl-c1">false</span>
 }</pre></div>
 
-<h3>
-<a id="customtransform" class="anchor" href="#customtransform" aria-hidden="true"><span class="octicon octicon-link"></span></a>customTransform</h3>
+<h4>
+<a id="func" class="anchor" href="#func" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>func</h4>
 
-<p>The optional <code>customTransform</code> function is provided as the 2nd argument. It must have the following signature: <code>function (file, encoding, done) {}</code>. A minimal implementation should call the <code>done()</code> function to indicate that the transformation is done, even if that transformation means discarding the file.
-For example:</p>
+<p>Type: <code>Object</code> or <code>false</code></p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> extname <span class="pl-k">=</span> path.extname(file.path);
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
+<p>If an <code>Object</code> is supplied, you can either specify a list of translation functions and extensions, or override the default.</p>
 
-    <span class="pl-c">// add your code</span>
-    done();
-};
+<div class="highlight highlight-source-js"><pre>{ <span class="pl-c">// Default</span>
+    func<span class="pl-k">:</span> {
+        list<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>i18next.t<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>i18n.t<span class="pl-pds">'</span></span>],
+        extensions<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>.js<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>.jsx<span class="pl-pds">'</span></span>]
+    }
+}</pre></div>
 
-vfs.src([<span class="pl-s"><span class="pl-pds">'</span>path/to/src<span class="pl-pds">'</span></span>])
-    .pipe(i18next(options, customTransform))
-    .pipe(vfs.dest(<span class="pl-s"><span class="pl-pds">'</span>path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
+<p>You can set func to <code>false</code> to disable parsing translation function as below:</p>
 
-<p>To parse a translation key, call <code>parser.parse(key, defaultValue)</code> to assign the key with an optional <code>defaultValue</code>.
-For example:</p>
+<div class="highlight highlight-source-js"><pre>{
+    func<span class="pl-k">:</span> <span class="pl-c1">false</span>
+}</pre></div>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
+<h4>
+<a id="lngs" class="anchor" href="#lngs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>lngs</h4>
 
-    <span class="pl-c">// parse the content and loop over the results</span>
-    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        <span class="pl-k">var</span> key <span class="pl-k">=</span> result.key;
-        <span class="pl-k">var</span> value <span class="pl-k">=</span> result.<span class="pl-c1">defaultValue</span> <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>;
-        parser.<span class="pl-c1">parse</span>(key, value);
-    });
-};</pre></div>
+<p>Type: <code>Array</code> Default: <code>['en']</code></p>
 
-<p>Alternatively, you may call <code>parser.parse(defaultKey, value)</code> to assign the value with a default key. The <code>defaultKey</code> should be unique string and can never be <code>null</code>, <code>undefined</code>, or empty.
-For example:</p>
+<p>An array of supported languages.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> hash <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-text<span class="pl-pds">'</span></span>).<span class="pl-c1">hash</span>[<span class="pl-s"><span class="pl-pds">'</span>sha1<span class="pl-pds">'</span></span>];
-<span class="pl-k">var</span> <span class="pl-en">customTransform</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_transform</span>(<span class="pl-smi">file</span>, <span class="pl-smi">enc</span>, <span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> parser <span class="pl-k">=</span> <span class="pl-v">this</span>.parser;
-    <span class="pl-k">var</span> content <span class="pl-k">=</span> fs.readFileSync(file.path, enc);
-    <span class="pl-k">var</span> results <span class="pl-k">=</span> [];
+<h4>
+<a id="ns" class="anchor" href="#ns" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ns</h4>
 
-    <span class="pl-c">// parse the content and loop over the results</span>
-    _.each(results, <span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
-        <span class="pl-k">var</span> key <span class="pl-k">=</span> result.defaultKey <span class="pl-k">||</span> hash(result.<span class="pl-c1">value</span>);
-        <span class="pl-k">var</span> value <span class="pl-k">=</span> result.<span class="pl-c1">value</span>;
-        parser.<span class="pl-c1">parse</span>(key, value);
-    });
-};</pre></div>
+<p>Type: <code>String</code> or <code>Array</code> Default: <code>['translation']</code></p>
 
-<h3>
-<a id="customflush" class="anchor" href="#customflush" aria-hidden="true"><span class="octicon octicon-link"></span></a>customFlush</h3>
+<p>A namespace string or an array of namespaces.</p>
 
-<p>The optional <code>customFlush</code> function is provided as the last argument, it is called just prior to the stream ending. You can implement your <code>customFlush</code> function to override the default <code>flush</code> function. When everything's done, call the <code>done()</code> function to indicate the stream is finished.
-For example:</p>
+<h4>
+<a id="defaultns" class="anchor" href="#defaultns" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>defaultNs</h4>
 
-<div class="highlight highlight-javascript"><pre><span class="pl-k">var</span> _ <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>lodash<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> i18next <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>i18next-scanner<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> vfs <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>vinyl-fs<span class="pl-pds">'</span></span>);
-<span class="pl-k">var</span> <span class="pl-en">customFlush</span> <span class="pl-k">=</span> <span class="pl-k">function</span> <span class="pl-en">_flush</span>(<span class="pl-smi">done</span>) {
-    <span class="pl-k">var</span> that <span class="pl-k">=</span> <span class="pl-v">this</span>;
-    <span class="pl-k">var</span> resStore <span class="pl-k">=</span> parser.toObject({
-        sort<span class="pl-k">:</span> <span class="pl-k">!!</span>parser.<span class="pl-c1">options</span>.sort
-     });
+<p>Type: <code>String</code> Default: <code>'translation'</code></p>
 
-    <span class="pl-c">// loop over the resStore</span>
-    _.each(resStore, <span class="pl-k">function</span>(<span class="pl-smi">namespaces</span>, <span class="pl-smi">lng</span>) {
-        _.each(namespaces, <span class="pl-k">function</span>(<span class="pl-smi">obj</span>, <span class="pl-smi">ns</span>) {
-            <span class="pl-c">// add your code</span>
-        });
-    });
+<p>The default namespace used if not passed to translation function.</p>
 
-    done();
-};
+<h4>
+<a id="defaultvalue" class="anchor" href="#defaultvalue" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>defaultValue</h4>
 
-vfs.src([<span class="pl-s"><span class="pl-pds">'</span>path/to/src<span class="pl-pds">'</span></span>])
-    .pipe(i18next(options, customTransform, customFlush))
-    .pipe(vfs.dest(<span class="pl-s"><span class="pl-pds">'</span>path/to/dest<span class="pl-pds">'</span></span>));</pre></div>
+<p>Type: <code>String</code> Default: <code>''</code></p>
+
+<p>The default value used if not passed to <code>parser.set</code>.</p>
+
+<h4>
+<a id="resource" class="anchor" href="#resource" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>resource</h4>
+
+<p>Type: <code>Object</code></p>
+
+<p>Resource options:</p>
+
+<div class="highlight highlight-source-js"><pre>{ <span class="pl-c">// Default</span>
+    resource<span class="pl-k">:</span> {
+        <span class="pl-c">// path where resources get loaded from</span>
+        savePath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
+
+        <span class="pl-c">// path to store resources</span>
+        savePath<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>i18n/{{lng}}/{{ns}}.json<span class="pl-pds">'</span></span>,
+
+        <span class="pl-c">// jsonIndent to use when storing json files</span>
+        jsonIndent<span class="pl-k">:</span> <span class="pl-c1">2</span>
+    }
+}</pre></div>
+
+<h4>
+<a id="keyseparator" class="anchor" href="#keyseparator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>keySeparator</h4>
+
+<p>Type: <code>String</code> or <code>false</code> Default: <code>'.'</code></p>
+
+<p>Key separator used in translation keys.</p>
+
+<p>Set to <code>false</code> to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by <a href="https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210">i18next@2.1.0</a>. Also see <strong>Key based fallback</strong> at <a href="http://i18next.com/translate/keyBasedFallback">http://i18next.com/translate/keyBasedFallback</a>.</p>
+
+<h4>
+<a id="nsseparator" class="anchor" href="#nsseparator" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nsSeparator</h4>
+
+<p>Type: <code>String</code> or <code>false</code> Default: <code>':'</code></p>
+
+<p>Namespace separator used in translation keys.</p>
+
+<p>Set to <code>false</code> to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by <a href="https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210">i18next@2.1.0</a>. Also see <strong>Key based fallback</strong> at <a href="http://i18next.com/translate/keyBasedFallback">http://i18next.com/translate/keyBasedFallback</a>.</p>
+
+<h4>
+<a id="interpolation" class="anchor" href="#interpolation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>interpolation</h4>
+
+<p>Type: <code>Object</code></p>
+
+<p>interpolation options</p>
+
+<div class="highlight highlight-source-js"><pre>{ <span class="pl-c">// Default</span>
+    interpolation<span class="pl-k">:</span> {
+        <span class="pl-c">// The prefix for variables</span>
+        prefix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>{{<span class="pl-pds">'</span></span>,
+
+        <span class="pl-c">// The suffix for variables</span>
+        suffix<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>}}<span class="pl-pds">'</span></span>
+    }
+}</pre></div>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="integration-guide" class="anchor" href="#integration-guide" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Integration Guide</h2>
 
-<p>Copyright (c) 2015 Cheton Wu</p>
+<p>Checkout <a href="https://github.com/i18next/i18next-scanner/wiki/Integration-Guide">Integration Guide</a> to learn how to integrate with <a href="https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#react">React</a>, <a href="https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#gettext-style-i18n">Gettext Style I18n</a>, and <a href="https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#handlebars">Handlebars</a>.</p>
 
-<p>Licensed under the <a href="https://github.com/cheton/i18next-scanner/blob/master/LICENSE">MIT License</a>.</p>
-      </section>
-    </div>
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">I18next-scanner maintained by <a href="https://github.com/cheton">cheton</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+<p>Copyright (c) 2015-2016 Cheton Wu</p>
+
+<p>Licensed under the <a href="https://github.com/i18next/i18next-scanner/blob/master/LICENSE">MIT License</a>.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/i18next/i18next-scanner">I18next-scanner</a> is maintained by <a href="https://github.com/i18next">i18next</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-    
+    </section>
 
+  
   </body>
 </html>
