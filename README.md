@@ -6,6 +6,7 @@ i18next-scanner is a transform stream that can scan your code, extract translati
 
 ## Notice
 There is a major breaking change since v1.0, and the API interface and options are not compatible with v0.x.
+
 Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migration-Guide) for doing migration from earlier versions.
 
 ## Features
@@ -307,7 +308,7 @@ interpolation options
 ```
 
 ### customTransform
-The optional `customTransform` function is provided as the 2nd argument. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
+The optional `customTransform` function is provided as the 2nd argument for the transform stream API. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
 ```js
 var scanner = require('i18next-scanner');
@@ -360,7 +361,7 @@ var customTransform = function _transform(file, enc, done) {
 ```
 
 ### customFlush
-The optional `customFlush` function is provided as the last argument, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
+The optional `customFlush` function is provided as the last argument for the transform stream API, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
 For example:
 ```js
 var scanner = require('i18next-scanner');
