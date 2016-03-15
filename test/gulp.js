@@ -11,7 +11,10 @@ test('Gulp usage', function(t) {
             list: ['_t']
         },
         lngs: ['en','de'],
-        ns: ['resource'],
+        ns: [
+            'locale',
+            'resource'
+        ],
         defaultNs: 'resource',
         defaultValue: '__STRING_NOT_TRANSLATED__',
         resource: {
