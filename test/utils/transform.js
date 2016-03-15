@@ -5,6 +5,45 @@ import path from 'path';
 import hash from 'sha1';
 import table from 'text-table';
 
+// Parses hash arguments for Handlebars block helper
+// @see [Hash Arguments]{@http://code.demunskin.com/other/Handlebars/block_helpers.html#hash-arguments}
+// @see [Regular expression for parsing name value pairs]{@link http://stackoverflow.com/questions/168171/regular-expression-for-parsing-name-value-pairs}
+// @example <caption>Example usage:</caption>
+// it will output ["id=nav-bar", "class = "top"", "foo = "bar\"baz""]
+// var str = ' id=nav-bar class = "top" foo = "bar\\"baz" ';
+// str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
+// @param [string] str A string representation of hash arguments
+// @return {object}
+var parseHashArguments = function(str) {
+    var hash = {};
+
+    var results = str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
+    results.forEach((result) => {
+        result = _.trim(result);
+        var r = result.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/) || [];
+        if (r.length < 3 || _.isUndefined(r[1]) || _.isUndefined(r[2])) {
+            return;
+        }
+
+        var key = _.trim(r[1]);
+        var value = _.trim(r[2]);
+
+        { // value is enclosed with either single quote (') or double quote (") characters
+            var quoteChars = '\'"';
+            var quoteChar = _.find(quoteChars, (quoteChar) => {
+                return value.charAt(0) === quoteChar;
+            });
+            if (quoteChar) { // single quote (') or double quote (")
+                value = unquote(value, quoteChar);
+            }
+        }
+
+        hash[key] = value;
+    });
+
+    return hash;
+};
+
 const transform = function(file, enc, done) {
     const parser = this.parser;
     const extname = path.extname(file.path);
@@ -38,7 +77,7 @@ const transform = function(file, enc, done) {
                 value = value.replace(/\\\'/, '\'');
             }
 
-            const params = parser.parseHashArguments(r[2]);
+            const params = parseHashArguments(r[2]);
             if (_.has(params, 'defaultKey')) {
                 key = params['defaultKey'];
             }

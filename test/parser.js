@@ -5,6 +5,33 @@ import { Parser } from '../src';
 
 const defaults = {};
 
+test('parse translation function', (t) => {
+    const parser = new Parser();
+    const customHandler = function(key) {
+        const defaultValue = '__TRANSLATION__'; // optional default value
+        parser.set(key, defaultValue);
+    };
+
+    // i18next.t('key');
+    const content = '
+    content = fs.readFileSync('./app.js', 'utf-8');
+    parser
+        .parseFuncFromString(content, customHandler) // pass a custom handler
+        .parseFuncFromString(content, { list: ['i18next.t']}) // override `func.list`
+        .parseFuncFromString(content, { list: ['i18next.t']}, customHandler)
+        .parseFuncFromString(content); // using default options and handler
+
+    t.same(parset.get(), {
+        en: {
+            translation: {
+                "key2": "__TRANSLATION__",
+                "key1": "__TRANSLATION__"
+          }
+        }
+    });
+    t.end();
+});
+
 test('gettext style i18n', (t) => {
     const parser = new Parser({
         keySeparator: false,
@@ -16,7 +43,7 @@ test('gettext style i18n', (t) => {
 
     parser.parseFuncFromString(content, { list: ['i18n._'] });
 
-    const resStore = parser.getResourceStore();
+    const resStore = parser.get();
     t.same(resStore, {
         en: {
             translation: {
@@ -36,7 +63,7 @@ test('disable nsSeparator', (t) => {
     }));
     parser.set('foo:bar', '');
 
-    const resStore = parser.getResourceStore();
+    const resStore = parser.get();
 
     t.same(resStore, {
         en: {
@@ -55,7 +82,7 @@ test('disable keySeparator', (t) => {
     }));
     parser.set('Creating...', '');
 
-    const resStore = parser.getResourceStore();
+    const resStore = parser.get();
 
     t.same(resStore, {
         en: {
@@ -74,7 +101,7 @@ test('default nsSeparator', (t) => {
     }));
     parser.set('translation:key1.key2', '');
 
-    const resStore = parser.getResourceStore();
+    const resStore = parser.get();
 
     t.same(resStore, {
         en: {
@@ -95,7 +122,7 @@ test('default keyseparator', (t) => {
     }));
     parser.set('key1.key2', '');
 
-    const resStore = parser.getResourceStore();
+    const resStore = parser.get();
 
     t.same(resStore, {
         en: {
