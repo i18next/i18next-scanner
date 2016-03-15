@@ -89,10 +89,10 @@ gulp.task('i18next', function() {
             lngs: ['en', 'de'], // supported languages
             resource: {
                 // the source path is relative to current working directory
-                loadPath: 'assets/i18n/__lng__/__ns__.json',
+                loadPath: 'assets/i18n/{{lng}}/{{ns}}.json',
                 
                 // the destination path is relative to your `gulp.dest()` path
-                savePath: 'i18n/__lng__/__ns__.json'
+                savePath: 'i18n/{{lng}}/{{ns}}.json'
             }
         }))
         .pipe(gulp.dest('assets'));
@@ -115,8 +115,8 @@ grunt.initConfig({
             options: {
                 lngs: ['en', 'de'],
                 resource: {
-                    loadPath: 'assets/i18n/__lng__/__ns__.json',
-                    savePath: 'i18n/__lng__/__ns__.json'
+                    loadPath: 'assets/i18n/{{lng}}/{{ns}}.json',
+                    savePath: 'i18n/{{lng}}/{{ns}}.json'
                 }
             }
         }
@@ -160,14 +160,14 @@ Below are the configuration options with their default values:
     defaultNs: 'translation',
     defaultValue: '',
     resource: {
-        loadPath: 'i18n/__lng__/__ns__.json',
-        savePath: 'i18n/__lng__/__ns__.json',
+        loadPath: 'i18n/{{lng}}/{{ns}}.json',
+        savePath: 'i18n/{{lng}}/{{ns}}.json',
     },
     nsSeparator: ':',
     keySeparator: '.',
     interpolation: {
-        pefix: '__',
-        suffix: '__'
+        pefix: '{{',
+        suffix: '}}'
     }
 }
 ```
@@ -259,10 +259,10 @@ Resource options:
 { // Default
     resource: {
         // path where resources get loaded from
-        loadPath: 'i18n/__lng__/__ns__.json',
+        savePath: 'i18n/{{lng}}/{{ns}}.json',
 
         // path to store resources
-        savePath: 'i18n/__lng__/__ns__.json',
+        savePath: 'i18n/{{lng}}/{{ns}}.json',
 
         // jsonIndent to use when storing json files
         jsonIndent: 2
@@ -295,10 +295,10 @@ interpolation options
 { // Default
     interpolation: {
         // The prefix for variables
-        prefix: '__',
+        prefix: '{{',
 
         // The suffix for variables
-        suffix: '__'
+        suffix: '}}'
     }
 }
 ```
@@ -392,7 +392,7 @@ An example of resource file:
     "app": {
         "name": "My App"
     },
-    "key": "__myVar__ are important"
+    "key": "{{myVar}} are important"
 }
 ```
 
@@ -568,6 +568,14 @@ The sample code might look like this:
 ```javascript
 var _ = require('lodash');
 var hash = require('sha1');
+
+var unquote = function(str, quoteChar) {
+    quoteChar = quoteChar || '"';
+    if (str[0] === quoteChar && str[str.length - 1] === quoteChar) {
+        return str.slice(1, str.length - 1);
+    }
+    return str;
+};
 
 // Parses hash arguments for Handlebars block helper
 // @see [Hash Arguments]{@http://code.demunskin.com/other/Handlebars/block_helpers.html#hash-arguments}
