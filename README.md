@@ -159,7 +159,7 @@ parser.parseFuncFromString(content, function(key) {
 });
 
 parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
-    parset.set(key); // use defaultValue
+    parser.set(key); // use defaultValue
 });
 ```
 
@@ -176,7 +176,7 @@ parser.parseAttrFromString(content, function(key) {
 });
 
 parser.parseAttrFromString(content, { list: ['data-i18n'] }, function(key) {
-    parset.set(key); // use defaultValue
+    parser.set(key); // use defaultValue
 });
 ```
 
