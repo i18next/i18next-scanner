@@ -21,32 +21,38 @@ npm install --save-dev i18next-scanner
 
 ### Standard API
 ```js
+var fs = require('fs');
 var Parser = require('i18next-scanner').Parser;
 
 var customHandler = function(key) {
-    var defaultValue = ''; // optional default value
+    var defaultValue; // optional default value
     parser.parseKey(key, defaultValue);
 };
+
 var parser = new Parser();
 var content = '';
 
 // Parse Translation Function
 // i18next.t('key');
 content = fs.readFileSync('/path/to/app.js', 'utf-8');
-parser.parseFuncFromString(content);
-parser.parseFuncFromString(content, { list: ['i18next.t']}); // override default list
-parser.parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
-parser.parseFuncFromString(content, customHandler); // pass a custom handler
+parser
+    .parseFuncFromString(content);
+    .parseFuncFromString(content, { list: ['i18next.t']}); // override default list
+    .parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
+    .parseFuncFromString(content, customHandler); // pass a custom handler
 
 // Parse HTML Attribute
 // <div data-i18n="key"></div>
 content = fs.readFileSync('/path/to/index.html', 'utf-8');
-parser.parseAttrFromString(content);
-parser.parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
-parser.parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
-parser.parseAttrFromString(content, customHandler); // pass a custom handler
+parser
+    .parseAttrFromString(content);
+    .parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
+    .parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
+    .parseAttrFromString(content, customHandler); // pass a custom handler
 
-console.log(parser.getResourceStore());
+console.log(parser.get());
+console.log(parser.get({ sort: true }));
+console.log(parser.get('namespace:your.translation.key', { lng: 'en'}));
 ```
 
 ### Transform Stream API
