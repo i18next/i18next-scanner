@@ -29,8 +29,8 @@ const defaults = {
 
     // resource
     resource: {
-        loadPath: 'i18n/__lng__/__ns__.json', // the source resource path (relative to current working directory)
-        savePath: 'i18n/__lng__/__ns__.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
+        loadPath: 'i18n/{{lng}}/{{ns}}.json', // the source resource path (relative to current working directory)
+        savePath: 'i18n/{{lng}}/{{ns}}.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
         jsonIndent: 2
     },
 
@@ -39,8 +39,8 @@ const defaults = {
 
     // interpolation options
     interpolation: {
-        prefix: '__', // prefix for interpolation
-        suffix: '__' // suffix for interpolation
+        prefix: '{{', // prefix for interpolation
+        suffix: '}}' // suffix for interpolation
     }
 };
 
@@ -303,12 +303,11 @@ class Parser {
             }
 
             const keys = _.isString(options.keySeparator) ? key.split(options.keySeparator) : [key];
-            const namespaces = resStore[opts.lng] ||
-                               resStore[options.fallbackLng] ||
-                               resStore[options.lngs[0]];
+            const lng = opts.lng ? opts.lng : options.fallbackLng;
+            const namespaces = resStore[lng] || {};
+
             let value = namespaces[ns];
             let x = 0;
-
             while (keys[x]) {
                 value = value && value[keys[x]];
                 x++;
