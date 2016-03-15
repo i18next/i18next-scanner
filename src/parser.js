@@ -19,12 +19,13 @@ const defaults = {
     },
 
     lngs: ['en'], // array of supported languages
+    fallbackLng: 'en', // language to lookup key if not found while calling `parser.get(key, { lng: '' })`
 
     ns: [], // string or array of namespaces
 
     defaultNs: 'translation', // default namespace used if not passed to translation function
 
-    defaultValue: '', // default value used if not passed to `parseKey()`
+    defaultValue: '', // default value used if not passed to `parser.set`
 
     // resource
     resource: {
@@ -128,7 +129,7 @@ class Parser {
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
             namespaces.forEach((ns) => {
-                const resPath = this.getResourceLoadPath(lng, ns);
+                const resPath = this.formatResourceLoadPath(lng, ns);
                 this.resStore[lng][ns] = {};
                 try {
                     const stat = fs.statSync(resPath);
@@ -149,7 +150,7 @@ class Parser {
             console.log.apply(this, args);
         }
     }
-    getResourceLoadPath(lng, ns) {
+    formatResourceLoadPath(lng, ns) {
         const options = this.options;
         const regex = {
             lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
@@ -159,7 +160,7 @@ class Parser {
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
     }
-    getResourceSavePath(lng, ns) {
+    formatResourceSavePath(lng, ns) {
         const options = this.options;
         const regex = {
             lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
@@ -168,34 +169,6 @@ class Parser {
         return options.resource.savePath
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
-    }
-    // Returns I18n resource store containing translation information
-    // @param {object} [opts] The opts object
-    // @param {boolean} [opts.sort] True to sort object by key
-    // @return {object}
-    getResourceStore(opts = {}) {
-        const { sort } = opts;
-        const resStore = Object.assign({}, this.resStore);
-
-        if (!!sort) { // sort by key
-            Object.keys(resStore).forEach((lng) => {
-                const namespaces = resStore[lng];
-
-                Object.keys(namespaces).forEach((ns) => {
-                    resStore[lng][ns] = _(namespaces[ns])
-                        .toPairs()
-                        .sortBy((pair) => pair[0])
-                        .reduce((memo, pair) => {
-                            const [key, value] = pair;
-                            memo[key] = value;
-                            return memo;
-                        }, {})
-                        .value();
-                });
-            });
-        }
-
-        return resStore;
     }
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar") // matched
@@ -229,8 +202,10 @@ class Parser {
                 return;
             }
 
-            this.parseKey(key);
+            this.set(key);
         });
+
+        return this;
     }
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
@@ -277,14 +252,85 @@ class Parser {
                     return;
                 }
 
-                this.parseKey(key);
+                this.set(key);
             });
         });
+
+        return this;
     }
-    // Parses a translation key and stores the key-value pairs to i18n resource store
+    // Get the value of a translation key or the whole resource store containing translation information
+    // @param {string} [key] The translation key
+    // @param {object} [opts] The opts object
+    // @param {boolean} [opts.sort] True to sort object by key
+    // @param {boolean} [opts.lng] The language to use
+    // @return {object}
+    get(key, opts = {}) {
+        if (_.isObject(key)) {
+            opts = key;
+            key = undefined;
+        }
+
+        const resStore = Object.assign({}, this.resStore);
+
+        if (!!opts.sort) { // sort by key
+            Object.keys(resStore).forEach((lng) => {
+                const namespaces = resStore[lng];
+
+                Object.keys(namespaces).forEach((ns) => {
+                    resStore[lng][ns] = _(namespaces[ns])
+                        .toPairs()
+                        .sortBy((pair) => pair[0])
+                        .reduce((memo, pair) => {
+                            const _key = pair[0];
+                            const _value = pair[1];
+                            memo[_key] = _value;
+                            return memo;
+                        }, {});
+
+                        // Note. The reduce method is not chainable by default
+                });
+            });
+        }
+
+        if (!_.isUndefined(key)) {
+            const options = this.options;
+            let ns = options.defaultNs;
+
+            // http://i18next.com/translate/keyBasedFallback/
+            // Set nsSeparator and keySeparator to false if you prefer
+            // having keys as the fallback for translation.
+            // i18next.init({
+            //   nsSeparator: false,
+            //   keySeparator: false
+            // })
+
+            if (_.isString(options.nsSeparator) && (key.indexOf(options.nsSeparator) > -1)) {
+                const parts = key.split(options.nsSeparator);
+                ns = parts[0];
+                key = parts[1];
+            }
+
+            const keys = _.isString(options.keySeparator) ? key.split(options.keySeparator) : [key];
+            const namespaces = resStore[opts.lng] ||
+                               resStore[options.fallbackLng] ||
+                               resStore[options.lngs[0]];
+            let value = namespaces[ns];
+            let x = 0;
+
+            while (keys[x]) {
+                value = value && value[keys[x]];
+                x++;
+            }
+
+            return value;
+        }
+
+        return resStore;
+    }
+    // Set translation key with an optional defaultValue to i18n resource store
     // @param {string} key The translation key
     // @param {string} [defaultValue] The key's value
-    parseKey(key, defaultValue) {
+    set(key, defaultValue) {
         const options = this.options;
 
         let ns = options.defaultNs;
@@ -320,7 +366,7 @@ class Parser {
                 this.debuglog('Found a value %s associated with the key %s in %s.',
                     JSON.stringify(_.get(this.resStore, lookupKey)),
                     JSON.stringify(keys.join(options.keySeparator || '')),
-                    JSON.stringify(this.getResourceLoadPath(lng, ns))
+                    JSON.stringify(this.formatResourceLoadPath(lng, ns))
                 );
             } else if (_.isObject(this.resStore[lng][ns])) {
                 // Adding a new entry
@@ -342,50 +388,12 @@ class Parser {
                 this.debuglog('Adding a new entry {%s:%s} to %s.',
                     JSON.stringify(keys.join(options.keySeparator || '')),
                     JSON.stringify(_.get(this.resStore, lookupKey)),
-                    JSON.stringify(this.getResourceLoadPath(lng, ns))
+                    JSON.stringify(this.formatResourceLoadPath(lng, ns))
                 );
             } else { // skip the namespace that is not defined in the i18next options
                 console.log('The namespace "' + ns + '" does not exist:', { key, defaultValue });
             }
         });
-    }
-    // Parses hash arguments for Handlebars block helper
-    // @see [Hash Arguments]{@http://code.demunskin.com/other/Handlebars/block_helpers.html#hash-arguments}
-    // @see [Regular expression for parsing name value pairs]{@link http://stackoverflow.com/questions/168171/regular-expression-for-parsing-name-value-pairs}
-    // @example <caption>Example usage:</caption>
-    // it will output ["id=nav-bar", "class = "top"", "foo = "bar\"baz""]
-    // var str = ' id=nav-bar class = "top" foo = "bar\\"baz" ';
-    // str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
-    // @param [string] str A string representation of hash arguments
-    // @return {object}
-    parseHashArguments(str) {
-        let hash = {};
-
-        const results = str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
-        results.forEach((result) => {
-            result = _.trim(result);
-            const r = result.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/) || [];
-            if (r.length < 3 || _.isUndefined(r[1]) || _.isUndefined(r[2])) {
-                return;
-            }
-
-            let key = _.trim(r[1]);
-            let value = _.trim(r[2]);
-
-            { // value is enclosed with either single quote (') or double quote (") characters
-                const quoteChars = '\'"';
-                const quoteChar = _.find(quoteChars, (quoteChar) => {
-                    return value.charAt(0) === quoteChar;
-                });
-                if (quoteChar) { // single quote (') or double quote (")
-                    value = unquote(value, quoteChar);
-                }
-            }
-
-            hash[key] = value;
-        });
-
-        return hash;
     }
     // Returns a JSON string containing translation information
     // @param {object} [options] The options object

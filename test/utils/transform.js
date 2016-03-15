@@ -19,7 +19,7 @@ const transform = function(file, enc, done) {
         parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
             const value = key;
             key = hash(value); // returns a hash value as its default key
-            parser.parseKey(key, value);
+            parser.set(key, value);
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
@@ -51,7 +51,7 @@ const transform = function(file, enc, done) {
                 key = hash(value); // returns a hash value as its default key
             }
 
-            parser.parseKey(key, value);
+            parser.set(key, value);
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });
@@ -73,7 +73,7 @@ const transform = function(file, enc, done) {
 
             key = hash(value); // returns a hash value as its default key
 
-            parser.parseKey(key, value);
+            parser.set(key, value);
 
             tableData.push([key, _.isUndefined(value) ? parser.options.defaultValue : value ]);
         });

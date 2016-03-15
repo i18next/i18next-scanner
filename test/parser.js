@@ -34,7 +34,7 @@ test('disable nsSeparator', (t) => {
         nsSeparator: false,
         keySeparator: '.'
     }));
-    parser.parseKey('foo:bar', '');
+    parser.set('foo:bar', '');
 
     const resStore = parser.getResourceStore();
 
@@ -53,7 +53,7 @@ test('disable keySeparator', (t) => {
         nsSeparator: ':',
         keySeparator: false
     }));
-    parser.parseKey('Creating...', '');
+    parser.set('Creating...', '');
 
     const resStore = parser.getResourceStore();
 
@@ -72,7 +72,7 @@ test('default nsSeparator', (t) => {
         nsSeparator: ':',
         keySeparator: '.'
     }));
-    parser.parseKey('translation:key1.key2', '');
+    parser.set('translation:key1.key2', '');
 
     const resStore = parser.getResourceStore();
 
@@ -93,7 +93,7 @@ test('default keyseparator', (t) => {
         nsSeparator: ':',
         keySeparator: '.'
     }));
-    parser.parseKey('key1.key2', '');
+    parser.set('key1.key2', '');
 
     const resStore = parser.getResourceStore();
 

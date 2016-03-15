@@ -25,8 +25,8 @@ var fs = require('fs');
 var Parser = require('i18next-scanner').Parser;
 
 var customHandler = function(key) {
-    var defaultValue; // optional default value
-    parser.parseKey(key, defaultValue);
+    var defaultValue = '__TRANSLATION__'; // optional default value
+    parser.set(key, defaultValue);
 };
 
 var parser = new Parser();
@@ -36,23 +36,23 @@ var content = '';
 // i18next.t('key');
 content = fs.readFileSync('/path/to/app.js', 'utf-8');
 parser
-    .parseFuncFromString(content);
-    .parseFuncFromString(content, { list: ['i18next.t']}); // override default list
-    .parseFuncFromString(content, { list: ['i18next.t']}, customHandler); // override default list and pass a custom handler
-    .parseFuncFromString(content, customHandler); // pass a custom handler
+    .parseFuncFromString(content, customHandler) // pass a custom handler
+    .parseFuncFromString(content, { list: ['i18next.t']}) // override `func.list`
+    .parseFuncFromString(content, { list: ['i18next.t']}, customHandler)
+    .parseFuncFromString(content); // using default options and handler
 
 // Parse HTML Attribute
 // <div data-i18n="key"></div>
 content = fs.readFileSync('/path/to/index.html', 'utf-8');
 parser
-    .parseAttrFromString(content);
-    .parseAttrFromString(content, { list: ['data-i18n'] }); // override default list
-    .parseAttrFromString(content, { list: ['data-i18n'] }, customHandler); // override default list and pass a custom handler
-    .parseAttrFromString(content, customHandler); // pass a custom handler
+    .parseAttrFromString(content, customHandler) // pass a custom handler
+    .parseAttrFromString(content, { list: ['data-i18n'] }) // override `attr.list`
+    .parseAttrFromString(content, { list: ['data-i18n'] }, customHandler)
+    .parseAttrFromString(content); // using default options and handler
 
 console.log(parser.get());
 console.log(parser.get({ sort: true }));
-console.log(parser.get('namespace:your.translation.key', { lng: 'en'}));
+console.log(parser.get('translation:key', { lng: 'en'}));
 ```
 
 ### Transform Stream API
@@ -248,7 +248,7 @@ The default namespace used if not passed to translation function.
 
 Type: `String` Default: `''`
 
-The default value used if not passed to `parser.parseKey`.
+The default value used if not passed to `parser.set`.
 
 #### resource
 
@@ -322,7 +322,7 @@ vfs.src(['/path/to/src'])
     .pipe(vfs.dest('path/to/dest'));
 ```
 
-To parse a translation key, call `parser.parseKey(key, defaultValue)` to assign the key with an optional `defaultValue`.
+To parse a translation key, call `parser.set(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```js
 var customTransform = function _transform(file, enc, done) {
@@ -331,14 +331,14 @@ var customTransform = function _transform(file, enc, done) {
     
     parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
         var defaultValue = '__L10N__';
-        parser.parseKey(key, defaultValue);
+        parser.set(key, defaultValue);
     });
     
     done();
 };
 ```
 
-Alternatively, you may call `parser.parseKey(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
+Alternatively, you may call `parser.set(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```js
 var hash = require('sha1');
@@ -349,7 +349,7 @@ var customTransform = function _transform(file, enc, done) {
     parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
         var value = key;
         var defaultKey = hash(value);
-        parser.parseKey(defaultKey, value);
+        parser.set(defaultKey, value);
     });
     
     done();
@@ -641,7 +641,7 @@ var customTransform = function(file, enc, done) {
                 key = hash(value); // returns a hash value as its default key
             }
 
-            parser.parseKey(key, value);
+            parser.set(key, value);
         });
     }());
 
@@ -661,7 +661,7 @@ var customTransform = function(file, enc, done) {
             }
 
             key = hash(value); // returns a hash value as its default key
-            parser.parseKey(key, value);
+            parser.set(key, value);
         });
     }());
 
