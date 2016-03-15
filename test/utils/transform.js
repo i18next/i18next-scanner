@@ -5,6 +5,14 @@ import path from 'path';
 import hash from 'sha1';
 import table from 'text-table';
 
+const unquote = (str, quoteChar) => {
+    quoteChar = quoteChar || '"';
+    if (str[0] === quoteChar && str[str.length - 1] === quoteChar) {
+        return str.slice(1, str.length - 1);
+    }
+    return str;
+};
+
 // Parses hash arguments for Handlebars block helper
 // @see [Hash Arguments]{@http://code.demunskin.com/other/Handlebars/block_helpers.html#hash-arguments}
 // @see [Regular expression for parsing name value pairs]{@link http://stackoverflow.com/questions/168171/regular-expression-for-parsing-name-value-pairs}
@@ -14,23 +22,23 @@ import table from 'text-table';
 // str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
 // @param [string] str A string representation of hash arguments
 // @return {object}
-var parseHashArguments = function(str) {
-    var hash = {};
+const parseHashArguments = function(str) {
+    let hash = {};
 
-    var results = str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
+    const results = str.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/igm) || [];
     results.forEach((result) => {
         result = _.trim(result);
-        var r = result.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/) || [];
+        const r = result.match(/([^=,\s]*)\s*=\s*((?:"(?:\\.|[^"\\]+)*"|'(?:\\.|[^'\\]+)*')|[^'"\s]*)/) || [];
         if (r.length < 3 || _.isUndefined(r[1]) || _.isUndefined(r[2])) {
             return;
         }
 
-        var key = _.trim(r[1]);
-        var value = _.trim(r[2]);
+        let key = _.trim(r[1]);
+        let value = _.trim(r[2]);
 
         { // value is enclosed with either single quote (') or double quote (") characters
-            var quoteChars = '\'"';
-            var quoteChar = _.find(quoteChars, (quoteChar) => {
+            const quoteChars = '\'"';
+            const quoteChar = _.find(quoteChars, (quoteChar) => {
                 return value.charAt(0) === quoteChar;
             });
             if (quoteChar) { // single quote (') or double quote (")
