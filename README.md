@@ -7,7 +7,7 @@ Scan your code, extract translation keys/values, and merge them into i18n resour
 ## Notice
 There is a major breaking change since v1.0, and the API interface and options are not compatible with v0.x.
 
-Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migration-Guide) for doing migration from earlier versions.
+Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migration-Guide) for upgrading from earlier versions.
 
 ## Features
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
