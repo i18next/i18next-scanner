@@ -108,7 +108,7 @@ const transformOptions = (options) => {
 * @constructor
 */
 class Parser {
-    options = Object.assign({}, defaults);
+    options = _.assign({}, defaults);
     resStore = {};
 
     constructor(options) {
@@ -261,7 +261,7 @@ class Parser {
             key = undefined;
         }
 
-        const resStore = Object.assign({}, this.resStore);
+        const resStore = _.assign({}, this.resStore);
 
         if (!!opts.sort) { // sort by key
             Object.keys(resStore).forEach((lng) => {
