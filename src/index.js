@@ -11,12 +11,12 @@ const transform = (parser, customTransform) => {
         const content = fs.readFileSync(file.path, enc);
         const extname = path.extname(file.path);
 
-        if (_.isObject(options.attr) && _.includes(options.attr.list, extname)) {
+        if (_.isObject(options.attr) && _.includes(options.attr.extensions, extname)) {
             // Parse attribute (e.g. data-i18n="key")
             parser.parseAttrFromString(content);
         }
 
-        if (_.isObject(options.func) && _.includes(options.func.list, extname)) {
+        if (_.isObject(options.func) && _.includes(options.func.extensions, extname)) {
             // Parse translation function (e.g. i18next.t('key'))
             parser.parseFuncFromString(content);
         }
