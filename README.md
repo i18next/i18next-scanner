@@ -413,7 +413,7 @@ Resource options:
 { // Default
     resource: {
         // path where resources get loaded from
-        savePath: 'i18n/{{lng}}/{{ns}}.json',
+        loadPath: 'i18n/{{lng}}/{{ns}}.json',
 
         // path to store resources
         savePath: 'i18n/{{lng}}/{{ns}}.json',
