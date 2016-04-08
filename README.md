@@ -416,8 +416,8 @@ Provides the default value with a function:
 ```js
 {
     // @param {string} lng The language currently used.
-    // @param {ns} ns The namespace currently used.
-    // @param {key} key The translation key.
+    // @param {string} ns The namespace currently used.
+    // @param {string} key The translation key.
     // @return {string} Returns a default value for the translation key.
     defaultValue: function(lng, ns, key) {
         if (lng === 'en') {
