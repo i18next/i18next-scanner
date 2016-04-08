@@ -364,10 +364,10 @@ class Parser {
                 Object.keys(keys).forEach((index) => {
                     const elem = keys[index];
                     if (index >= (keys.length - 1)) {
-                        if (options.keySeparator === false) {
-                            res[elem] = elem;
+                        if (_.isUndefined(defaultValue)) {
+                            res[elem] = _.isFunction(options.defaultValue) ? options.defaultValue(lng, ns, elem) : options.defaultValue;
                         } else {
-                            res[elem] = _.isUndefined(defaultValue) ? options.defaultValue : defaultValue;
+                            res[elem] = defaultValue;
                         }
                     } else {
                         res[elem] = res[elem] || {};
