@@ -30,7 +30,7 @@ const defaults = {
     }
 };
 
-test('should get expected result', function(t) {
+test('[Key Based Fallback] defaultValue as string', function(t) {
     const options = _.merge({}, defaults, {
         func: {
             extensions: ['.js'] // with extensions
@@ -49,9 +49,52 @@ test('should get expected result', function(t) {
             if (_.includes(list, file.path)) {
                 const found = JSON.parse(contents);
                 const wanted = {
+                  "Loading...": "__STRING_NOT_TRANSLATED__",
+                  "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                  "YouTube has more than __count__ billion users.": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
+
+test('[Key Based Fallback] defaultValue as function', function(t) {
+    const options = _.merge({}, defaults, {
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key;
+            }
+            return '__STRING_NOT_TRANSLATED__';
+        },
+        func: {
+            extensions: ['.js'] // with extensions
+        }
+    });
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
                   "Loading...": "Loading...",
                   "This value does not exist.": "This value does not exist.",
                   "YouTube has more than __count__ billion users.": "YouTube has more than __count__ billion users."
+                };
+                t.same(found, wanted);
+            }
+
+            if (file.path === 'i18n/de/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                  "Loading...": "__STRING_NOT_TRANSLATED__",
+                  "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                  "YouTube has more than __count__ billion users.": "__STRING_NOT_TRANSLATED__"
                 };
                 t.same(found, wanted);
             }
