@@ -400,9 +400,28 @@ The default namespace used if not passed to translation function.
 
 #### defaultValue
 
-Type: `String` Default: `''`
+Type: `String` or `Function` Default: `''`
 
 The default value used if not passed to `parser.set`.
+
+##### Example
+An example of providing defaultValue as function:
+```js
+{
+    // @param {string} lng The language currently used.
+    // @param {ns} ns The namespace currently used.
+    // @param {key} key The translation key.
+    // @return {string} Returns a default value for the translation key.
+    defaultValue: function(lng, ns, key) {
+        if (lng === 'en') {
+            // Return key as the default value for English language
+            return key;
+        }
+        // Return the string '__NOT_TRANSLATED__' for other languages
+        return '__NOT_TRANSLATED__';
+    }
+}
+```
 
 #### resource
 
