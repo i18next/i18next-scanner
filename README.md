@@ -404,8 +404,15 @@ Type: `String` or `Function` Default: `''`
 
 The default value used if not passed to `parser.set`.
 
-##### Example
-An example of providing defaultValue as function:
+##### Examples
+Provides the default value with a string:
+```js
+{
+    defaultValue: '__NOT_TRANSLATED__'
+}
+```
+
+Provides the default value with a function:
 ```js
 {
     // @param {string} lng The language currently used.
