@@ -412,7 +412,7 @@ Provides the default value with a string:
 }
 ```
 
-Provides the default value with a function:
+Provides the default value as a callback function:
 ```js
 {
     // @param {string} lng The language currently used.
