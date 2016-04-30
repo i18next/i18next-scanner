@@ -178,7 +178,7 @@ class Parser {
             .value()
             .join('|')
             .replace(/\./g, '\\.');
-        const pattern = '(?:(?:^[\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
+        const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
         const results = content.match(new RegExp(pattern, 'gim')) || [];
         results.forEach((result) => {
             const r = result.match(new RegExp(pattern));
@@ -213,7 +213,7 @@ class Parser {
             .value()
             .join('|')
             .replace(/\./g, '\\.');
-        const pattern = '(?:(?:^[\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
+        const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
         const results = content.match(new RegExp(pattern, 'gim')) || [];
         results.forEach((result) => {
             const r = result.match(new RegExp(pattern));
