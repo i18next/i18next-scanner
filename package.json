@@ -37,6 +37,7 @@
     "md5"
   ],
   "dependencies": {
+    "esprima": "^2.7.2",
     "lodash": "^4.6.1",
     "through2": "^2.0.0",
     "vinyl": "^1.1.0",
