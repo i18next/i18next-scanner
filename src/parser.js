@@ -1,6 +1,8 @@
 /* eslint no-console: 0 */
 import _ from 'lodash';
 import fs from 'fs';
+import esprima from 'esprima';
+import matchRecursiveRegExp from './match-recursive-regexp';
 
 const defaults = {
     debug: false, // verbose logging
@@ -35,6 +37,7 @@ const defaults = {
 
     keySeparator: '.', // char to separate keys
     nsSeparator: ':', // char to split namespace from key
+    pluralSeparator: '_', // char to split plural from key
 
     // interpolation options
     interpolation: {
@@ -179,22 +182,35 @@ class Parser {
             .join('|')
             .replace(/\./g, '\\.');
         const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
-        const results = content.match(new RegExp(pattern, 'gim')) || [];
-        results.forEach((result) => {
-            const r = result.match(new RegExp(pattern));
-            if (!r) {
-                return;
-            }
+        const re = new RegExp(pattern, 'gim');
 
+        let r;
+        while ((r = re.exec(content))) {
+            const full = r[0];
             const key = _.trim(r[1], '\'"');
 
             if (customHandler) {
                 customHandler(key);
-                return;
+                continue;
             }
 
             this.set(key);
-        });
+
+            const endsWithComma = (full[full.length - 1] === ',');
+            if (endsWithComma) {
+                let r2 = matchRecursiveRegExp(content.substr(re.lastIndex), '{', '}', 'gim');
+                if (r2.length > 0) {
+                    let code = '({' + r2[0] + '})';
+                    let syntax = esprima.parse(code);
+                    let props = _.get(syntax, 'body[0].expression.properties') || [];
+                    props.forEach((prop) => {
+                        if (prop.key.name === 'count') {
+                            this.set(key + this.options.pluralSeparator + 'plural');
+                        }
+                    });
+                }
+            }
+        }
 
         return this;
     }
