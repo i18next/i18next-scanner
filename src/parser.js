@@ -231,13 +231,10 @@ class Parser {
             .join('|')
             .replace(/\./g, '\\.');
         const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
-        const results = content.match(new RegExp(pattern, 'gim')) || [];
-        results.forEach((result) => {
-            const r = result.match(new RegExp(pattern));
-            if (!r) {
-                return;
-            }
+        const re = new RegExp(pattern, 'gim');
 
+        let r;
+        while ((r = re.exec(content))) {
             const attr = _.trim(r[1], '\'"');
             const keys = (attr.indexOf(';') >= 0) ? attr.split(';') : [attr];
             keys.forEach((key) => {
@@ -262,7 +259,7 @@ class Parser {
 
                 this.set(key);
             });
-        });
+        }
 
         return this;
     }
