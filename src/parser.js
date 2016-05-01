@@ -205,7 +205,7 @@ class Parser {
                     let props = _.get(syntax, 'body[0].expression.properties') || [];
                     props.forEach((prop) => {
                         if (prop.key.name === 'count') {
-                            this.set(key + this.options.pluralSeparator + 'plural');
+                            this.set(key + this.options.pluralSeparator + 'plural', this.get(key));
                         }
                     });
                 }
