@@ -70,9 +70,11 @@ test('parse HTML attribute', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
+                "key4": "__TRANSLATION__",
+                "key3": "__TRANSLATION__",
                 "key2": "__TRANSLATION__",
                 "key1": "__TRANSLATION__"
-          }
+            }
         }
     });
 
@@ -81,7 +83,9 @@ test('parse HTML attribute', (t) => {
         en: {
             translation: {
                 "key1": "__TRANSLATION__",
-                "key2": "__TRANSLATION__"
+                "key2": "__TRANSLATION__",
+                "key3": "__TRANSLATION__",
+                "key4": "__TRANSLATION__"
           }
         }
     }));
