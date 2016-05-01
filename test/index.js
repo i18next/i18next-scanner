@@ -21,7 +21,7 @@ const defaults = {
     defaultValue: '__STRING_NOT_TRANSLATED__',
     resource: {
         loadPath: '',
-        savePath: 'i18n/__lng__/__ns__.json'
+        savePath: 'i18n/{{lng}}/{{ns}}.json'
     },
     nsSeparator: false, // namespace separator
     keySeparator: false, // key separator
@@ -30,6 +30,44 @@ const defaults = {
         suffix: '}}'
     }
 };
+
+test('Parse both .html and .js files', (t) => {
+    const options = _.merge({}, defaults, {});
+    const list = [
+        'test/fixtures/app.html',
+        'test/fixtures/modules/**/*.js'
+    ];
+
+    gulp.src(list)
+        .pipe(scanner(options))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+            const list = [
+                'i18n/de/resource.json',
+                'i18n/en/resource.json',
+            ];
+
+            if (_.includes(list, file.path)) {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Loading...": "__STRING_NOT_TRANSLATED__",
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    'key4': '__STRING_NOT_TRANSLATED__',
+                    'key3': '__STRING_NOT_TRANSLATED__',
+                    'key2': '__STRING_NOT_TRANSLATED__',
+                    'key1': '__STRING_NOT_TRANSLATED__'
+                };
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
 
 test('[Key Based Fallback] defaultValue as string', function(t) {
     const options = _.merge({}, defaults, {
@@ -114,7 +152,7 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
         });
 });
 
-test('should get empty result', function(t) {
+test('Empty result', function(t) {
     const options = _.merge({}, defaults, {
         func: {
             extensions: [] // without extensions
@@ -145,7 +183,7 @@ test('Custom transform', function(t) {
     const options = _.merge({}, defaults, {
     });
 
-    const expectedKey = 'customTranform';
+    const expectedKey = 'CUSTOM TRANSFORM';
     const customTransform = function(file, enc, done) {
         this.parser.set(expectedKey);
         done();
@@ -162,8 +200,15 @@ test('Custom transform', function(t) {
 
             if (_.includes(list, file.path)) {
                 const found = JSON.parse(contents);
-                const wanted = {};
-                wanted[expectedKey] = '__STRING_NOT_TRANSLATED__';
+                const wanted = {
+                  "Loading...": "__STRING_NOT_TRANSLATED__",
+                  "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                  "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                  "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                  "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                  "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__",
+                  "CUSTOM TRANSFORM": "__STRING_NOT_TRANSLATED__"
+                };
                 t.same(found, wanted);
             }
         }))
@@ -176,7 +221,7 @@ test('Custom flush', function(t) {
     const options = _.merge({}, defaults, {
     });
 
-    const expectedContents = 'customFlush';
+    const expectedContents = 'CUSTOM FLUSH';
     const customFlush = function(done) {
         this.push(new VirtualFile({
             path: 'virtual-path',
