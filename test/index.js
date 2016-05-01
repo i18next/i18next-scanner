@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import tap from 'gulp-tap';
+import VirtualFile from 'vinyl';
 import { test } from 'tap';
 import scanner from '../src';
 
@@ -134,6 +135,62 @@ test('should get empty result', function(t) {
                 const wanted = {};
                 t.same(found, wanted);
             }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
+
+test('Custom transform', function(t) {
+    const options = _.merge({}, defaults, {
+    });
+
+    const expectedKey = 'customTranform';
+    const customTransform = function(file, enc, done) {
+        this.parser.set(expectedKey);
+        done();
+    };
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options, customTransform))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+            const list = [
+                'i18n/de/resource.json',
+                'i18n/en/resource.json',
+            ];
+
+            if (_.includes(list, file.path)) {
+                const found = JSON.parse(contents);
+                const wanted = {};
+                wanted[expectedKey] = '__STRING_NOT_TRANSLATED__';
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
+
+test('Custom flush', function(t) {
+    const options = _.merge({}, defaults, {
+    });
+
+    const expectedContents = 'customFlush';
+    const customFlush = function(done) {
+        this.push(new VirtualFile({
+            path: 'virtual-path',
+            contents: new Buffer(expectedContents)
+        }));
+
+        done();
+    };
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options, null, customFlush))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+            t.same(contents, expectedContents);
         }))
         .on('end', function() {
             t.end();
