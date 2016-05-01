@@ -194,23 +194,23 @@ class Parser {
                 continue;
             }
 
-            this.set(key);
-
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
-                // https://github.com/slevithan/xregexp#xregexpmatchrecursive
+                // http://xregexp.com/api/#matchRecursive
                 const rx = XRegExp.matchRecursive(content.substr(re.lastIndex), '{', '}', 'gim') || [];
                 if (_.size(rx) > 0) {
                     const code = '({' + rx[0] + '})';
                     const syntax = esprima.parse(code);
                     const props = _.get(syntax, 'body[0].expression.properties') || [];
-                    props.forEach((prop) => {
-                        if (prop.key.name === 'count') {
-                            this.set(key + this.options.pluralSeparator + 'plural', this.get(key));
-                        }
-                    });
+
+                    if (_.find(props, { key: { name: 'count' } })) {
+                        this.set(key, null, { resolvePluralForm: true });
+                        continue;
+                    }
                 }
             }
+
+            this.set(key);
         }
 
         return this;
@@ -334,8 +334,11 @@ class Parser {
     // Set translation key with an optional defaultValue to i18n resource store
     // @param {string} key The translation key
     // @param {string} [defaultValue] The key's value
-    set(key, defaultValue) {
+    // @param {object} [opts] The opts object
+    // @param {boolean} [opts.resolvePluralForm] Sets true to resolve plural form, false otherwise.
+    set(key, defaultValue = null, opts = {}) {
         const options = this.options;
+        const resolvePluralForm = !!(opts.resolvePluralForm);
 
         let ns = options.defaultNs;
         console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
@@ -366,7 +369,7 @@ class Parser {
 
             if (!_.isUndefined(value)) {
                 // Found a value associated with the key
-                let lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
+                const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
                 this.debuglog('Found a value %s associated with the key %s in %s.',
                     JSON.stringify(_.get(this.resStore, lookupKey)),
                     JSON.stringify(keys.join(options.keySeparator || '')),
@@ -376,19 +379,37 @@ class Parser {
                 // Adding a new entry
                 let res = this.resStore[lng][ns];
                 Object.keys(keys).forEach((index) => {
-                    const elem = keys[index];
-                    if (index >= (keys.length - 1)) {
-                        if (_.isUndefined(defaultValue)) {
-                            res[elem] = _.isFunction(options.defaultValue) ? options.defaultValue(lng, ns, elem) : options.defaultValue;
-                        } else {
-                            res[elem] = defaultValue;
+                    let key = keys[index];
+
+                    if (index < (keys.length - 1)) {
+                        res[key] = res[key] || {};
+                        res = res[key];
+                        return; // continue
+                    }
+
+                    // Use the defaultValue if specified
+                    if ((defaultValue !== null) && (defaultValue !== undefined)) {
+                        res[key] = defaultValue;
+                        return;
+                    }
+
+                    res[key] = _.isFunction(options.defaultValue)
+                             ? options.defaultValue(lng, ns, key)
+                             : options.defaultValue;
+
+                    if (resolvePluralForm) {
+                        // TODO: Add support for multiple plural forms
+                        const pluralKey = key + this.options.pluralSeparator + 'plural';
+                        if (res[pluralKey] !== undefined) {
+                            return; // skip if not empty
                         }
-                    } else {
-                        res[elem] = res[elem] || {};
-                        res = res[elem];
+                        res[pluralKey] = _.isFunction(options.defaultValue)
+                                       ? options.defaultValue(lng, ns, key)
+                                       : options.defaultValue;
                     }
                 });
-                let lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
+
+                const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
                 this.debuglog('Adding a new entry {%s:%s} to %s.',
                     JSON.stringify(keys.join(options.keySeparator || '')),
                     JSON.stringify(_.get(this.resStore, lookupKey)),
