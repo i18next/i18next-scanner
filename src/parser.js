@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import fs from 'fs';
 import esprima from 'esprima';
-import matchRecursiveRegExp from './match-recursive-regexp';
+import XRegExp from 'xregexp';
 
 const defaults = {
     debug: false, // verbose logging
@@ -198,11 +198,12 @@ class Parser {
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
-                let r2 = matchRecursiveRegExp(content.substr(re.lastIndex), '{', '}', 'gim');
-                if (r2.length > 0) {
-                    let code = '({' + r2[0] + '})';
-                    let syntax = esprima.parse(code);
-                    let props = _.get(syntax, 'body[0].expression.properties') || [];
+                // https://github.com/slevithan/xregexp#xregexpmatchrecursive
+                const rx = XRegExp.matchRecursive(content.substr(re.lastIndex), '{', '}', 'gim') || [];
+                if (_.size(rx) > 0) {
+                    const code = '({' + rx[0] + '})';
+                    const syntax = esprima.parse(code);
+                    const props = _.get(syntax, 'body[0].expression.properties') || [];
                     props.forEach((prop) => {
                         if (prop.key.name === 'count') {
                             this.set(key + this.options.pluralSeparator + 'plural', this.get(key));
