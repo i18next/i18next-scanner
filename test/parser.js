@@ -113,7 +113,10 @@ test('gettext style i18n', (t) => {
             translation: {
                 "Loading...": "Loading...",
                 "This value does not exist.": "This value does not exist.",
-                "YouTube has more than __count__ billion users.": "YouTube has more than __count__ billion users."
+                "YouTube has more than {{count}} billion users.": "YouTube has more than {{count}} billion users.",
+                "YouTube has more than {{count}} billion users._plural": "YouTube has more than {{count}} billion users.",
+                "You have {{count}} messages.": "You have {{count}} messages.",
+                "You have {{count}} messages._plural": "You have {{count}} messages."
           }
         }
     });

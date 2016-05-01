@@ -7,7 +7,10 @@ const _t = function(value) {
 var msg = [
     _t('Loading...'),
     _t('This value does not exist.'),
-    _t('YouTube has more than __count__ billion users.', {count: 1})
+    _t('YouTube has more than {{count}} billion users.', {count: 1}),
+    _t('You have {{count}} messages.', {
+        count: 10
+    });
 ].join('\n');
 
 console.log(msg);
