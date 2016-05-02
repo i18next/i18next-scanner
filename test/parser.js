@@ -210,3 +210,55 @@ test('default keyseparator', (t) => {
     }, 'The key should use default keySeparator . to split');
     t.end();
 });
+
+test('Plural', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "key": "",
+                "key_plural": "",
+                "keyWithCount": "",
+                "keyWithCount_plural": ""
+            }
+        }
+    });
+    t.end();
+});
+
+test('Context', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context.js'), 'utf-8');
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "friend": "",
+                "friend_male": "",
+                "friend_female": ""
+            }
+        }
+    });
+    t.end();
+});
+
+test('Context with plural combined', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context-plural.js'), 'utf-8');
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "friend": "",
+                "friend_plural": "",
+                "friend_male": "",
+                "friend_male_plural": "",
+                "friend_female": "",
+                "friend_female_plural": ""
+            }
+        }
+    });
+    t.end();
+});
