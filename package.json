@@ -41,8 +41,7 @@
     "lodash": "^4.6.1",
     "through2": "^2.0.0",
     "vinyl": "^1.1.0",
-    "vinyl-fs": "^2.2.1",
-    "xregexp": "^3.1.0"
+    "vinyl-fs": "^2.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
