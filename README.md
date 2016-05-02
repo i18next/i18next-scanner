@@ -29,8 +29,7 @@ var fs = require('fs');
 var Parser = require('i18next-scanner').Parser;
 
 var customHandler = function(key) {
-    var defaultValue = '__TRANSLATION__'; // optional default value
-    parser.set(key, defaultValue);
+    parser.set(key, '__TRANSLATION__');
 };
 
 var parser = new Parser();
@@ -153,13 +152,13 @@ parser.parseFuncFromString(content)
 
 parser.parseFuncFromString(content, { list: ['_t'] });
 
-parser.parseFuncFromString(content, function(key) {
-    var defaultValue = key; // use key as the value
-    parser.set(key, defaultValue);
+parser.parseFuncFromString(content, function(key, options) {
+    options.defaultValue = key; // use key as the value
+    parser.set(key, options);
 });
 
-parser.parseFuncFromString(content, { list: ['_t'] }, function(key) {
-    parser.set(key); // use defaultValue
+parser.parseFuncFromString(content, { list: ['_t'] }, function(key, options) {
+    parser.set(key, options); // use defaultValue
 });
 ```
 
@@ -199,11 +198,16 @@ parser.get('ns:key', { lng: 'en' });
 Set a translation key with an optional defaultValue to i18n resource store
 
 ```js
-// Set translation key
+// Set a translation key
 parser.set(key);
 
-// Set translation key with its defaultValue
+// Set a translation key with default value
 parser.set(key, defaultValue);
+
+// Set a translation key with default value using options
+parser.set(key, {
+    defaultValue: defaultValue
+});
 ```
 
 ### Transform Stream API
