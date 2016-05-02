@@ -246,7 +246,7 @@ class Parser {
 
                 props.forEach((prop) => {
                     if (_.includes(supportedOptions, prop.key.name)) {
-                        options[prop.key.name] = prop.value.value;
+                        options[prop.key.name] = prop.value.value || prop.value.name;
                     }
                 });
             }
