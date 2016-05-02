@@ -24,6 +24,7 @@ const transform = (parser, customTransform) => {
         if (typeof customTransform === 'function') {
             this.parser = parser;
             customTransform.call(this, file, enc, done);
+
             return;
         }
 
@@ -38,13 +39,16 @@ const flush = (parser, customFlush) => {
         if (typeof customFlush === 'function') {
             this.parser = parser;
             customFlush.call(this, done);
+
             return;
         }
 
         // Flush to resource store
         const resStore = parser.get({ sort: options.sort });
+
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
+
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
                 const resPath = parser.formatResourceSavePath(lng, ns);

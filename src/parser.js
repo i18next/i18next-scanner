@@ -52,8 +52,10 @@ const matchBalancedParentheses = (str = '') => {
     const stack = [];
     let bracePosition;
     let start = -1;
+    let i = 0;
+
     str = '' + str; // ensure string
-    for (let i = 0; i < str.length; ++i) {
+    for (i = 0; i < str.length; ++i) {
         if ((start >= 0) && (stack.length === 0)) {
             return str.substring(start, i);
         }
@@ -156,9 +158,11 @@ class Parser {
             this.resStore[lng] = this.resStore[lng] || {};
             namespaces.forEach((ns) => {
                 const resPath = this.formatResourceLoadPath(lng, ns);
+
                 this.resStore[lng][ns] = {};
                 try {
                     const stat = fs.statSync(resPath);
+
                     if (stat.isFile()) {
                         this.resStore[lng][ns] = JSON.parse(fs.readFileSync(resPath, 'utf-8'));
                     }
@@ -172,16 +176,19 @@ class Parser {
     }
     debuglog(...args) {
         const { debug } = this.options;
-        if (!!debug) {
+
+        if (debug) {
             console.log.apply(this, args);
         }
     }
     formatResourceLoadPath(lng, ns) {
         const options = this.options;
+
         const regex = {
             lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
             ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
+
         return options.resource.loadPath
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
@@ -192,6 +199,7 @@ class Parser {
             lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
             ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
+
         return options.resource.savePath
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
@@ -217,12 +225,14 @@ class Parser {
         const re = new RegExp(pattern, 'gim');
 
         let r;
+
         while ((r = re.exec(content))) {
             const full = r[0];
             const key = _.trim(r[1], '\'"');
             const options = {};
 
             const endsWithComma = (full[full.length - 1] === ',');
+
             if (endsWithComma) {
                 const code = matchBalancedParentheses(content.substr(re.lastIndex));
                 const syntax = esprima.parse('(' + code + ')');
@@ -233,6 +243,7 @@ class Parser {
                     'count',
                     'context'
                 ];
+
                 props.forEach((prop) => {
                     if (_.includes(supportedOptions, prop.key.name)) {
                         options[prop.key.name] = prop.value.value;
@@ -269,9 +280,11 @@ class Parser {
         const re = new RegExp(pattern, 'gim');
 
         let r;
+
         while ((r = re.exec(content))) {
             const attr = _.trim(r[1], '\'"');
             const keys = (attr.indexOf(';') >= 0) ? attr.split(';') : [attr];
+
             keys.forEach((key) => {
                 //let attr = 'text';
                 key = _.trim(key);
@@ -280,6 +293,7 @@ class Parser {
                 }
                 if (key.indexOf('[') === 0) {
                     let parts = key.split(']');
+
                     key = parts[1];
                     //attr = parts[0].substr(1, parts[0].length - 1);
                 }
@@ -289,6 +303,7 @@ class Parser {
 
                 if (customHandler) {
                     customHandler(key);
+
                     return;
                 }
 
@@ -312,7 +327,7 @@ class Parser {
 
         const resStore = _.assign({}, this.resStore);
 
-        if (!!opts.sort) { // sort by key
+        if (opts.sort) { // sort by key
             Object.keys(resStore).forEach((lng) => {
                 const namespaces = resStore[lng];
 
@@ -323,7 +338,9 @@ class Parser {
                         .reduce((memo, pair) => {
                             const _key = pair[0];
                             const _value = pair[1];
+
                             memo[_key] = _value;
+
                             return memo;
                         }, {});
 
@@ -345,6 +362,7 @@ class Parser {
 
             if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
                 const parts = key.split(this.options.nsSeparator);
+
                 ns = parts[0];
                 key = parts[1];
             }
@@ -357,6 +375,7 @@ class Parser {
 
             let value = namespaces[ns];
             let x = 0;
+
             while (keys[x]) {
                 value = value && value[keys[x]];
                 x++;
@@ -377,11 +396,13 @@ class Parser {
         // Backward compatibility
         if (_.isString(options)) {
             let defaultValue = options;
+
             options = {};
             options.defaultValue = defaultValue;
         }
 
         let ns = this.options.defaultNs;
+
         console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
         // http://i18next.com/translate/keyBasedFallback/
@@ -394,16 +415,19 @@ class Parser {
 
         if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
             const parts = key.split(this.options.nsSeparator);
+
             ns = parts[0];
             key = parts[1];
         }
 
         const keys = _.isString(this.options.keySeparator) ? key.split(this.options.keySeparator) : [key];
+
         this.options.lngs.forEach((lng) => {
             let res = this.resStore[lng] && this.resStore[lng][ns];
 
             if (!_.isObject(res)) { // skip undefined namespace
                 console.log('The namespace "' + ns + '" does not exist:', { key, options });
+
                 return;
             }
 
@@ -413,6 +437,7 @@ class Parser {
                 if (index < (keys.length - 1)) {
                     res[key] = res[key] || {};
                     res = res[key];
+
                     return; // continue
                 }
 
