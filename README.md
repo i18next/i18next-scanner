@@ -320,6 +320,7 @@ Below are the configuration options with their default values:
     nsSeparator: ':',
     keySeparator: '.',
     pluralSeparator: '_',
+    contextSeparator: '_',
     interpolation: {
         pefix: '{{',
         suffix: '}}'
@@ -472,6 +473,12 @@ Set to `false` to disable namespace separator if you prefer having keys as the f
 Type: `String` Default: `'_'`
 
 The character to split plural from key.
+
+#### contextSeparator
+
+Type: `String` Default: `'_'`
+
+The character to split context from key.
 
 #### interpolation
 
