@@ -469,8 +469,8 @@ class Parser {
                     // Fallback to `this.options.defaultValue`
                     if (res[key] === undefined) {
                         res[key] = _.isFunction(this.options.defaultValue)
-                                 ? this.options.defaultValue(lng, ns, key)
-                                 : this.options.defaultValue;
+                            ? this.options.defaultValue(lng, ns, key, options)
+                            : this.options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(key),
                             JSON.stringify(res[key]),
@@ -479,8 +479,8 @@ class Parser {
                     }
                     if ((formattedKey !== key) && (res[formattedKey] === undefined)) {
                         res[formattedKey] = _.isFunction(this.options.defaultValue)
-                                         ? this.options.defaultValue(lng, ns, key)
-                                         : this.options.defaultValue;
+                            ? this.options.defaultValue(lng, ns, key, options)
+                            : this.options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(formattedKey),
                             JSON.stringify(res[formattedKey]),
