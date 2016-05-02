@@ -11,5 +11,5 @@ i18next.t('keyWithCount', {count: 100}); // output: '100 items'
 const one = 1;
 const count = 2;
 
-i18next.t('key', { count: one }); // output: 'item'
+i18next.t('keyWithVariable', { count: one }); // output: 'item'
 i18next.t('keyWithVariable', { count }); // output: 'items'
