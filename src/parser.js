@@ -188,11 +188,7 @@ class Parser {
         while ((r = re.exec(content))) {
             const full = r[0];
             const key = _.trim(r[1], '\'"');
-
-            if (customHandler) {
-                customHandler(key);
-                continue;
-            }
+            const options = {};
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
@@ -202,15 +198,26 @@ class Parser {
                     const code = '({' + rx[0] + '})';
                     const syntax = esprima.parse(code);
                     const props = _.get(syntax, 'body[0].expression.properties') || [];
-
-                    if (_.find(props, { key: { name: 'count' } })) {
-                        this.set(key, null, { resolvePluralForm: true });
-                        continue;
-                    }
+                    // http://i18next.com/docs/options/
+                    const supportedOptions = [
+                        'defaultValue',
+                        'count',
+                        'context'
+                    ];
+                    props.forEach((prop) => {
+                        if (_.includes(supportedOptions, prop.key.name)) {
+                            options[prop.key.name] = prop.value.value;
+                        }
+                    });
                 }
             }
 
-            this.set(key);
+            if (customHandler) {
+                customHandler(key, options);
+                continue;
+            }
+
+            this.set(key, options);
         }
 
         return this;
@@ -298,8 +305,7 @@ class Parser {
         }
 
         if (!_.isUndefined(key)) {
-            const options = this.options;
-            let ns = options.defaultNs;
+            let ns = this.options.defaultNs;
 
             // http://i18next.com/translate/keyBasedFallback/
             // Set nsSeparator and keySeparator to false if you prefer
@@ -309,14 +315,16 @@ class Parser {
             //   keySeparator: false
             // })
 
-            if (_.isString(options.nsSeparator) && (key.indexOf(options.nsSeparator) > -1)) {
-                const parts = key.split(options.nsSeparator);
+            if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
+                const parts = key.split(this.options.nsSeparator);
                 ns = parts[0];
                 key = parts[1];
             }
 
-            const keys = _.isString(options.keySeparator) ? key.split(options.keySeparator) : [key];
-            const lng = opts.lng ? opts.lng : options.fallbackLng;
+            const keys = _.isString(this.options.keySeparator)
+                       ? key.split(this.options.keySeparator)
+                       : [key];
+            const lng = opts.lng ? opts.lng : this.options.fallbackLng;
             const namespaces = resStore[lng] || {};
 
             let value = namespaces[ns];
@@ -333,14 +341,19 @@ class Parser {
     }
     // Set translation key with an optional defaultValue to i18n resource store
     // @param {string} key The translation key
-    // @param {string} [defaultValue] The key's value
-    // @param {object} [opts] The opts object
-    // @param {boolean} [opts.resolvePluralForm] Sets true to resolve plural form, false otherwise.
-    set(key, defaultValue = null, opts = {}) {
-        const options = this.options;
-        const resolvePluralForm = !!(opts.resolvePluralForm);
+    // @param {object} [options] The options object
+    // @param {string} [options.defaultValue] defaultValue to return if translation not found
+    // @param {number} [options.count] count value used for plurals
+    // @param {string} [options.context] used for contexts (eg. male)
+    set(key, options = {}) {
+        // Backward compatibility
+        if (_.isString(options)) {
+            let defaultValue = options;
+            options = {};
+            options.defaultValue = defaultValue;
+        }
 
-        let ns = options.defaultNs;
+        let ns = this.options.defaultNs;
         console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
         // http://i18next.com/translate/keyBasedFallback/
@@ -351,14 +364,14 @@ class Parser {
         //   keySeparator: false
         // })
 
-        if (_.isString(options.nsSeparator) && (key.indexOf(options.nsSeparator) > -1)) {
-            const parts = key.split(options.nsSeparator);
+        if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
+            const parts = key.split(this.options.nsSeparator);
             ns = parts[0];
             key = parts[1];
         }
 
-        const keys = _.isString(options.keySeparator) ? key.split(options.keySeparator) : [key];
-        options.lngs.forEach((lng) => {
+        const keys = _.isString(this.options.keySeparator) ? key.split(this.options.keySeparator) : [key];
+        this.options.lngs.forEach((lng) => {
             let value = this.resStore[lng] && this.resStore[lng][ns];
             let x = 0;
 
@@ -372,7 +385,7 @@ class Parser {
                 const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
                 this.debuglog('Found a value %s associated with the key %s in %s.',
                     JSON.stringify(_.get(this.resStore, lookupKey)),
-                    JSON.stringify(keys.join(options.keySeparator || '')),
+                    JSON.stringify(keys.join(this.options.keySeparator || '')),
                     JSON.stringify(this.formatResourceLoadPath(lng, ns))
                 );
             } else if (_.isObject(this.resStore[lng][ns])) {
@@ -387,36 +400,37 @@ class Parser {
                         return; // continue
                     }
 
-                    // Use the defaultValue if specified
-                    if ((defaultValue !== null) && (defaultValue !== undefined)) {
-                        res[key] = defaultValue;
+                    // Use options.defaultValue if specified
+                    if ((options.defaultValue !== null) && (options.defaultValue !== undefined)) {
+                        res[key] = options.defaultValue;
                         return;
                     }
 
-                    res[key] = _.isFunction(options.defaultValue)
-                             ? options.defaultValue(lng, ns, key)
-                             : options.defaultValue;
+                    res[key] = _.isFunction(this.options.defaultValue)
+                             ? this.options.defaultValue(lng, ns, key)
+                             : this.options.defaultValue;
 
+                    const resolvePluralForm = !_.isUndefined(options.count);
                     if (resolvePluralForm) {
                         // TODO: Add support for multiple plural forms
                         const pluralKey = key + this.options.pluralSeparator + 'plural';
                         if (res[pluralKey] !== undefined) {
                             return; // skip if not empty
                         }
-                        res[pluralKey] = _.isFunction(options.defaultValue)
-                                       ? options.defaultValue(lng, ns, key)
-                                       : options.defaultValue;
+                        res[pluralKey] = _.isFunction(this.options.defaultValue)
+                                       ? this.options.defaultValue(lng, ns, key)
+                                       : this.options.defaultValue;
                     }
                 });
 
                 const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
                 this.debuglog('Adding a new entry {%s:%s} to %s.',
-                    JSON.stringify(keys.join(options.keySeparator || '')),
+                    JSON.stringify(keys.join(this.options.keySeparator || '')),
                     JSON.stringify(_.get(this.resStore, lookupKey)),
                     JSON.stringify(this.formatResourceLoadPath(lng, ns))
                 );
             } else { // skip the namespace that is not defined in the i18next options
-                console.log('The namespace "' + ns + '" does not exist:', { key, defaultValue });
+                console.log('The namespace "' + ns + '" does not exist:', { key, options });
             }
         });
     }
