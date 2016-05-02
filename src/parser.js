@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import fs from 'fs';
 import esprima from 'esprima';
-import XRegExp from 'xregexp';
 
 const defaults = {
     debug: false, // verbose logging
@@ -38,12 +37,45 @@ const defaults = {
     keySeparator: '.', // char to separate keys
     nsSeparator: ':', // char to split namespace from key
     pluralSeparator: '_', // char to split plural from key
+    contextSeparator: '_', // char to split context from key
 
     // interpolation options
     interpolation: {
         prefix: '{{', // prefix for interpolation
         suffix: '}}' // suffix for interpolation
     }
+};
+
+// http://codereview.stackexchange.com/questions/45991/balanced-parentheses
+const matchBalancedParentheses = (str = '') => {
+    const parentheses = '[]{}()';
+    const stack = [];
+    let bracePosition;
+    let start = -1;
+    str = '' + str; // ensure string
+    for (let i = 0; i < str.length; ++i) {
+        if ((start >= 0) && (stack.length === 0)) {
+            return str.substring(start, i);
+        }
+
+        bracePosition = parentheses.indexOf(str[i]);
+        if (bracePosition < 0) {
+            continue;
+        }
+        if ((bracePosition % 2) === 0) {
+            if (start < 0) {
+                start = i; // remember the start position
+            }
+            stack.push(bracePosition + 1); // push next expected brace position
+            continue;
+        }
+
+        if (stack.pop() !== bracePosition) {
+            return str.substring(start, i);
+        }
+    }
+
+    return str.substring(start, i);
 };
 
 const transformOptions = (options) => {
@@ -192,24 +224,20 @@ class Parser {
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
-                // http://xregexp.com/api/#matchRecursive
-                const rx = XRegExp.matchRecursive(content.substr(re.lastIndex), '{', '}', 'gim') || [];
-                if (_.size(rx) > 0) {
-                    const code = '({' + rx[0] + '})';
-                    const syntax = esprima.parse(code);
-                    const props = _.get(syntax, 'body[0].expression.properties') || [];
-                    // http://i18next.com/docs/options/
-                    const supportedOptions = [
-                        'defaultValue',
-                        'count',
-                        'context'
-                    ];
-                    props.forEach((prop) => {
-                        if (_.includes(supportedOptions, prop.key.name)) {
-                            options[prop.key.name] = prop.value.value;
-                        }
-                    });
-                }
+                const code = matchBalancedParentheses(content.substr(re.lastIndex));
+                const syntax = esprima.parse('(' + code + ')');
+                const props = _.get(syntax, 'body[0].expression.properties') || [];
+                // http://i18next.com/docs/options/
+                const supportedOptions = [
+                    'defaultValue',
+                    'count',
+                    'context'
+                ];
+                props.forEach((prop) => {
+                    if (_.includes(supportedOptions, prop.key.name)) {
+                        options[prop.key.name] = prop.value.value;
+                    }
+                });
             }
 
             if (customHandler) {
@@ -372,66 +400,95 @@ class Parser {
 
         const keys = _.isString(this.options.keySeparator) ? key.split(this.options.keySeparator) : [key];
         this.options.lngs.forEach((lng) => {
-            let value = this.resStore[lng] && this.resStore[lng][ns];
-            let x = 0;
+            let res = this.resStore[lng] && this.resStore[lng][ns];
 
-            while (keys[x]) {
-                value = value && value[keys[x]];
-                x++;
-            }
-
-            if (!_.isUndefined(value)) {
-                // Found a value associated with the key
-                const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
-                this.debuglog('Found a value %s associated with the key %s in %s.',
-                    JSON.stringify(_.get(this.resStore, lookupKey)),
-                    JSON.stringify(keys.join(this.options.keySeparator || '')),
-                    JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                );
-            } else if (_.isObject(this.resStore[lng][ns])) {
-                // Adding a new entry
-                let res = this.resStore[lng][ns];
-                Object.keys(keys).forEach((index) => {
-                    let key = keys[index];
-
-                    if (index < (keys.length - 1)) {
-                        res[key] = res[key] || {};
-                        res = res[key];
-                        return; // continue
-                    }
-
-                    // Use options.defaultValue if specified
-                    if ((options.defaultValue !== null) && (options.defaultValue !== undefined)) {
-                        res[key] = options.defaultValue;
-                        return;
-                    }
-
-                    res[key] = _.isFunction(this.options.defaultValue)
-                             ? this.options.defaultValue(lng, ns, key)
-                             : this.options.defaultValue;
-
-                    const resolvePluralForm = !_.isUndefined(options.count);
-                    if (resolvePluralForm) {
-                        // TODO: Add support for multiple plural forms
-                        const pluralKey = key + this.options.pluralSeparator + 'plural';
-                        if (res[pluralKey] !== undefined) {
-                            return; // skip if not empty
-                        }
-                        res[pluralKey] = _.isFunction(this.options.defaultValue)
-                                       ? this.options.defaultValue(lng, ns, key)
-                                       : this.options.defaultValue;
-                    }
-                });
-
-                const lookupKey = '[' + lng + '][' + ns + '][' + keys.join('][') + ']';
-                this.debuglog('Adding a new entry {%s:%s} to %s.',
-                    JSON.stringify(keys.join(this.options.keySeparator || '')),
-                    JSON.stringify(_.get(this.resStore, lookupKey)),
-                    JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                );
-            } else { // skip the namespace that is not defined in the i18next options
+            if (!_.isObject(res)) { // skip undefined namespace
                 console.log('The namespace "' + ns + '" does not exist:', { key, options });
+                return;
             }
+
+            Object.keys(keys).forEach((index) => {
+                const key = keys[index];
+
+                if (index < (keys.length - 1)) {
+                    res[key] = res[key] || {};
+                    res = res[key];
+                    return; // continue
+                }
+
+                const hasContext = (options.context !== undefined);
+                const hasCount = (options.count !== undefined);
+
+                // Context & Plural
+                // http://i18next.com/translate/context/
+                // http://i18next.com/translate/pluralSimple/
+                //
+                // Format:
+                // "<key>[[{{contextSeparator}}<context>]{{pluralSeparator}}<plural>]"
+                //
+                // Example:
+                // {
+                //   "translation": {
+                //     "friend": "A friend",
+                //     "friend_male": "A boyfriend",
+                //     "friend_female": "A girlfriend",
+                //     "friend_male_plural": "{{count}} boyfriends",
+                //     "friend_female_plural": "{{count}} girlfriends"
+                //   }
+                // }
+                let formattedKey = key;
+
+                // http://i18next.com/translate/context/
+                if (hasContext) {
+                    formattedKey = formattedKey + this.options.contextSeparator + options.context;
+                }
+                // http://i18next.com/translate/pluralSimple/
+                if (hasCount) { // TODO: multiple plural forms
+                    formattedKey = formattedKey + this.options.pluralSeparator + 'plural';
+                }
+
+                if (options.defaultValue !== undefined) {
+                    // Use `options.defaultValue` if specified
+                    if (res[key] === undefined) {
+                        res[key] = options.defaultValue;
+                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                            JSON.stringify(key),
+                            JSON.stringify(res[key]),
+                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                        );
+                    }
+                    if ((formattedKey !== key) && (res[formattedKey] === undefined)) {
+                        res[formattedKey] = options.defaultValue;
+                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                            JSON.stringify(formattedKey),
+                            JSON.stringify(res[formattedKey]),
+                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                        );
+                    }
+                } else {
+                    // Fallback to `this.options.defaultValue`
+                    if (res[key] === undefined) {
+                        res[key] = _.isFunction(this.options.defaultValue)
+                                 ? this.options.defaultValue(lng, ns, key)
+                                 : this.options.defaultValue;
+                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                            JSON.stringify(key),
+                            JSON.stringify(res[key]),
+                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                        );
+                    }
+                    if ((formattedKey !== key) && (res[formattedKey] === undefined)) {
+                        res[formattedKey] = _.isFunction(this.options.defaultValue)
+                                         ? this.options.defaultValue(lng, ns, key)
+                                         : this.options.defaultValue;
+                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                            JSON.stringify(formattedKey),
+                            JSON.stringify(res[formattedKey]),
+                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                        );
+                    }
+                }
+            });
         });
     }
     // Returns a JSON string containing translation information
