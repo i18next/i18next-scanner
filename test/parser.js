@@ -223,7 +223,7 @@ test('Plural', (t) => {
                 "keyWithCount": "",
                 "keyWithCount_plural": "",
                 "keyWithVariable": "",
-                "keyWithVariable_plural": "",
+                "keyWithVariable_plural": ""
             }
         }
     });
