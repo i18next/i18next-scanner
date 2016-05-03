@@ -221,7 +221,9 @@ test('Plural', (t) => {
                 "key": "",
                 "key_plural": "",
                 "keyWithCount": "",
-                "keyWithCount_plural": ""
+                "keyWithCount_plural": "",
+                "keyWithVariable": "",
+                "keyWithVariable_plural": "",
             }
         }
     });
