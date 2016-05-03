@@ -246,7 +246,12 @@ class Parser {
 
                 props.forEach((prop) => {
                     if (_.includes(supportedOptions, prop.key.name)) {
-                        options[prop.key.name] = prop.value.value || prop.value.name;
+                        if (prop.value.type === 'Literal') {
+                            options[prop.key.name] = prop.value.value;
+                        } else {
+                            // Unable to get value of the property
+                            options[prop.key.name] = '';
+                        }
                     }
                 });
             }
@@ -441,9 +446,6 @@ class Parser {
                     return; // continue
                 }
 
-                const hasContext = (options.context !== undefined);
-                const hasCount = (options.count !== undefined);
-
                 // Context & Plural
                 // http://i18next.com/translate/context/
                 // http://i18next.com/translate/pluralSimple/
@@ -464,11 +466,15 @@ class Parser {
                 let formattedKey = key;
 
                 // http://i18next.com/translate/context/
-                if (hasContext) {
+                // Note. The parser only supports string type for "context"
+                const needsContextHandling = (options.context !== undefined) && (typeof options.context === 'string') && (options.context !== '');
+                if (needsContextHandling) {
                     formattedKey = formattedKey + this.options.contextSeparator + options.context;
                 }
+
                 // http://i18next.com/translate/pluralSimple/
-                if (hasCount) { // TODO: multiple plural forms
+                const needsPluralHandling = (options.count !== undefined);
+                if (needsPluralHandling) { // TODO: multiple plural forms
                     formattedKey = formattedKey + this.options.pluralSeparator + 'plural';
                 }
 
