@@ -146,7 +146,12 @@ const transformOptions = (options) => {
 */
 class Parser {
     options = _.assign({}, defaults);
+    
+    // The resStore stores all translation keys including unused ones
     resStore = {};
+
+    // The resScan only stores translation keys parsed from code
+    resScan = {};
 
     constructor(options) {
         this.options = transformOptions(_.extend({}, this.options, options));
@@ -156,10 +161,12 @@ class Parser {
 
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
+            this.resScan[lng] = this.resScan[lng] || {};
             namespaces.forEach((ns) => {
                 const resPath = this.formatResourceLoadPath(lng, ns);
 
                 this.resStore[lng][ns] = {};
+                this.resScan[lng][ns] = {};
                 try {
                     const stat = fs.statSync(resPath);
 
@@ -330,7 +337,12 @@ class Parser {
             key = undefined;
         }
 
-        const resStore = _.assign({}, this.resStore);
+        let resStore = {};
+        if (this.options.removeUnusedKeys) {
+            resStore = this.resScan;
+        } else {
+            resStore = this.resStore;
+        }
 
         if (opts.sort) { // sort by key
             Object.keys(resStore).forEach((lng) => {
@@ -428,11 +440,11 @@ class Parser {
         const keys = _.isString(this.options.keySeparator) ? key.split(this.options.keySeparator) : [key];
 
         this.options.lngs.forEach((lng) => {
-            let res = this.resStore[lng] && this.resStore[lng][ns];
+            let resLoad = this.resStore[lng] && this.resStore[lng][ns];
+            let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
-            if (!_.isObject(res)) { // skip undefined namespace
+            if (!_.isObject(resLoad)) { // skip undefined namespace
                 console.log('The namespace "' + ns + '" does not exist:', { key, options });
-
                 return;
             }
 
@@ -440,8 +452,10 @@ class Parser {
                 const key = keys[index];
 
                 if (index < (keys.length - 1)) {
-                    res[key] = res[key] || {};
-                    res = res[key];
+                    resLoad[key] = resLoad[key] || {};
+                    resLoad = resLoad[key];
+                    resScan[key] = resScan[key] || {};
+                    resScan = resScan[key];
 
                     return; // continue
                 }
@@ -480,44 +494,50 @@ class Parser {
 
                 if (options.defaultValue !== undefined) {
                     // Use `options.defaultValue` if specified
-                    if (res[key] === undefined) {
-                        res[key] = options.defaultValue;
+                    if (resLoad[key] === undefined) {
+                        resLoad[key] = options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(key),
-                            JSON.stringify(res[key]),
+                            JSON.stringify(resLoad[key]),
                             JSON.stringify(this.formatResourceLoadPath(lng, ns))
                         );
                     }
-                    if ((formattedKey !== key) && (res[formattedKey] === undefined)) {
-                        res[formattedKey] = options.defaultValue;
+                    resScan[key] = resLoad[key];
+
+                    if ((formattedKey !== key) && (resLoad[formattedKey] === undefined)) {
+                        resLoad[formattedKey] = options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(formattedKey),
-                            JSON.stringify(res[formattedKey]),
+                            JSON.stringify(resLoad[formattedKey]),
                             JSON.stringify(this.formatResourceLoadPath(lng, ns))
                         );
                     }
+                    resScan[formattedKey] = resLoad[formattedKey];
                 } else {
                     // Fallback to `this.options.defaultValue`
-                    if (res[key] === undefined) {
-                        res[key] = _.isFunction(this.options.defaultValue)
+                    if (resLoad[key] === undefined) {
+                        resLoad[key] = _.isFunction(this.options.defaultValue)
                             ? this.options.defaultValue(lng, ns, key, options)
                             : this.options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(key),
-                            JSON.stringify(res[key]),
+                            JSON.stringify(resLoad[key]),
                             JSON.stringify(this.formatResourceLoadPath(lng, ns))
                         );
                     }
-                    if ((formattedKey !== key) && (res[formattedKey] === undefined)) {
-                        res[formattedKey] = _.isFunction(this.options.defaultValue)
+                    resScan[key] = resLoad[key];
+
+                    if ((formattedKey !== key) && (resLoad[formattedKey] === undefined)) {
+                        resLoad[formattedKey] = _.isFunction(this.options.defaultValue)
                             ? this.options.defaultValue(lng, ns, key, options)
                             : this.options.defaultValue;
                         this.debuglog('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(formattedKey),
-                            JSON.stringify(res[formattedKey]),
+                            JSON.stringify(resLoad[formattedKey]),
                             JSON.stringify(this.formatResourceLoadPath(lng, ns))
                         );
                     }
+                    resScan[formattedKey] = resLoad[formattedKey];
                 }
             });
         });

@@ -241,3 +241,141 @@ test('Custom flush', function(t) {
             t.end();
         });
 });
+
+test('Keep old translations', function(t) {
+    const options = _.merge({}, defaults, {
+        resource: {
+            loadPath: 'test/fixtures/i18n/{{lng}}/{{ns}}.json',
+            savePath: 'i18n/{{lng}}/{{ns}}.json'
+        }
+    });
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            // English - locale.json
+            if (file.path === 'i18n/en/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "language": {
+                        "en-US": "English"
+                    }
+                };
+                t.same(found, wanted);
+            }
+
+            // English - resource.json
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "loading": "Loading...",
+                    "cd643ef3": "Loading...",
+                    "8524de963f07201e5c086830d370797f": "Loading...",
+                    "b04ba49f848624bb97ab094a2631d2ad74913498": "Loading...",
+                    "Loading...": "Loading...", // Note. This is an existing translation key in English resource file.
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+
+            // German - locale.json
+            if (file.path === 'i18n/de/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "language": {
+                        "de-DE": "German"
+                    }
+                };
+                t.same(found, wanted);
+            }
+
+            // German - resource.json
+            if (file.path === 'i18n/de/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "loading": "Wird geladen...",
+                    "cd643ef3": "Wird geladen...",
+                    "8524de963f07201e5c086830d370797f": "Wird geladen...",
+                    "b04ba49f848624bb97ab094a2631d2ad74913498": "Wird geladen...",
+                    "Loading...": "__STRING_NOT_TRANSLATED__",
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
+
+// https://github.com/i18next/i18next-scanner/issues/30
+test('Remove old translation keys which are already removed from code', function(t) {
+    const options = _.merge({}, defaults, {
+        removeUnusedKeys: true,
+        resource: {
+            loadPath: 'test/fixtures/i18n/{{lng}}/{{ns}}.json',
+            savePath: 'i18n/{{lng}}/{{ns}}.json'
+        }
+    });
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            // English - locale.json
+            if (file.path === 'i18n/en/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {};
+                t.same(found, wanted);
+            }
+
+            // English - resource.json
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Loading...": "Loading...", // Note. This is an existing translation key in English resource file.
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+
+            // German - locale.json
+            if (file.path === 'i18n/de/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {};
+                t.same(found, wanted);
+            }
+
+            // German - resource.json
+            if (file.path === 'i18n/de/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Loading...": "__STRING_NOT_TRANSLATED__",
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});

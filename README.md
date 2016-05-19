@@ -304,6 +304,7 @@ Below are the configuration options with their default values:
 ```javascript
 {
     debug: false,
+    removeUnusedKeys: false,
     sort: false,
     attr: {
         list: ['data-i18n'],
@@ -337,6 +338,12 @@ Below are the configuration options with their default values:
 Type: `Boolean` Default: `false`
 
 Set to `true` to trun on debug output.
+
+#### removeUnusedKeys
+
+Type: `Boolean` Default: `false`
+
+Set to `true` to remove unused translation keys from i18n resource files.
 
 #### sort
 
