@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
