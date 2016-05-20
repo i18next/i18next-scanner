@@ -5,6 +5,27 @@ import { Parser } from '../src';
 
 const defaults = {};
 
+test('skip undefined namespace', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    const content = `
+        i18next.t('none:key2');
+        i18next.t('key1');
+    `;
+    const wanted = {
+        en: {
+            translation: {
+                key1: ''
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+    t.end();
+});
+
 test('parse translation function', (t) => {
     const parser = new Parser({
         lngs: ['en'],
@@ -262,5 +283,42 @@ test('Context with plural combined', (t) => {
             }
         }
     });
+    t.end();
+});
+
+test('parser.toJSON()', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.js'), 'utf-8');
+
+    parser.parseFuncFromString(content);
+
+    t.same(parser.toJSON(), '{"en":{"translation":{"key2":"","key1":""}}}');
+    t.end();
+});
+
+test('parser.toJSON({ sort: true })', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.js'), 'utf-8');
+
+    parser.parseFuncFromString(content);
+
+    t.same(parser.toJSON({ sort: true }), '{"en":{"translation":{"key1":"","key2":""}}}');
+    t.end();
+});
+
+test('parser.toJSON({ sort: true, space: 2 })', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.js'), 'utf-8');
+    const wanted = JSON.stringify({
+        en: {
+            translation: {
+                key1: '',
+                key2: ''
+            }
+        }
+    }, null, 2);
+
+    parser.parseFuncFromString(content);
+    t.same(parser.toJSON({ sort: true, space: 2 }), wanted);
     t.end();
 });
