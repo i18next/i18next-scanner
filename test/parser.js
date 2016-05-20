@@ -5,6 +5,27 @@ import { Parser } from '../src';
 
 const defaults = {};
 
+test('skip undefined namespace', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    const content = `
+        i18next.t('none:key2');
+        i18next.t('key1');
+    `;
+    const wanted = {
+        en: {
+            translation: {
+                key1: ''
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+    t.end();
+});
+
 test('parse translation function', (t) => {
     const parser = new Parser({
         lngs: ['en'],
