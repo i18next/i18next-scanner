@@ -549,9 +549,9 @@ class Parser {
     // @param {string|number} [options.space] The same as the JSON.stringify() method
     // @return {string}
     toJSON(options = {}) {
-        const { replacer, space } = options;
+        const { replacer, space, ...others } = options;
 
-        return JSON.stringify(this.getResourceStore(options), replacer, space);
+        return JSON.stringify(this.get(others), replacer, space);
     }
 }
 
