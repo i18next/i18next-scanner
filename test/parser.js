@@ -5,7 +5,7 @@ import { Parser } from '../src';
 
 const defaults = {};
 
-test('skip undefined namespace', (t) => {
+test('Skip undefined namespace', (t) => {
     const parser = new Parser({
         ns: ['translation']
     });
@@ -26,7 +26,7 @@ test('skip undefined namespace', (t) => {
     t.end();
 });
 
-test('parse translation function', (t) => {
+test('Parse translation function', (t) => {
     const parser = new Parser({
         lngs: ['en'],
         fallbackLng: 'en'
@@ -70,7 +70,7 @@ test('parse translation function', (t) => {
     t.end();
 });
 
-test('parse HTML attribute', (t) => {
+test('Parse HTML attribute', (t) => {
     const parser = new Parser({
         lngs: ['en'],
         fallbackLng: 'en'
@@ -118,7 +118,7 @@ test('parse HTML attribute', (t) => {
     t.end();
 });
 
-test('gettext style i18n', (t) => {
+test('Gettext style i18n', (t) => {
     const parser = new Parser({
         defaultValue: (lng, ns, key) => {
             return key;
@@ -148,7 +148,7 @@ test('gettext style i18n', (t) => {
     t.end();
 });
 
-test('disable nsSeparator', (t) => {
+test('Disable nsSeparator', (t) => {
     const parser = new Parser({
         defaultValue: '__NOT_TRANSLATED__',
         nsSeparator: false,
@@ -168,7 +168,7 @@ test('disable nsSeparator', (t) => {
     t.end();
 });
 
-test('disable keySeparator', (t) => {
+test('Disable keySeparator', (t) => {
     const parser = new Parser({
         defaultValue: '__NOT_TRANSLATED__',
         nsSeparator: ':',
@@ -188,7 +188,7 @@ test('disable keySeparator', (t) => {
     t.end();
 });
 
-test('default nsSeparator', (t) => {
+test('Default nsSeparator', (t) => {
     const parser = new Parser({
         defaultValue: '__NOT_TRANSLATED__',
         nsSeparator: ':',
@@ -210,7 +210,7 @@ test('default nsSeparator', (t) => {
     t.end();
 });
 
-test('default keyseparator', (t) => {
+test('Default keySeparator', (t) => {
     const parser = new Parser({
         defaultValue: '__NOT_TRANSLATED__',
         nsSeparator: ':',
@@ -229,6 +229,52 @@ test('default keyseparator', (t) => {
             }
         }
     }, 'The key should use default keySeparator . to split');
+    t.end();
+});
+
+test('Override nsSeparator with a false value', (t) => {
+    const parser = new Parser({
+        defaultValue: '__NOT_TRANSLATED__',
+        nsSeparator: ':',
+        keySeparator: '.'
+    });
+    parser.set('translation:key1.key2', {
+        nsSeparator: false
+    });
+
+    const resStore = parser.get();
+
+    t.same(resStore, {
+        en: {
+            translation: {
+                'translation:key1': {
+                    'key2': '__NOT_TRANSLATED__'
+                }
+            }
+        }
+    }, 'Override nsSeparator with a false value');
+    t.end();
+});
+
+test('Override keySeparator with a false value', (t) => {
+    const parser = new Parser({
+        defaultValue: '__NOT_TRANSLATED__',
+        nsSeparator: ':',
+        keySeparator: '.'
+    });
+    parser.set('translation:key1.key2', {
+        keySeparator: false
+    });
+
+    const resStore = parser.get();
+
+    t.same(resStore, {
+        en: {
+            translation: {
+                'key1.key2': '__NOT_TRANSLATED__'
+            }
+        }
+    }, 'Override keySeparator with a false value');
     t.end();
 });
 
