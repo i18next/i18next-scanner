@@ -409,6 +409,8 @@ class Parser {
     // @param {string} [options.defaultValue] defaultValue to return if translation not found
     // @param {number} [options.count] count value used for plurals
     // @param {string} [options.context] used for contexts (eg. male)
+    // @param {string|boolean} [options.nsSeparator] The value used to override this.options.nsSeparator
+    // @param {string|boolean} [options.keySeparator] The value used to override this.options.keySeparator
     set(key, options = {}) {
         // Backward compatibility
         if (_.isString(options)) {
@@ -417,6 +419,9 @@ class Parser {
             options = {};
             options.defaultValue = defaultValue;
         }
+
+        const nsSeparator = (options.nsSeparator !== undefined) ? options.nsSeparator : this.options.nsSeparator;
+        const keySeparator = (options.keySeparator !== undefined) ? options.keySeparator : this.options.keySeparator;
 
         let ns = this.options.defaultNs;
 
@@ -430,14 +435,14 @@ class Parser {
         //   keySeparator: false
         // })
 
-        if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
-            const parts = key.split(this.options.nsSeparator);
+        if (_.isString(nsSeparator) && (key.indexOf(nsSeparator) > -1)) {
+            const parts = key.split(nsSeparator);
 
             ns = parts[0];
             key = parts[1];
         }
 
-        const keys = _.isString(this.options.keySeparator) ? key.split(this.options.keySeparator) : [key];
+        const keys = _.isString(keySeparator) ? key.split(keySeparator) : [key];
 
         this.options.lngs.forEach((lng) => {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
