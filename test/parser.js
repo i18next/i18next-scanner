@@ -148,6 +148,37 @@ test('Gettext style i18n', (t) => {
     t.end();
 });
 
+test('Replace double backslash with single backslash', (t) => {
+    const parser = new Parser({
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key;
+            }
+            return '__NOT_TRANSLATED__';
+        },
+        keySeparator: false,
+        nsSeparator: false
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/escape.js'), 'utf8');
+    const wanted = {
+        "en": {
+            "translation": {
+                "Primary 'email' activation": "Primary 'email' activation",
+                "Primary \"email\" activation": "Primary \"email\" activation",
+                "name='email' value='{{email}}'": "name='email' value='{{email}}'",
+                "name=\"email\" value=\"{{email}}\"": "name=\"email\" value=\"{{email}}\"",
+                "name=\"email\" value='{{email}}'": "name=\"email\" value='{{email}}'",
+                "name='email' value=\"{{email}}\"": "name='email' value=\"{{email}}\"",
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+    fs.writeFileSync('./tmp.json', JSON.stringify(parser.get(), null, 4), 'utf8');
+    t.end();
+});
+
 test('Disable nsSeparator', (t) => {
     const parser = new Parser({
         defaultValue: '__NOT_TRANSLATED__',
