@@ -175,7 +175,6 @@ test('Replace double backslash with single backslash', (t) => {
 
     parser.parseFuncFromString(content);
     t.same(parser.get(), wanted);
-    fs.writeFileSync('./tmp.json', JSON.stringify(parser.get(), null, 4), 'utf8');
     t.end();
 });
 
