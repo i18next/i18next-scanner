@@ -234,12 +234,33 @@ class Parser {
         let r;
 
         while ((r = re.exec(content))) {
-            const full = r[0];
-            const key = _.trim(r[1], '\'"');
             const options = {};
+            const full = r[0];
+
+            let key = _.trim(r[1]); // Remove leading and trailing whitespace
+            const firstChar = key[0];
+            if (_.includes(['\'', '"'], firstChar)) {
+                // Remove first and last character
+                key = key.slice(1, -1);
+                // Replace two consecutive backslashes with a backslash
+                key = key.replace(/\\\\/g, '\\');
+            }
+
+            // Replace \' with '
+            // Input: i18n.t('name=\'{{name}}\'')
+            // Output: { "name='{{name}}'": "name='{{name}}'" }
+            if (firstChar === '\'') {
+                key = key.replace(/\\\'/g, '\'');
+            }
+
+            // Replace \" with "
+            // Input: i18n.t("name=\"{{name}}\"")
+            // Output: { "name=\"{{name}}\"": "name=\"{{name}}\"" }
+            if (firstChar === '"') {
+                key = key.replace(/\\\"/g, '"');
+            }
 
             const endsWithComma = (full[full.length - 1] === ',');
-
             if (endsWithComma) {
                 const code = matchBalancedParentheses(content.substr(re.lastIndex));
                 const syntax = esprima.parse('(' + code + ')');
