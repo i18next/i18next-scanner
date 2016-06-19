@@ -65,10 +65,12 @@ Here is a simple example showing how that works:
 ```js
 var scanner = require('i18next-scanner');
 var vfs = require('vinyl-fs');
+var sort = require('gulp-sort');
 var options = {
     // See options at https://github.com/i18next/i18next-scanner#options
 };
 vfs.src(['/path/to/src'])
+    .pipe(sort()) // Sort files in stream by path
     .pipe(scanner(options))
     .pipe(vfs.dest('/path/to/dest'));
 ```
@@ -76,6 +78,7 @@ vfs.src(['/path/to/src'])
 Alternatively, you can get a transform stream by calling createStream() as show below:
 ```js
 vfs.src(['/path/to/src'])
+    .pipe(sort()) // Sort files in stream by path
     .pipe(scanner.createStream(options))
     .pipe(vfs.dest('/path/to/dest'));
 ```
@@ -84,10 +87,12 @@ vfs.src(['/path/to/src'])
 Now you are ready to set up a minimal configuration, and get started with Gulp. For example:
 ```js
 var gulp = require('gulp');
+var sort = require('gulp-sort');
 var scanner = require('i18next-scanner');
 
 gulp.task('i18next', function() {
     return gulp.src(['src/**/*.{js,html}'])
+        .pipe(sort()) // Sort files in stream by path
         .pipe(scanner({
             lngs: ['en', 'de'], // supported languages
             resource: {
