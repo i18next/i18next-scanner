@@ -146,7 +146,7 @@ const transformOptions = (options) => {
 */
 class Parser {
     options = _.assign({}, defaults);
-    
+
     // The resStore stores all translation keys including unused ones
     resStore = {};
 
@@ -269,7 +269,8 @@ class Parser {
                 const supportedOptions = [
                     'defaultValue',
                     'count',
-                    'context'
+                    'context',
+                    'ns'
                 ];
 
                 props.forEach((prop) => {
@@ -430,6 +431,7 @@ class Parser {
     // @param {string} [options.defaultValue] defaultValue to return if translation not found
     // @param {number} [options.count] count value used for plurals
     // @param {string} [options.context] used for contexts (eg. male)
+    // @param {string} [options.ns] namespace for the translation
     // @param {string|boolean} [options.nsSeparator] The value used to override this.options.nsSeparator
     // @param {string|boolean} [options.keySeparator] The value used to override this.options.keySeparator
     set(key, options = {}) {
@@ -444,7 +446,7 @@ class Parser {
         const nsSeparator = (options.nsSeparator !== undefined) ? options.nsSeparator : this.options.nsSeparator;
         const keySeparator = (options.keySeparator !== undefined) ? options.keySeparator : this.options.keySeparator;
 
-        let ns = this.options.defaultNs;
+        let ns = options.ns || this.options.defaultNs;
 
         console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
