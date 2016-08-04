@@ -328,20 +328,20 @@ test('Plural', (t) => {
 });
 
 test('Namespace', (t) => {
-  const parser = new Parser({
-    ns: ['translation', 'othernamespace']
-  });
-  const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/namespace.js'), 'utf-8');
-  parser.parseFuncFromString(content);
-  t.same(parser.get(), {
-      en: {
-          othernamespace: {
-              "friend": ""
-          },
-          translation: {}
-      }
-  });
-  t.end();
+    const parser = new Parser({
+        ns: ['translation', 'othernamespace']
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/namespace.js'), 'utf-8');
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), {
+        en: {
+            othernamespace: {
+                "friend": ""
+            },
+            translation: {}
+        }
+    });
+    t.end();
 })
 
 test('Context', (t) => {
