@@ -1,11 +1,14 @@
 language: node_js
+
 node_js:
   - '6'
   - '5'
   - '4'
-  - '0.12'
-  - '0.10'
-  - 'iojs'
+
+before_install:
+  - npm install -g npm
+  - npm --version
+
 after_success:
   - npm run coveralls
   - npm run coverage-clean
