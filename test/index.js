@@ -394,10 +394,11 @@ test('Escape sequences', function(t) {
                 const found = JSON.parse(contents);
                 const wanted = {
                     "Single character escape sequences: \b\f\n\r\t\v\0\'\"\\": "__STRING_NOT_TRANSLATED__",
-                    "Hexadecimal escape sequences: \x169\xa9\xA9": "__STRING_NOT_TRANSLATED__",
+                    "Hexadecimal escape sequences: \xa9\xA9": "__STRING_NOT_TRANSLATED__",
                     "Unicode escape sequences: \u00a9\u00A9\u2665": "__STRING_NOT_TRANSLATED__",
                     "Backslashes in single quote: ' \\ '": "__STRING_NOT_TRANSLATED__"
                 };
+
                 t.same(found, wanted);
             }
         }))
