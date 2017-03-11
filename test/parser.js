@@ -148,7 +148,7 @@ test('Gettext style i18n', (t) => {
     t.end();
 });
 
-test('Replace double backslash with single backslash', (t) => {
+test('Quotes', (t) => {
     const parser = new Parser({
         defaultValue: function(lng, ns, key) {
             if (lng === 'en') {
@@ -159,7 +159,7 @@ test('Replace double backslash with single backslash', (t) => {
         keySeparator: false,
         nsSeparator: false
     });
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/escape.js'), 'utf8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/quotes.js'), 'utf8');
     const wanted = {
         "en": {
             "translation": {
@@ -175,6 +175,7 @@ test('Replace double backslash with single backslash', (t) => {
 
     parser.parseFuncFromString(content);
     t.same(parser.get(), wanted);
+
     t.end();
 });
 

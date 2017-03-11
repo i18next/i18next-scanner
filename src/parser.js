@@ -242,23 +242,23 @@ class Parser {
             if (_.includes(['\'', '"'], firstChar)) {
                 // Remove first and last character
                 key = key.slice(1, -1);
-                // Replace two consecutive backslashes with a backslash
-                key = key.replace(/\\\\/g, '\\');
             }
 
-            // Replace \' with '
-            // Input: i18n.t('name=\'{{name}}\'')
-            // Output: { "name='{{name}}'": "name='{{name}}'" }
-            if (firstChar === '\'') {
-                key = key.replace(/\\\'/g, '\'');
-            }
+            // JavaScript character escape sequences
+            // https://mathiasbynens.be/notes/javascript-escapes
 
-            // Replace \" with "
-            // Input: i18n.t("name=\"{{name}}\"")
-            // Output: { "name=\"{{name}}\"": "name=\"{{name}}\"" }
-            if (firstChar === '"') {
-                key = key.replace(/\\\"/g, '"');
-            }
+            // Unicode escape sequences
+            key = key.replace(/\\u[a-fA-F0-9]{4}/g, (match) => eval(`"${match}"`));
+
+            // Hexadecimal escape sequences
+            key = key.replace(/\\x[a-fA-F0-9]{2}/g, (match) => eval(`"${match}"`));
+
+            // Octal escapes have been deprecated in ES5.
+
+            // Single character escape sequences
+            // Note: IE < 9 treats '\v' as 'v' instead of a vertical tab ('\x0B'). If cross-browser compatibility is a concern, use \x0B instead of \v.
+            // Another thing to note is that the \v and \0 escapes are not allowed in JSON strings.
+            key = key.replace(/(\\b|\\f|\\n|\\r|\\t|\\v|\\0|\\\\|\\"|\\')/g, (match) => eval(`"${match}"`));
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
@@ -337,7 +337,6 @@ class Parser {
 
                 if (customHandler) {
                     customHandler(key);
-
                     return;
                 }
 

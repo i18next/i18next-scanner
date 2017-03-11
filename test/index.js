@@ -10,7 +10,7 @@ import scanner from '../src';
 const defaults = {
     debug: false,
     func: {
-        list: ['_t']
+        list: ['_t', 't']
     },
     lngs: ['en','de'],
     ns: [
@@ -371,6 +371,32 @@ test('Remove old translation keys which are already removed from code', function
                     "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
                     "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
                     "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }))
+        .on('end', function() {
+            t.end();
+        });
+});
+
+test('Escape sequences', function(t) {
+    const options = _.merge({}, defaults, {
+    });
+
+    gulp.src('test/fixtures/escape-sequences.js')
+        .pipe(scanner(options))
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            // English - resource.json
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Single character escape sequences: \b\f\n\r\t\v\0\'\"\\": "__STRING_NOT_TRANSLATED__",
+                    "Hexadecimal escape sequences: \x169\xa9\xA9": "__STRING_NOT_TRANSLATED__",
+                    "Unicode escape sequences: \u00a9\u00A9\u2665": "__STRING_NOT_TRANSLATED__",
+                    "Backslashes in single quote: ' \\ '": "__STRING_NOT_TRANSLATED__"
                 };
                 t.same(found, wanted);
             }
