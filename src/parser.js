@@ -36,8 +36,16 @@ const defaults = {
 
     keySeparator: '.', // char to separate keys
     nsSeparator: ':', // char to split namespace from key
-    pluralSeparator: '_', // char to split plural from key
+
+    // Context Form
+    context: true, // whether to add context form key
+    contextFallback: true, // whether to add a fallback key as well as the context form key
     contextSeparator: '_', // char to split context from key
+
+    // Plural Form
+    plural: true, // whether to add plural form key
+    pluralFallback: true, // whether to add a fallback key as well as the plural form key
+    pluralSeparator: '_', // char to split plural from key
 
     // interpolation options
     interpolation: {
@@ -461,9 +469,19 @@ class Parser {
             key = parts[1];
         }
 
+        const {
+            lngs,
+            context,
+            contextFallback,
+            contextSeparator,
+            plural,
+            pluralFallback,
+            pluralSeparator,
+            defaultValue
+        } = this.options;
         const keys = _.isString(keySeparator) ? key.split(keySeparator) : [key];
 
-        this.options.lngs.forEach((lng) => {
+        lngs.forEach((lng) => {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
@@ -501,68 +519,59 @@ class Parser {
                 //     "friend_female_plural": "{{count}} girlfriends"
                 //   }
                 // }
-                let formattedKey = key;
+                const resKeys = [];
 
                 // http://i18next.com/translate/context/
                 // Note. The parser only supports string type for "context"
-                const needsContextHandling = (options.context !== undefined) && (typeof options.context === 'string') && (options.context !== '');
-                if (needsContextHandling) {
-                    formattedKey = formattedKey + this.options.contextSeparator + options.context;
-                }
+                const containsContext = context
+                    && (options.context !== undefined)
+                    && (typeof options.context === 'string')
+                    && (options.context !== '');
 
                 // http://i18next.com/translate/pluralSimple/
-                const needsPluralHandling = (options.count !== undefined);
-                if (needsPluralHandling) { // TODO: multiple plural forms
-                    formattedKey = formattedKey + this.options.pluralSeparator + 'plural';
+                const containsPlural = plural
+                    && (options.count !== undefined);
+
+                if (!containsContext && !containsPlural) {
+                    resKeys.push(key);
                 }
 
-                if (options.defaultValue !== undefined) {
-                    // Use `options.defaultValue` if specified
-                    if (resLoad[key] === undefined) {
-                        resLoad[key] = options.defaultValue;
-                        this.debuglog('Added a new translation key { %s: %s } to %s',
-                            JSON.stringify(key),
-                            JSON.stringify(resLoad[key]),
-                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                        );
-                    }
-                    resScan[key] = resLoad[key];
-
-                    if ((formattedKey !== key) && (resLoad[formattedKey] === undefined)) {
-                        resLoad[formattedKey] = options.defaultValue;
-                        this.debuglog('Added a new translation key { %s: %s } to %s',
-                            JSON.stringify(formattedKey),
-                            JSON.stringify(resLoad[formattedKey]),
-                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                        );
-                    }
-                    resScan[formattedKey] = resLoad[formattedKey];
-                } else {
-                    // Fallback to `this.options.defaultValue`
-                    if (resLoad[key] === undefined) {
-                        resLoad[key] = _.isFunction(this.options.defaultValue)
-                            ? this.options.defaultValue(lng, ns, key, options)
-                            : this.options.defaultValue;
-                        this.debuglog('Added a new translation key { %s: %s } to %s',
-                            JSON.stringify(key),
-                            JSON.stringify(resLoad[key]),
-                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                        );
-                    }
-                    resScan[key] = resLoad[key];
-
-                    if ((formattedKey !== key) && (resLoad[formattedKey] === undefined)) {
-                        resLoad[formattedKey] = _.isFunction(this.options.defaultValue)
-                            ? this.options.defaultValue(lng, ns, key, options)
-                            : this.options.defaultValue;
-                        this.debuglog('Added a new translation key { %s: %s } to %s',
-                            JSON.stringify(formattedKey),
-                            JSON.stringify(resLoad[formattedKey]),
-                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                        );
-                    }
-                    resScan[formattedKey] = resLoad[formattedKey];
+                if ((containsContext && contextFallback) || (containsPlural && pluralFallback)) {
+                    resKeys.push(key);
                 }
+
+                if (containsContext) {
+                    resKeys.push(`${key}${contextSeparator}${options.context}`);
+                }
+
+                if (containsPlural) {
+                    resKeys.push(`${key}${pluralSeparator}plural`);
+                }
+
+                if (containsContext && containsPlural) {
+                    resKeys.push(`${key}${contextSeparator}${options.context}${pluralSeparator}plural`);
+                }
+
+                resKeys.forEach(resKey => {
+                    if (resLoad[resKey] === undefined) {
+                        if (options.defaultValue !== undefined) {
+                            // Use `options.defaultValue` if specified
+                            resLoad[resKey] = options.defaultValue;
+                        } else {
+                            // Fallback to `defaultValue`
+                            resLoad[resKey] = _.isFunction(defaultValue)
+                                ? defaultValue(lng, ns, key, options)
+                                : defaultValue;
+                        }
+                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                            JSON.stringify(resKey),
+                            JSON.stringify(resLoad[resKey]),
+                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                        );
+                    }
+
+                    resScan[resKey] = resLoad[resKey];
+                });
             });
         });
     }

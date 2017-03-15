@@ -484,17 +484,41 @@ Namespace separator used in translation keys.
 
 Set to `false` to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
 
-#### pluralSeparator
+#### context
 
-Type: `String` Default: `'_'`
+Type: `Boolean` Default: `true`
 
-The character to split plural from key.
+Whether to add context form key.
+
+#### contextFallback
+
+Type: `Boolean` Default: `true`
+
+Whether to add a fallback key as well as the context form key.
 
 #### contextSeparator
 
 Type: `String` Default: `'_'`
 
 The character to split context from key.
+
+#### plural
+
+Type: `Boolean` Default: `true`
+
+Whether to add plural form key.
+
+#### pluralFallback
+
+Type: `Boolean` Default: `true`
+
+Whether to add a fallback key as well as the plural form key.
+
+#### pluralSeparator
+
+Type: `String` Default: `'_'`
+
+The character to split plural from key.
 
 #### interpolation
 

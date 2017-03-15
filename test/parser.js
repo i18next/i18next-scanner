@@ -362,21 +362,96 @@ test('Context', (t) => {
 });
 
 test('Context with plural combined', (t) => {
-    const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context-plural.js'), 'utf-8');
-    parser.parseFuncFromString(content);
-    t.same(parser.get(), {
-        en: {
-            translation: {
-                "friend": "",
-                "friend_plural": "",
-                "friend_male": "",
-                "friend_male_plural": "",
-                "friend_female": "",
-                "friend_female_plural": ""
+
+    test('Default options', (t) => {
+        const parser = new Parser();
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend": "",
+                    "friend_plural": "",
+                    "friend_male": "",
+                    "friend_male_plural": "",
+                    "friend_female": "",
+                    "friend_female_plural": ""
+                }
             }
-        }
+        });
+        t.end();
     });
+
+    test('Context form only', (t) => {
+        const parser = new Parser({
+            context: true,
+            plural: false
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend": "",
+                    "friend_male": "",
+                    "friend_female": ""
+                }
+            }
+        });
+        t.end();
+    });
+
+    test('No context fallback', (t) => {
+        const parser = new Parser({
+            context: true,
+            contextFallback: false,
+            plural: false
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend_male": "",
+                    "friend_female": ""
+                }
+            }
+        });
+        t.end();
+    });
+
+    test('Plural form only', (t) => {
+        const parser = new Parser({
+            context: false,
+            plural: true
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend": "",
+                    "friend_plural": ""
+                }
+            }
+        });
+        t.end();
+    });
+
+    test('No plural fallback', (t) => {
+        const parser = new Parser({
+            context: false,
+            plural: true,
+            pluralFallback: false
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend_plural": ""
+                }
+            }
+        });
+        t.end();
+    });
+
     t.end();
 });
 
