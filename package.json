@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -44,25 +44,25 @@
     "md5"
   ],
   "dependencies": {
-    "esprima": "^3.1.2",
-    "lodash": "^4.17.2",
-    "through2": "^2.0.2",
+    "esprima": "^3.1.3",
+    "lodash": "^4.17.4",
+    "through2": "^2.0.3",
     "vinyl": "^2.0.1",
     "vinyl-fs": "^2.4.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.18.2",
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
     "babel-eslint": "^7.1.1",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-stage-0": "^6.16.0",
-    "coveralls": "^2.11.15",
-    "eslint": "^3.11.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "coveralls": "^2.12.0",
+    "eslint": "^3.17.1",
     "gulp": "^3.9.1",
     "gulp-tap": "^0.1.3",
-    "gulp-util": "^3.0.7",
+    "gulp-util": "^3.0.8",
     "sha1": "^1.1.1",
-    "tap": "^8.0.1",
+    "tap": "^10.3.0",
     "text-table": "^0.2.0",
     "which": "~1.2.12"
   }
