@@ -15,11 +15,11 @@
   "scripts": {
     "prepublish": "npm run lint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
-    "test": "./babel-tap --coverage test/*.js",
+    "test": "tap test/*.js --coverage --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "precommit-check": "npm run lint",
-    "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
+    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls"
   },
   "pre-commit": [
     "precommit-check"
