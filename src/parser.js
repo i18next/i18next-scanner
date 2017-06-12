@@ -1,7 +1,7 @@
 /* eslint no-console: 0 */
 import _ from 'lodash';
 import fs from 'fs';
-import esprima from 'esprima';
+import { parse } from 'esprima';
 
 const defaults = {
     debug: false, // verbose logging
@@ -268,7 +268,7 @@ class Parser {
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
                 const code = matchBalancedParentheses(content.substr(re.lastIndex));
-                const syntax = esprima.parse('(' + code + ')');
+                const syntax = parse('(' + code + ')');
                 const props = _.get(syntax, 'body[0].expression.properties') || [];
                 // http://i18next.com/docs/options/
                 const supportedOptions = [
