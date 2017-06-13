@@ -15,7 +15,7 @@
   "scripts": {
     "prepublish": "npm run lint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
-    "test": "tap test/*.js --coverage --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
+    "test": "tap test/*.js --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill",
     "lint": "eslint ./src",
     "lint:fix": "eslint --fix ./src",
     "precommit-check": "npm run lint",
