@@ -236,7 +236,7 @@ class Parser {
             .value()
             .join('|')
             .replace(/\./g, '\\.');
-        const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\')\\s*[\\,\\)]';
+        const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\(?:.|$))*"|\'(?:[^\'\\\\]|\\\\(?:.|$))*\')\\s*[,)]';
         const re = new RegExp(pattern, 'gim');
 
         let r;
@@ -251,6 +251,9 @@ class Parser {
                 // Remove first and last character
                 key = key.slice(1, -1);
             }
+
+            // restore multiline strings
+            key = key.replace(/\\\n/g, '');
 
             // JavaScript character escape sequences
             // https://mathiasbynens.be/notes/javascript-escapes

@@ -309,6 +309,23 @@ test('Override keySeparator with a false value', (t) => {
     t.end();
 });
 
+test('Multiline', (t) => {
+    const parser = new Parser({
+        nsSeparator: false,
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/multiline.js'), 'utf-8');
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "this is a multiline string": "",
+                "this is another multiline string": ""
+            }
+        }
+    });
+    t.end();
+});
+
 test('Plural', (t) => {
     const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
