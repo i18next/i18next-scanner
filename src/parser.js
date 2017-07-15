@@ -253,7 +253,7 @@ class Parser {
             }
 
             // restore multiline strings
-            key = key.replace(/\\\n/g, '');
+            key = key.replace(/(\\\n|\\\r\n)/g, '');
 
             // JavaScript character escape sequences
             // https://mathiasbynens.be/notes/javascript-escapes
