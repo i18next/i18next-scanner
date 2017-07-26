@@ -525,3 +525,29 @@ test('parser.toJSON({ sort: true, space: 2 })', (t) => {
     t.same(parser.toJSON({ sort: true, space: 2 }), wanted);
     t.end();
 });
+
+test('Extract properties from template literals', (t) => {
+    const parser = new Parser({
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key;
+            }
+            return '__NOT_TRANSLATED__';
+        },
+        keySeparator: false,
+        nsSeparator: false
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8');
+    const wanted = {
+        "en": {
+            "translation": {
+                "property in template literals": "property in template literals",
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+
+    t.end();
+});

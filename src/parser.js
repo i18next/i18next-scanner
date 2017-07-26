@@ -285,6 +285,10 @@ class Parser {
                     if (_.includes(supportedOptions, prop.key.name)) {
                         if (prop.value.type === 'Literal') {
                             options[prop.key.name] = prop.value.value;
+                        } else if (prop.value.type === 'TemplateLiteral') {
+                            options[prop.key.name] = prop.value.quasis.map(function(element) {
+                                return element.value.cooked;
+                            }).join('');
                         } else {
                             // Unable to get value of the property
                             options[prop.key.name] = '';
