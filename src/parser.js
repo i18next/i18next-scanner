@@ -1,7 +1,21 @@
 /* eslint no-console: 0 */
-import _ from 'lodash';
 import fs from 'fs';
+import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
+import isUndefined from 'lodash/isUndefined';
+import isString from 'lodash/isString';
+import flatten from 'lodash/flatten';
+import union from 'lodash/union';
+import get from 'lodash/get';
+import set from 'lodash/set';
+import escapeRegExp from 'lodash/escapeRegExp';
+import includes from 'lodash/includes';
+import trim from 'lodash/trim';
+import toPairs from 'lodash/toPairs';
+import sortBy from 'lodash/sortBy';
 import { parse } from 'esprima';
+import ensureArray from './ensure-array';
 
 const defaults = {
     debug: false, // verbose logging
@@ -90,60 +104,57 @@ const matchBalancedParentheses = (str = '') => {
 
 const transformOptions = (options) => {
     // Attribute
-    if (_.isUndefined(_.get(options, 'attr.list'))) {
-        _.set(options, 'attr.list', defaults.attr.list);
+    if (isUndefined(get(options, 'attr.list'))) {
+        set(options, 'attr.list', defaults.attr.list);
     }
-    if (_.isUndefined(_.get(options, 'attr.extensions'))) {
-        _.set(options, 'attr.extensions', defaults.attr.extensions);
+    if (isUndefined(get(options, 'attr.extensions'))) {
+        set(options, 'attr.extensions', defaults.attr.extensions);
     }
 
     // Function
-    if (_.isUndefined(_.get(options, 'func.list'))) {
-        _.set(options, 'func.list', defaults.func.list);
+    if (isUndefined(get(options, 'func.list'))) {
+        set(options, 'func.list', defaults.func.list);
     }
 
     // Resource
-    if (_.isUndefined(_.get(options, 'func.extensions'))) {
-        _.set(options, 'func.extensions', defaults.func.extensions);
+    if (isUndefined(get(options, 'func.extensions'))) {
+        set(options, 'func.extensions', defaults.func.extensions);
     }
-    if (_.isUndefined(_.get(options, 'resource.loadPath'))) {
-        _.set(options, 'resource.loadPath', defaults.resource.loadPath);
+    if (isUndefined(get(options, 'resource.loadPath'))) {
+        set(options, 'resource.loadPath', defaults.resource.loadPath);
     }
-    if (_.isUndefined(_.get(options, 'resource.savePath'))) {
-        _.set(options, 'resource.savePath', defaults.resource.savePath);
+    if (isUndefined(get(options, 'resource.savePath'))) {
+        set(options, 'resource.savePath', defaults.resource.savePath);
     }
-    if (_.isUndefined(_.get(options, 'resource.jsonIndent'))) {
-        _.set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
+    if (isUndefined(get(options, 'resource.jsonIndent'))) {
+        set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
     }
 
     // Accept both nsseparator or nsSeparator
-    if (!_.isUndefined(options.nsseparator)) {
+    if (!isUndefined(options.nsseparator)) {
         options.nsSeparator = options.nsseparator;
         delete options.nsseparator;
     }
     // Allowed only string or false
-    if (!_.isString(options.nsSeparator)) {
+    if (!isString(options.nsSeparator)) {
         options.nsSeparator = false;
     }
 
     // Accept both keyseparator or keySeparator
-    if (!_.isUndefined(options.keyseparator)) {
+    if (!isUndefined(options.keyseparator)) {
         options.keySeparator = options.keyseparator;
         delete options.keyseparator;
     }
     // Allowed only string or false
-    if (!_.isString(options.keySeparator)) {
+    if (!isString(options.keySeparator)) {
         options.keySeparator = false;
     }
 
-    if (!_.isArray(options.ns)) {
+    if (!isArray(options.ns)) {
         options.ns = [options.ns];
     }
 
-    options.ns = _(options.ns.concat(options.defaultNs))
-        .flatten()
-        .union()
-        .value();
+    options.ns = union(flatten(options.ns.concat(options.defaultNs)));
 
     return options;
 };
@@ -153,7 +164,7 @@ const transformOptions = (options) => {
 * @constructor
 */
 class Parser {
-    options = _.assign({}, defaults);
+    options = { ...defaults };
 
     // The resStore stores all translation keys including unused ones
     resStore = {};
@@ -162,7 +173,10 @@ class Parser {
     resScan = {};
 
     constructor(options) {
-        this.options = transformOptions(_.extend({}, this.options, options));
+        this.options = transformOptions({
+            ...this.options,
+            ...options
+        });
 
         const lngs = this.options.lngs;
         const namespaces = this.options.ns;
@@ -200,8 +214,8 @@ class Parser {
         const options = this.options;
 
         const regex = {
-            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
-            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
+            lng: new RegExp(escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
         return options.resource.loadPath
@@ -211,8 +225,8 @@ class Parser {
     formatResourceSavePath(lng, ns) {
         const options = this.options;
         const regex = {
-            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
-            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
+            lng: new RegExp(escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
         return options.resource.savePath
@@ -225,15 +239,21 @@ class Parser {
     // i18next.t("ns:foo.bar", { count: 1 }); // matched
     // i18next.t("ns:foo.bar" + str); // not matched
     parseFuncFromString(content, opts = {}, customHandler = null) {
-        if (_.isFunction(opts)) {
+        if (isFunction(opts)) {
             customHandler = opts;
             opts = {};
         }
 
-        const funcs = opts.list || this.options.func.list;
-        const matchPattern = _(funcs)
-            .map((func) => ('(?:' + func + ')'))
-            .value()
+        const funcs = (opts.list !== undefined)
+            ? ensureArray(opts.list)
+            : ensureArray(this.options.func.list);
+
+        if (funcs.length === 0) {
+            return this;
+        }
+
+        const matchPattern = funcs
+            .map(func => ('(?:' + func + ')'))
             .join('|')
             .replace(/\./g, '\\.');
         const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\(?:.|$))*"|\'(?:[^\'\\\\]|\\\\(?:.|$))*\')\\s*[,)]';
@@ -245,9 +265,9 @@ class Parser {
             const options = {};
             const full = r[0];
 
-            let key = _.trim(r[1]); // Remove leading and trailing whitespace
+            let key = trim(r[1]); // Remove leading and trailing whitespace
             const firstChar = key[0];
-            if (_.includes(['\'', '"'], firstChar)) {
+            if (includes(['\'', '"'], firstChar)) {
                 // Remove first and last character
                 key = key.slice(1, -1);
             }
@@ -272,7 +292,7 @@ class Parser {
             if (endsWithComma) {
                 const code = matchBalancedParentheses(content.substr(re.lastIndex));
                 const syntax = parse('(' + code + ')');
-                const props = _.get(syntax, 'body[0].expression.properties') || [];
+                const props = get(syntax, 'body[0].expression.properties') || [];
                 // http://i18next.com/docs/options/
                 const supportedOptions = [
                     'defaultValue',
@@ -282,7 +302,7 @@ class Parser {
                 ];
 
                 props.forEach((prop) => {
-                    if (_.includes(supportedOptions, prop.key.name)) {
+                    if (includes(supportedOptions, prop.key.name)) {
                         if (prop.value.type === 'Literal') {
                             options[prop.key.name] = prop.value.value;
                         } else if (prop.value.type === 'TemplateLiteral') {
@@ -311,15 +331,21 @@ class Parser {
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
     parseAttrFromString(content, opts = {}, customHandler = null) {
-        if (_.isFunction(opts)) {
+        if (isFunction(opts)) {
             customHandler = opts;
             opts = {};
         }
 
-        const attrs = opts.list || this.options.attr.list;
-        const matchPattern = _(attrs)
-            .map((attr) => ('(?:' + attr + ')'))
-            .value()
+        const attrs = (opts.list !== undefined)
+            ? ensureArray(opts.list)
+            : ensureArray(this.options.attr.list);
+
+        if (attrs.length === 0) {
+            return this;
+        }
+
+        const matchPattern = attrs
+            .map(attr => ('(?:' + attr + ')'))
             .join('|')
             .replace(/\./g, '\\.');
         const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
@@ -328,20 +354,19 @@ class Parser {
         let r;
 
         while ((r = re.exec(content))) {
-            const attr = _.trim(r[1], '\'"');
-            const keys = (attr.indexOf(';') >= 0) ? attr.split(';') : [attr];
+            const attr = trim(r[1], '\'"');
+            const keys = (attr.indexOf(';') >= 0)
+                ? attr.split(';')
+                : [attr];
 
             keys.forEach((key) => {
-                //let attr = 'text';
-                key = _.trim(key);
+                key = trim(key);
                 if (key.length === 0) {
                     return;
                 }
                 if (key.indexOf('[') === 0) {
-                    let parts = key.split(']');
-
+                    const parts = key.split(']');
                     key = parts[1];
-                    //attr = parts[0].substr(1, parts[0].length - 1);
                 }
                 if (key.indexOf(';') === (key.length - 1)) {
                     key = key.substr(0, key.length - 2);
@@ -365,7 +390,7 @@ class Parser {
     // @param {boolean} [opts.lng] The language to use
     // @return {object}
     get(key, opts = {}) {
-        if (_.isObject(key)) {
+        if (isObject(key)) {
             opts = key;
             key = undefined;
         }
@@ -382,24 +407,19 @@ class Parser {
                 const namespaces = resStore[lng];
 
                 Object.keys(namespaces).forEach((ns) => {
-                    resStore[lng][ns] = _(namespaces[ns])
-                        .toPairs()
-                        .sortBy((pair) => pair[0])
+                    const pairs = toPairs(namespaces[ns]);
+                    resStore[lng][ns] = sortBy(pairs, (pair => pair[0]))
                         .reduce((memo, pair) => {
                             const _key = pair[0];
                             const _value = pair[1];
-
                             memo[_key] = _value;
-
                             return memo;
                         }, {});
-
-                        // Note. The reduce method is not chainable by default
                 });
             });
         }
 
-        if (!_.isUndefined(key)) {
+        if (!isUndefined(key)) {
             let ns = this.options.defaultNs;
 
             // http://i18next.com/translate/keyBasedFallback/
@@ -410,17 +430,19 @@ class Parser {
             //   keySeparator: false
             // })
 
-            if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
+            if (isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
                 const parts = key.split(this.options.nsSeparator);
 
                 ns = parts[0];
                 key = parts[1];
             }
 
-            const keys = _.isString(this.options.keySeparator)
+            const keys = isString(this.options.keySeparator)
                        ? key.split(this.options.keySeparator)
                        : [key];
-            const lng = opts.lng ? opts.lng : this.options.fallbackLng;
+            const lng = opts.lng
+                ? opts.lng
+                : this.options.fallbackLng;
             const namespaces = resStore[lng] || {};
 
             let value = namespaces[ns];
@@ -447,19 +469,23 @@ class Parser {
     // @param {string|boolean} [options.keySeparator] The value used to override this.options.keySeparator
     set(key, options = {}) {
         // Backward compatibility
-        if (_.isString(options)) {
-            let defaultValue = options;
-
-            options = {};
-            options.defaultValue = defaultValue;
+        if (isString(options)) {
+            const defaultValue = options;
+            options = {
+                defaultValue: defaultValue
+            };
         }
 
-        const nsSeparator = (options.nsSeparator !== undefined) ? options.nsSeparator : this.options.nsSeparator;
-        const keySeparator = (options.keySeparator !== undefined) ? options.keySeparator : this.options.keySeparator;
+        const nsSeparator = (options.nsSeparator !== undefined)
+            ? options.nsSeparator
+            : this.options.nsSeparator;
+        const keySeparator = (options.keySeparator !== undefined)
+            ? options.keySeparator
+            : this.options.keySeparator;
 
         let ns = options.ns || this.options.defaultNs;
 
-        console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
+        console.assert(isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
         // http://i18next.com/translate/keyBasedFallback/
         // Set nsSeparator and keySeparator to false if you prefer
@@ -469,7 +495,7 @@ class Parser {
         //   keySeparator: false
         // })
 
-        if (_.isString(nsSeparator) && (key.indexOf(nsSeparator) > -1)) {
+        if (isString(nsSeparator) && (key.indexOf(nsSeparator) > -1)) {
             const parts = key.split(nsSeparator);
 
             ns = parts[0];
@@ -486,13 +512,15 @@ class Parser {
             pluralSeparator,
             defaultValue
         } = this.options;
-        const keys = _.isString(keySeparator) ? key.split(keySeparator) : [key];
+        const keys = isString(keySeparator)
+            ? key.split(keySeparator)
+            : [key];
 
         lngs.forEach((lng) => {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
-            if (!_.isObject(resLoad)) { // skip undefined namespace
+            if (!isObject(resLoad)) { // skip undefined namespace
                 console.log('The namespace "' + ns + '" does not exist:', { key, options });
                 return;
             }
@@ -566,7 +594,7 @@ class Parser {
                             resLoad[resKey] = options.defaultValue;
                         } else {
                             // Fallback to `defaultValue`
-                            resLoad[resKey] = _.isFunction(defaultValue)
+                            resLoad[resKey] = isFunction(defaultValue)
                                 ? defaultValue(lng, ns, key, options)
                                 : defaultValue;
                         }

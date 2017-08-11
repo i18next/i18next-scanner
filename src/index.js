@@ -1,6 +1,7 @@
-import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
 import VirtualFile from 'vinyl';
 import through2 from 'through2';
 import Parser from './parser';
@@ -11,12 +12,12 @@ const transform = (parser, customTransform) => {
         const content = fs.readFileSync(file.path, enc);
         const extname = path.extname(file.path);
 
-        if (_.isObject(options.attr) && _.includes(options.attr.extensions, extname)) {
+        if (includes(get(options, 'attr.extensions'), extname)) {
             // Parse attribute (e.g. data-i18n="key")
             parser.parseAttrFromString(content);
         }
 
-        if (_.isObject(options.func) && _.includes(options.func.extensions, extname)) {
+        if (includes(get(options, 'func.extensions'), extname)) {
             // Parse translation function (e.g. i18next.t('key'))
             parser.parseFuncFromString(content);
         }
