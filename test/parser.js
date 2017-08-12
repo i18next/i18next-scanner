@@ -346,7 +346,7 @@ test('Multiline (Line Endings: CRLF)', (t) => {
 test('Plural', (t) => {
     const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
-    parser.parseFuncFromString(content);
+    parser.parseFuncFromString(content, { propsFilter: props => props });
     t.same(parser.get(), {
         en: {
             translation: {
@@ -382,7 +382,7 @@ test('Namespace', (t) => {
 test('Context', (t) => {
     const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context.js'), 'utf-8');
-    parser.parseFuncFromString(content);
+    parser.parseFuncFromString(content, { propsFilter: props => props });
     t.same(parser.get(), {
         en: {
             translation: {

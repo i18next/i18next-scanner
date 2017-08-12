@@ -290,31 +290,43 @@ class Parser {
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
-                const code = matchBalancedParentheses(content.substr(re.lastIndex));
-                const syntax = parse('(' + code + ')');
-                const props = get(syntax, 'body[0].expression.properties') || [];
-                // http://i18next.com/docs/options/
-                const supportedOptions = [
-                    'defaultValue',
-                    'count',
-                    'context',
-                    'ns'
-                ];
+                const { propsFilter } = { ...opts };
 
-                props.forEach((prop) => {
-                    if (includes(supportedOptions, prop.key.name)) {
-                        if (prop.value.type === 'Literal') {
-                            options[prop.key.name] = prop.value.value;
-                        } else if (prop.value.type === 'TemplateLiteral') {
-                            options[prop.key.name] = prop.value.quasis
-                                .map(element => element.value.cooked)
-                                .join('');
-                        } else {
-                            // Unable to get value of the property
-                            options[prop.key.name] = '';
+                let code = matchBalancedParentheses(content.substr(re.lastIndex));
+
+                if (typeof propsFilter === 'function') {
+                    code = propsFilter(code);
+                }
+
+                try {
+                    const syntax = parse('(' + code + ')');
+                    const props = get(syntax, 'body[0].expression.properties') || [];
+                    // http://i18next.com/docs/options/
+                    const supportedOptions = [
+                        'defaultValue',
+                        'count',
+                        'context',
+                        'ns'
+                    ];
+
+                    props.forEach((prop) => {
+                        if (includes(supportedOptions, prop.key.name)) {
+                            if (prop.value.type === 'Literal') {
+                                options[prop.key.name] = prop.value.value;
+                            } else if (prop.value.type === 'TemplateLiteral') {
+                                options[prop.key.name] = prop.value.quasis
+                                    .map(element => element.value.cooked)
+                                    .join('');
+                            } else {
+                                // Unable to get value of the property
+                                options[prop.key.name] = '';
+                            }
                         }
-                    }
-                });
+                    });
+                } catch (err) {
+                    this.debuglog(`Unable to parse code "${code}"`);
+                    this.debuglog(err);
+                }
             }
 
             if (customHandler) {

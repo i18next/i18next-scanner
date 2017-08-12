@@ -25,7 +25,6 @@ const transform = (parser, customTransform) => {
         if (typeof customTransform === 'function') {
             this.parser = parser;
             customTransform.call(this, file, enc, done);
-
             return;
         }
 
@@ -40,7 +39,6 @@ const flush = (parser, customFlush) => {
         if (typeof customFlush === 'function') {
             this.parser = parser;
             customFlush.call(this, done);
-
             return;
         }
 
