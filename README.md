@@ -486,9 +486,15 @@ Set to `false` to disable namespace separator if you prefer having keys as the f
 
 #### context
 
-Type: `Boolean` Default: `true`
+Type: `Boolean` or `Function` Default: `true`
 
 Whether to add context form key.
+
+```js
+context: function(lng, ns, key, options) {
+    return true;
+}
+```
 
 #### contextFallback
 
@@ -504,9 +510,15 @@ The character to split context from key.
 
 #### plural
 
-Type: `Boolean` Default: `true`
+Type: `Boolean` or `Function` Default: `true`
 
 Whether to add plural form key.
+
+```js
+plural: function(lng, ns, key, options) {
+    return true;
+}
+```
 
 #### pluralFallback
 
