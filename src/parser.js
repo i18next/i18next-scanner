@@ -196,16 +196,15 @@ class Parser {
                         this.resStore[lng][ns] = JSON.parse(fs.readFileSync(resPath, 'utf-8'));
                     }
                 } catch (err) {
-                    this.debuglog('Unable to load ' + JSON.stringify(resPath));
+                    this.log('Unable to load ' + JSON.stringify(resPath));
                 }
             });
         });
 
-        this.debuglog('[i18next-scanner] Parser(options): ' + JSON.stringify(this.options));
+        this.log(`Parser: options=${JSON.stringify(this.options)}`);
     }
-    debuglog(...args) {
+    log(...args) {
         const { debug } = this.options;
-
         if (debug) {
             console.log.apply(this, args);
         }
@@ -324,8 +323,8 @@ class Parser {
                         }
                     });
                 } catch (err) {
-                    this.debuglog(`Unable to parse code "${code}"`);
-                    this.debuglog(err);
+                    this.log(`Unable to parse code "${code}"`);
+                    this.log(err);
                 }
             }
 
@@ -532,8 +531,8 @@ class Parser {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
-            if (!isObject(resLoad)) { // skip undefined namespace
-                console.log('The namespace "' + ns + '" does not exist:', { key, options });
+            if (!isObject(resLoad)) { // Skip undefined namespace
+                this.log('The namespace "' + ns + '" does not exist:', { key, options });
                 return;
             }
 
@@ -545,7 +544,6 @@ class Parser {
                     resLoad = resLoad[key];
                     resScan[key] = resScan[key] || {};
                     resScan = resScan[key];
-
                     return; // continue
                 }
 
@@ -569,15 +567,30 @@ class Parser {
                 const resKeys = [];
 
                 // http://i18next.com/translate/context/
-                // Note. The parser only supports string type for "context"
-                const containsContext = context
-                    && (options.context !== undefined)
-                    && (typeof options.context === 'string')
-                    && (options.context !== '');
+                const containsContext = (() => {
+                    if (!context) {
+                        return false;
+                    }
+                    if (isUndefined(options.context)) {
+                        return false;
+                    }
+                    return isFunction(context)
+                        ? context(lng, ns, key, options)
+                        : !!context;
+                })();
 
                 // http://i18next.com/translate/pluralSimple/
-                const containsPlural = plural
-                    && (options.count !== undefined);
+                const containsPlural = (() => {
+                    if (!plural) {
+                        return false;
+                    }
+                    if (isUndefined(options.count)) {
+                        return false;
+                    }
+                    return isFunction(plural)
+                        ? plural(lng, ns, key, options)
+                        : !!plural;
+                })();
 
                 if (!containsContext && !containsPlural) {
                     resKeys.push(key);
@@ -610,7 +623,7 @@ class Parser {
                                 ? defaultValue(lng, ns, key, options)
                                 : defaultValue;
                         }
-                        this.debuglog('Added a new translation key { %s: %s } to %s',
+                        this.log('Added a new translation key { %s: %s } to %s',
                             JSON.stringify(resKey),
                             JSON.stringify(resLoad[resKey]),
                             JSON.stringify(this.formatResourceLoadPath(lng, ns))

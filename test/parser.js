@@ -344,21 +344,56 @@ test('Multiline (Line Endings: CRLF)', (t) => {
 });
 
 test('Plural', (t) => {
-    const parser = new Parser();
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
-    parser.parseFuncFromString(content, { propsFilter: props => props });
-    t.same(parser.get(), {
-        en: {
-            translation: {
-                "key": "",
-                "key_plural": "",
-                "keyWithCount": "",
-                "keyWithCount_plural": "",
-                "keyWithVariable": "",
-                "keyWithVariable_plural": ""
+    test('Default options', (t) => {
+        const parser = new Parser()
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
+        parser.parseFuncFromString(content, { propsFilter: props => props });
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key": "",
+                    "key_plural": "",
+                    "keyWithCount": "",
+                    "keyWithCount_plural": "",
+                    "keyWithVariable": "",
+                    "keyWithVariable_plural": ""
+                }
             }
-        }
+        });
+        t.end();
     });
+
+    test('User defined function', (t) => {
+        const parser = new Parser({
+            plural: (lng, ns, key, options) => {
+                if (key === 'key') {
+                    return false;
+                }
+                if (key === 'keyWithCount') {
+                    return true;
+                }
+                if (key === 'keyWithVariable') {
+                    return true;
+                }
+                return true;
+            }
+        });
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
+        parser.parseFuncFromString(content, { propsFilter: props => props });
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key": "",
+                    "keyWithCount": "",
+                    "keyWithCount_plural": "",
+                    "keyWithVariable": "",
+                    "keyWithVariable_plural": ""
+                }
+            }
+        });
+        t.end();
+    });
+
     t.end();
 });
 
@@ -380,18 +415,47 @@ test('Namespace', (t) => {
 })
 
 test('Context', (t) => {
-    const parser = new Parser();
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context.js'), 'utf-8');
-    parser.parseFuncFromString(content, { propsFilter: props => props });
-    t.same(parser.get(), {
-        en: {
-            translation: {
-                "friend": "",
-                "friend_male": "",
-                "friend_female": ""
+    test('Default options', (t) => {
+        const parser = new Parser();
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context.js'), 'utf-8');
+        parser.parseFuncFromString(content, { propsFilter: props => props });
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend": "",
+                    "friend_male": "",
+                    "friend_female": ""
+                }
             }
-        }
+        });
+        t.end();
     });
+
+    test('User defined function', (t) => {
+        const parser = new Parser({
+            context: (lng, ns, key, options) => {
+                if (options.context === 'male') {
+                    return true;
+                }
+                if (options.context === 'female') {
+                    return false;
+                }
+                return true;
+            }
+        });
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context.js'), 'utf-8');
+        parser.parseFuncFromString(content, { propsFilter: props => props });
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "friend": "",
+                    "friend_male": ""
+                }
+            }
+        });
+        t.end();
+    });
+
     t.end();
 });
 
