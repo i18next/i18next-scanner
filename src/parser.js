@@ -338,6 +338,36 @@ class Parser {
 
         return this;
     }
+    // Parses translation keys from `Trans` components in JSX
+    // <Trans i18nKey="some.key">Default text</Trans>
+    parseTransFromString(content, opts = {}, customHandler = null) {
+        const pattern = '<Trans[^]*?i18nKey="([^"]+)"[^]*?>([^]*?)</\\s*Trans\\s*>';
+        const re = new RegExp(pattern, 'gim');
+
+        let r;
+        while ((r = re.exec(content))) {
+            const key = trim(r[1]);
+            let defaultValue = trim(r[2]);
+            defaultValue = defaultValue.replace(/\s+/g, ' ');
+
+            let ix = 1;
+            function replace(orig) {
+                const m = /^<[^]+?>([^]*)<\/[^]+>$/.exec(orig)
+                const buf = `<${ix}>${m[1]}</${ix}>`
+                ix = ix + 1;
+                return buf;
+            }
+
+            const elRe = new RegExp('<\\s*([^0-9]\\S*?)(?:[^>]*?)?>([^]+)<\\s*/\\s*\\1\\s*>');
+            while (elRe.exec(defaultValue)) {
+                defaultValue=defaultValue.replace(elRe, replace)
+            }
+
+            const options = { defaultValue };
+            this.set(key, options);
+        }
+        return this;
+    }
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>

@@ -70,6 +70,26 @@ test('Parse translation function', (t) => {
     t.end();
 });
 
+test('Parse Trans component', (t) => {
+    const parser = new Parser({
+        lngs: ['en'],
+        fallbackLng: 'en'
+    });
+
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
+    parser.parseTransFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "key1": "Key 1 default",
+                "key2": "Key 2 default value",
+                "key3": "This is a <1>test</1>"
+            }
+        }
+    });
+    t.end();
+});
+
 test('Parse HTML attribute', (t) => {
     const parser = new Parser({
         lngs: ['en'],
