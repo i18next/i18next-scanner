@@ -83,7 +83,10 @@ test('Parse Trans component', (t) => {
             translation: {
                 "key1": "Key 1 default",
                 "key2": "Key 2 default value",
-                "key3": "This is a <1>test</1>"
+                "key3": "This is a <1>test</1>",
+                "key4": "You have <1>{{count}}</1> apples",
+                "key5": "You have <1>one <1>very</1> bad</1> apple",
+                "key6": "This is a <1><0>{{test}}</0></1>"
             }
         }
     });

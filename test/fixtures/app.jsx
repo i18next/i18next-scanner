@@ -6,4 +6,7 @@ const mycomp = () => (
     </Trans>
 
     <Trans i18nKey="key3">This is a <strong>test</strong></Trans>
+    <Trans i18nKey="key4" count={count}>You have {{count}} apples</Trans>
+    <Trans i18nKey="key5">You have <a>one <i>very</i> bad</a> apple</Trans>
+    <Trans i18nKey="key6">This is a <strong>{{test}}</strong></Trans>
 )

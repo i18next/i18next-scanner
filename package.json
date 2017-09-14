@@ -46,6 +46,7 @@
   "dependencies": {
     "esprima": "^4.0.0",
     "lodash": "^4.17.4",
+    "parse5": "^3.0.2",
     "through2": "^2.0.3",
     "vinyl": "^2.0.2",
     "vinyl-fs": "^2.4.4"

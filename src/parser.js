@@ -16,6 +16,7 @@ import toPairs from 'lodash/toPairs';
 import sortBy from 'lodash/sortBy';
 import { parse } from 'esprima';
 import ensureArray from './ensure-array';
+import jsxToText from './jsx-parser';
 
 const defaults = {
     debug: false, // verbose logging
@@ -347,22 +348,9 @@ class Parser {
         let r;
         while ((r = re.exec(content))) {
             const key = trim(r[1]);
-            let defaultValue = trim(r[2]);
-            defaultValue = defaultValue.replace(/\s+/g, ' ');
-
-            let ix = 1;
-            function replace(orig) {
-                const m = /^<[^]+?>([^]*)<\/[^]+>$/.exec(orig)
-                const buf = `<${ix}>${m[1]}</${ix}>`
-                ix = ix + 1;
-                return buf;
-            }
-
-            const elRe = new RegExp('<\\s*([^0-9]\\S*?)(?:[^>]*?)?>([^]+)<\\s*/\\s*\\1\\s*>');
-            while (elRe.exec(defaultValue)) {
-                defaultValue=defaultValue.replace(elRe, replace)
-            }
-
+            let fragment = trim(r[2]);
+            fragment = fragment.replace(/\s+/g, ' ');
+            const defaultValue = jsxToText(fragment);
             const options = { defaultValue };
             this.set(key, options);
         }
