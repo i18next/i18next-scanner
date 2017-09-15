@@ -345,6 +345,12 @@ class Parser {
     parseTransFromString(content, opts = {}, customHandler = null) {
         const pattern = '<Trans[^]*?i18nKey="([^"]+)"[^]*?>([^]*?)</\\s*Trans\\s*>';
         const re = new RegExp(pattern, 'gim');
+        let setter = this.set.bind(this);
+
+        if (isFunction(opts)) {
+            setter = opts;
+            opts = {};
+        }
 
         let r;
         while ((r = re.exec(content))) {
@@ -353,7 +359,7 @@ class Parser {
             fragment = fragment.replace(/\s+/g, ' ');
             const defaultValue = jsxToText(fragment);
             const options = { defaultValue };
-            this.set(key, options);
+            setter(key, options);
         }
         return this;
     }
