@@ -15,6 +15,7 @@ import trim from 'lodash/trim';
 import toPairs from 'lodash/toPairs';
 import sortBy from 'lodash/sortBy';
 import { parse } from 'esprima';
+import parse5 from 'parse5';
 import ensureArray from './ensure-array';
 import jsxToText from './jsx-parser';
 
@@ -360,8 +361,10 @@ class Parser {
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
     parseAttrFromString(content, opts = {}, customHandler = null) {
+        let setter = this.set.bind(this);
+
         if (isFunction(opts)) {
-            customHandler = opts;
+            setter = opts;
             opts = {};
         }
 
@@ -373,42 +376,41 @@ class Parser {
             return this;
         }
 
-        const matchPattern = attrs
-            .map(attr => ('(?:' + attr + ')'))
-            .join('|')
-            .replace(/\./g, '\\.');
-        const pattern = '(?:(?:^[\\s]*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')=("[^"]*"|\'[^\']*\')';
-        const re = new RegExp(pattern, 'gim');
+        const ast = parse5.parse(content);
 
-        let r;
+        const parseAttributeValue = (key) => {
+            key = trim(key);
+            if (key.length === 0) {
+                return;
+            }
+            if (key.indexOf('[') === 0) {
+                const parts = key.split(']');
+                key = parts[1];
+            }
+            if (key.indexOf(';') === (key.length - 1)) {
+                key = key.substr(0, key.length - 2);
+            }
 
-        while ((r = re.exec(content))) {
-            const attr = trim(r[1], '\'"');
-            const keys = (attr.indexOf(';') >= 0)
-                ? attr.split(';')
-                : [attr];
-
-            keys.forEach((key) => {
-                key = trim(key);
-                if (key.length === 0) {
-                    return;
-                }
-                if (key.indexOf('[') === 0) {
-                    const parts = key.split(']');
-                    key = parts[1];
-                }
-                if (key.indexOf(';') === (key.length - 1)) {
-                    key = key.substr(0, key.length - 2);
-                }
-
-                if (customHandler) {
-                    customHandler(key);
-                    return;
-                }
-
-                this.set(key);
-            });
+            setter(key);
         }
+
+        const walk = (nodes) => {
+            nodes.forEach(node => {
+                if (node.attrs) {
+                    node.attrs.forEach(attr => {
+                        if (attrs.indexOf(attr.name)!==-1) {
+                            const values = attr.value.split(';');
+                            values.forEach(parseAttributeValue);
+                        }
+                    });
+                }
+                if (node.childNodes) {
+                    walk(node.childNodes);
+                }
+            })
+        }
+
+        walk(ast.childNodes)
 
         return this;
     }

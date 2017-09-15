@@ -1,4 +1,4 @@
-const parse5 = require('parse5')
+import parse5 from 'parse5'
 
 const jsExpr = /(.*?)({+[^]+?}+)(.*)/
 
