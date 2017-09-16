@@ -475,8 +475,8 @@ class Parser {
             }
 
             const keys = isString(this.options.keySeparator)
-                       ? key.split(this.options.keySeparator)
-                       : [key];
+                ? key.split(this.options.keySeparator)
+                : [key];
             const lng = opts.lng
                 ? opts.lng
                 : this.options.fallbackLng;
