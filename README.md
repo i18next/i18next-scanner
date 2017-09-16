@@ -7,26 +7,29 @@ Scan your code, extract translation keys/values, and merge them into i18n resour
 Turns your code
 ```js
 i18n._('Loading...');
-
+i18n._('Backslashes in single quote: \' \\ \'');
 i18n._('This is \
 a multiline \
 string');
 
-i18n._('Backslashes in single quote: \' \\ \'');
-
 i18n.t('car', { context: 'blue', count: 1 }); // output: 'One blue car'
 i18n.t('car', { context: 'blue', count: 2 }); // output: '2 blue cars'
+
+<Trans i18nKey="some.key">Default text</Trans>
 ```
 
 into resource files
 ```js
 {
-  "Loading...": "Wird geladen...", // Existing translation
-  "This is a multiline string": "this is a multiline string", // you can return the key as the default value 
-  "Backslashes in single quote: ' \\ '": "__NOT_TRANSLATED__", // or returns a custom string
+  "Loading...": "Wird geladen...", // uses existing translation
+  "Backslashes in single quote: ' \\ '": "__NOT_TRANSLATED__", // returns a custom string
+  "This is a multiline string": "this is a multiline string", // returns the key as the default value 
   "car": "car",
   "car_blue": "One blue car",
-  "car_blue_plural": "{{count}} blue cars"
+  "car_blue_plural": "{{count}} blue cars",
+  "some": {
+    "key": "Default text"
+  }
 }
 ```
 
@@ -38,6 +41,7 @@ Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migra
 
 ## Features
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
+* Support [react-i18next](https://github.com/i18next/react-i18next) for parsing the <b>Trans</b> component
 * Support [Key Based Fallback](http://i18next.com/translate/keyBasedFallback/) to write your code without the need to maintain i18n keys. This feature is available since [i18next@^2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210)
 * A standalone parser API
 * A transform stream that works with both Gulp and Grunt task runner.
