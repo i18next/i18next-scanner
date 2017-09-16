@@ -40,6 +40,9 @@ test('Parse both .html and .js files', (t) => {
 
     gulp.src(list)
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
             const list = [
@@ -63,10 +66,7 @@ test('Parse both .html and .js files', (t) => {
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('[Key Based Fallback] defaultValue as string', function(t) {
@@ -78,6 +78,9 @@ test('[Key Based Fallback] defaultValue as string', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
             const list = [
@@ -97,10 +100,7 @@ test('[Key Based Fallback] defaultValue as string', function(t) {
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('[Key Based Fallback] defaultValue as function', function(t) {
@@ -118,6 +118,9 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
 
@@ -146,10 +149,7 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('Empty result', function(t) {
@@ -161,6 +161,9 @@ test('Empty result', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
             const list = [
@@ -173,10 +176,7 @@ test('Empty result', function(t) {
                 const wanted = {};
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('Custom transform', function(t) {
@@ -191,6 +191,9 @@ test('Custom transform', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options, customTransform))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
             const list = [
@@ -211,10 +214,7 @@ test('Custom transform', function(t) {
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('Custom flush', function(t) {
@@ -233,13 +233,13 @@ test('Custom flush', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options, null, customFlush))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
             t.same(contents, expectedContents);
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('Keep old translations', function(t) {
@@ -252,6 +252,9 @@ test('Keep old translations', function(t) {
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
 
@@ -312,10 +315,7 @@ test('Keep old translations', function(t) {
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 // https://github.com/i18next/i18next-scanner/issues/30
@@ -330,6 +330,9 @@ test('Remove old translation keys which are already removed from code', function
 
     gulp.src('test/fixtures/modules/**/*.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
 
@@ -374,10 +377,7 @@ test('Remove old translation keys which are already removed from code', function
                 };
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
 
 test('Escape sequences', function(t) {
@@ -386,6 +386,9 @@ test('Escape sequences', function(t) {
 
     gulp.src('test/fixtures/escape-sequences.js')
         .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
         .pipe(tap(function(file) {
             const contents = file.contents.toString();
 
@@ -401,8 +404,5 @@ test('Escape sequences', function(t) {
 
                 t.same(found, wanted);
             }
-        }))
-        .on('end', function() {
-            t.end();
-        });
+        }));
 });
