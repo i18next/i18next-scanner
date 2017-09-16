@@ -4,7 +4,7 @@
 
 Scan your code, extract translation keys/values, and merge them into i18n resource files.
 
-Turns your source code
+Turns your code
 ```js
 i18n._('Loading...');
 
@@ -22,7 +22,7 @@ into resource files
 ```js
 {
   "Loading...": "Wird geladen...", // Existing translation
-  "This is a multiline string": "this is a multiline string", // you can returns the key as the default value 
+  "This is a multiline string": "this is a multiline string", // you can return the key as the default value 
   "Backslashes in single quote: ' \\ '": "__NOT_TRANSLATED__", // or returns a custom string
   "car": "car",
   "car_blue": "One blue car",
