@@ -581,6 +581,4 @@ Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Int
 
 ## License
 
-Copyright (c) 2015-2016 Cheton Wu
-
-Licensed under the [MIT License](https://github.com/i18next/i18next-scanner/blob/master/LICENSE).
+MIT
