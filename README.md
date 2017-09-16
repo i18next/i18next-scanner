@@ -52,15 +52,15 @@ npm install --save-dev i18next-scanner
 
 ### Standard API
 ```js
-var fs = require('fs');
-var Parser = require('i18next-scanner').Parser;
+const fs = require('fs');
+const Parser = require('i18next-scanner').Parser;
 
-var customHandler = function(key) {
+const customHandler = function(key) {
     parser.set(key, '__TRANSLATION__');
 };
 
-var parser = new Parser();
-var content = '';
+const parser = new Parser();
+const content = '';
 
 // Parse Translation Function
 // i18next.t('key');
@@ -69,7 +69,13 @@ parser
     .parseFuncFromString(content, customHandler) // pass a custom handler
     .parseFuncFromString(content, { list: ['i18next.t']}) // override `func.list`
     .parseFuncFromString(content, { list: ['i18next.t']}, customHandler)
-    .parseFuncFromString(content); // using default options and handler
+    .parseFuncFromString(content); // use default options and handler
+
+// Parse Trans component
+content = fs.readFileSync('/path/to/app.jsx', 'utf-8');
+parser
+    .parseFuncFromString(content, customHandler) // pass a custom handler
+    .parseFuncFromString(content); // use default options and handler
 
 // Parse HTML Attribute
 // <div data-i18n="key"></div>
@@ -90,10 +96,10 @@ The main entry function of [i18next-scanner](https://github.com/i18next/i18next-
 
 Here is a simple example showing how that works:
 ```js
-var scanner = require('i18next-scanner');
-var vfs = require('vinyl-fs');
-var sort = require('gulp-sort');
-var options = {
+const scanner = require('i18next-scanner');
+const vfs = require('vinyl-fs');
+const sort = require('gulp-sort');
+const options = {
     // See options at https://github.com/i18next/i18next-scanner#options
 };
 vfs.src(['/path/to/src'])
@@ -113,9 +119,9 @@ vfs.src(['/path/to/src'])
 ### Gulp
 Now you are ready to set up a minimal configuration, and get started with Gulp. For example:
 ```js
-var gulp = require('gulp');
-var sort = require('gulp-sort');
-var scanner = require('i18next-scanner');
+const gulp = require('gulp');
+const sort = require('gulp-sort');
+const scanner = require('i18next-scanner');
 
 gulp.task('i18next', function() {
     return gulp.src(['src/**/*.{js,html}'])
@@ -165,13 +171,16 @@ There are two ways to use i18next-scanner:
 
 ### Standard API
 ```js
-var Parser = require('i18next-scanner').Parser;
-var parser = new Parser(options);
+const Parser = require('i18next-scanner').Parser;
+const parser = new Parser(options);
 
-var code = "i18next.t('key'); ...";
-parser.parseFuncFromString(content); 
+const code = "i18next.t('key'); ...";
+parser.parseFuncFromString(code); 
 
-var html = '<div data-i18n="key"></div>';
+const jsx = '<Trans i18nKey="some.key">Default text</Trans>';
+parser.parseTransFromString(jsx);
+
+const html = '<div data-i18n="key"></div>';
 parser.parseAttrFromString(html);
 
 parser.get();
@@ -191,6 +200,17 @@ parser.parseFuncFromString(content, function(key, options) {
 
 parser.parseFuncFromString(content, { list: ['_t'] }, function(key, options) {
     parser.set(key, options); // use defaultValue
+});
+```
+
+#### parser.parseTransFromString
+Parse translation key from the [Trans component](https://github.com/i18next/react-i18next)
+```js
+parser.parseTransFromString(content);
+
+parser.parseTransFromString(content, function(key, options) {
+    options.defaultValue = key; // use key as the value
+    parser.set(key, options);
 });
 ```
 
@@ -226,6 +246,7 @@ parser.get('ns:key');
 // Returns a value with namespace, key, and lng
 parser.get('ns:key', { lng: 'en' });
 ```
+
 #### parser.set
 Set a translation key with an optional defaultValue to i18n resource store
 
