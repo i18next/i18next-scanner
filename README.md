@@ -4,6 +4,30 @@
 
 Scan your code, extract translation keys/values, and merge them into i18n resource files.
 
+Turns your source code
+```js
+i18n._('Loading...');
+i18n._('this is \
+a multiline \
+string');
+i18n._('Backslashes in single quote: \' \\ \'');
+i18n.t('car', { context: 'blue', count: 1 }); // output: 'One blue car'
+i18n.t('car', { context: 'blue', count: 2 }); // output: '2 blue cars'
+```
+
+into resource files
+```js
+{
+  "Loading...": "Wird geladen...", // 'de' translation
+  "this is a multiline string": "this is a multiline string", // you can returns the key as the default value 
+  "Backslashes in single quote: ' \\ '": "__NOT_TRANSLATED__", // or returns a custom string
+  "car": "car",
+  "car_blue": "One blue car",
+  "car_blue_plural": "{{count}} blue cars"
+}
+```
+
+
 ## Notice
 There is a major breaking change since v1.0, and the API interface and options are not compatible with v0.x.
 
