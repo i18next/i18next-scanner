@@ -38,6 +38,10 @@
     "crc32",
     "md5"
   ],
+  "files": [
+    "lib",
+    "tasks"
+  ],
   "dependencies": {
     "esprima": "^4.0.0",
     "lodash": "^4.17.4",
