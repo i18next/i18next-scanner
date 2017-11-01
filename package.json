@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -46,6 +46,7 @@
     "esprima": "^4.0.0",
     "lodash": "^4.17.4",
     "parse5": "^3.0.2",
+    "sortobject": "^1.1.1",
     "through2": "^2.0.3",
     "vinyl": "^2.1.0",
     "vinyl-fs": "^2.4.4"
