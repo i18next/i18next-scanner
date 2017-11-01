@@ -2,7 +2,7 @@
 import fs from 'fs';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
-import isObject from 'lodash/isObject';
+import isPlainObject from 'lodash/isPlainObject';
 import isUndefined from 'lodash/isUndefined';
 import isString from 'lodash/isString';
 import flatten from 'lodash/flatten';
@@ -12,10 +12,9 @@ import set from 'lodash/set';
 import escapeRegExp from 'lodash/escapeRegExp';
 import includes from 'lodash/includes';
 import trim from 'lodash/trim';
-import toPairs from 'lodash/toPairs';
-import sortBy from 'lodash/sortBy';
 import { parse } from 'esprima';
 import parse5 from 'parse5';
+import sortObject from 'sortobject';
 import ensureArray from './ensure-array';
 import jsxToText from './jsx-parser';
 
@@ -427,7 +426,7 @@ class Parser {
     // @param {boolean} [opts.lng] The language to use
     // @return {object}
     get(key, opts = {}) {
-        if (isObject(key)) {
+        if (isPlainObject(key)) {
             opts = key;
             key = undefined;
         }
@@ -442,16 +441,8 @@ class Parser {
         if (opts.sort) { // sort by key
             Object.keys(resStore).forEach((lng) => {
                 const namespaces = resStore[lng];
-
                 Object.keys(namespaces).forEach((ns) => {
-                    const pairs = toPairs(namespaces[ns]);
-                    resStore[lng][ns] = sortBy(pairs, (pair => pair[0]))
-                        .reduce((memo, pair) => {
-                            const _key = pair[0];
-                            const _value = pair[1];
-                            memo[_key] = _value;
-                            return memo;
-                        }, {});
+                    resStore[lng][ns] = sortObject(namespaces[ns]);
                 });
             });
         }
@@ -557,7 +548,7 @@ class Parser {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
-            if (!isObject(resLoad)) { // Skip undefined namespace
+            if (!isPlainObject(resLoad)) { // Skip undefined namespace
                 this.log('The namespace "' + ns + '" does not exist:', { key, options });
                 return;
             }
