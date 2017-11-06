@@ -66,8 +66,23 @@ test('JSX Nested expression', (t) => {
 });
 
 
+test('JSX child node', (t) => {
+    const ast = parseJSX('I agree to the <Link>terms</Link>.')
+    t.same(ast.length, 3)
+    t.same(ast[0].nodeName, '#text')
+    t.same(ast[1].nodeName, 'Link')
+    t.same(ast[1].childNodes.length, 1)
+    t.same(ast[1].childNodes[0].nodeName, '#text')
+    t.same(ast[1].childNodes[0].value, 'terms')
+    t.same(ast[2].nodeName, '#text')
+    t.same(ast[2].value, '.')
+    t.end();
+});
+
 test('JSX to i18next', (t) => {
     t.same(jsxToText('Basic text'), 'Basic text')
     t.same(jsxToText('Hello, {{name}}'), 'Hello, <1>{{name}}</1>')
+    t.same(jsxToText('I agree to the <Link>terms</Link>.'), 'I agree to the <1>terms</1>.')
+    t.same(jsxToText('One &amp; two'), 'One & two')
     t.end()
 })

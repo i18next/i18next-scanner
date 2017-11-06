@@ -1,52 +1,65 @@
-import parse5 from 'parse5'
+import htmlparser from 'htmlparser2';
 
 const jsExpr = /(.*?)({+[^]+?}+)(.*)/
 
-function transform(node) {
-    let output = []
-    delete node.parentNode
-    if (node.nodeName === '#text') {
-        let text = node.value
-        let m = jsExpr.exec(node.value)
-        if (!m) {
-            return node
-        }
-        while ((m = jsExpr.exec(text))) {
-            if (m[1]) {
-                output.push({
-                    nodeName: '#text',
-                    value: m[1],
-                    parentNode: node.parentNode
-                })
-            }
-            output.push({
-                nodeName: '#expression',
-                value: m[2],
-                parentNode: node.parentNode
-            })
-            text = m[3]
-        }
-        if (text) {
-            output.push({
-                nodeName: '#text',
-                value: text,
-                parentNode: node.parentNode
-            })
-        }
-    } else {
-        node.childNodes = Array.prototype.concat.apply(
-            [],
-            node.childNodes.map(transform)
-        )
-        output.push(node)
-    }
-    return output
-}
-
 
 export function parseJSX(fragment) {
-    const ast = parse5.parseFragment(fragment)
-    return transform(ast)[0].childNodes
+    const ast = {
+        nodeName: '#root',
+        childNodes: []
+    }
+    const stack = [ ast ]
+
+    const handler = {
+        onopentag: (name) => {
+            const node = {
+                nodeName: name,
+                childNodes: []
+            }
+            stack[0].childNodes.push(node)
+            stack.unshift(node)
+        },
+
+        onclosetag: () => {
+            stack.shift()
+        },
+
+        ontext: (text) => {
+            let txt = text
+            let m = jsExpr.exec(txt)
+            if (m) {
+                while ((m = jsExpr.exec(txt))) {
+                    if (m[1]) {
+                        stack[0].childNodes.push({
+                            nodeName: '#text',
+                            value: m[1],
+                            childNodes: []
+                        })
+                    }
+                    stack[0].childNodes.push({
+                        nodeName: '#expression',
+                        value: m[2],
+                        childNodes: []
+                    })
+                    txt = m[3]
+                }
+            }
+            if (txt!=='') {
+                stack[0].childNodes.push({
+                    nodeName: '#text',
+                    value: txt,
+                    childNodes: []
+                })
+            }
+        }
+    };
+
+    const parser = new htmlparser.Parser(handler, {
+        xmlMode: true,
+        decodeEntities: true
+    })
+    parser.write(fragment)
+    return stack[0].childNodes
 }
 
 
