@@ -48,11 +48,44 @@ Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migra
 * Support custom transform and flush functions.
 
 ## Installation
-```
+
+```sh
 npm install --save-dev i18next-scanner
 ```
 
+or
+
+```sh
+npm install -g i18next-scanner
+```
+
 ## Usage
+
+### CLI Usage
+
+```sh
+$ i18next-scanner
+
+  Usage: i18next-scanner [options] <file ...>
+
+
+  Options:
+
+    -V, --version      output the version number
+    --config <config>  Path to the config file (default: i18next-scanner.config.js)
+    --output <path>    Path to the output directory (default: .)
+    -h, --help         output usage information
+
+  Examples:
+
+    $ i18next-scanner --config i18next-scanner.config.js --output /path/to/output 'src/**/*.{js,jsx}'
+    $ i18next-scanner --config i18next-scanner.config.js 'src/**/*.{js,jsx}'
+    $ i18next-scanner '/path/to/src/app.js' '/path/to/assets/index.html'
+```
+
+#### Examples
+
+* [examples/i18next-scanner.config.js](https://github.com/i18next/i18next-scanner/blob/master/examples/i18next-scanner.config.js)
 
 ### Standard API
 ```js
