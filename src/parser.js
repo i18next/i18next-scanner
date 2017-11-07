@@ -1,4 +1,6 @@
 /* eslint no-console: 0 */
+/* eslint no-continue: 0 */
+/* eslint no-eval: 0 */
 import fs from 'fs';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
@@ -397,13 +399,13 @@ class Parser {
             }
 
             setter(key);
-        }
+        };
 
         const walk = (nodes) => {
             nodes.forEach(node => {
                 if (node.attrs) {
                     node.attrs.forEach(attr => {
-                        if (attrs.indexOf(attr.name)!==-1) {
+                        if (attrs.indexOf(attr.name) !== -1) {
                             const values = attr.value.split(';');
                             values.forEach(parseAttributeValue);
                         }
@@ -412,10 +414,10 @@ class Parser {
                 if (node.childNodes) {
                     walk(node.childNodes);
                 }
-            })
-        }
+            });
+        };
 
-        walk(ast.childNodes)
+        walk(ast.childNodes);
 
         return this;
     }

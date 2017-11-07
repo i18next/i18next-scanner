@@ -1,32 +1,31 @@
 import htmlparser from 'htmlparser2';
 
-const jsExpr = /(.*?)({+[^]+?}+)(.*)/
-
+const jsExpr = /(.*?)({+[^]+?}+)(.*)/;
 
 export function parseJSX(fragment) {
     const ast = {
         nodeName: '#root',
         childNodes: []
-    }
-    const stack = [ ast ]
+    };
+    const stack = [ast];
 
     const handler = {
         onopentag: (name) => {
             const node = {
                 nodeName: name,
                 childNodes: []
-            }
-            stack[0].childNodes.push(node)
-            stack.unshift(node)
+            };
+            stack[0].childNodes.push(node);
+            stack.unshift(node);
         },
 
         onclosetag: () => {
-            stack.shift()
+            stack.shift();
         },
 
         ontext: (text) => {
-            let txt = text
-            let m = jsExpr.exec(txt)
+            let txt = text;
+            let m = jsExpr.exec(txt);
             if (m) {
                 while ((m = jsExpr.exec(txt))) {
                     if (m[1]) {
@@ -34,22 +33,22 @@ export function parseJSX(fragment) {
                             nodeName: '#text',
                             value: m[1],
                             childNodes: []
-                        })
+                        });
                     }
                     stack[0].childNodes.push({
                         nodeName: '#expression',
                         value: m[2],
                         childNodes: []
-                    })
-                    txt = m[3]
+                    });
+                    txt = m[3];
                 }
             }
-            if (txt!=='') {
+            if (txt) {
                 stack[0].childNodes.push({
                     nodeName: '#text',
                     value: txt,
                     childNodes: []
-                })
+                });
             }
         }
     };
@@ -57,34 +56,35 @@ export function parseJSX(fragment) {
     const parser = new htmlparser.Parser(handler, {
         xmlMode: true,
         decodeEntities: true
-    })
-    parser.write(fragment)
-    return stack[0].childNodes
+    });
+    parser.write(fragment);
+
+    return stack[0].childNodes;
 }
 
 
 function astToText(ast) {
-    let output = ''
+    let output = '';
 
     function walk(nodes) {
         nodes.forEach((node, ix) => {
             if (node.nodeName === '#text') {
                 output += node.value;
             } else if (node.nodeName === '#expression') {
-                output += `<${ix}>${node.value}</${ix}>`
+                output += `<${ix}>${node.value}</${ix}>`;
             } else {
-                output += `<${ix}>`
-                walk(node.childNodes)
-                output += `</${ix}>`
+                output += `<${ix}>`;
+                walk(node.childNodes);
+                output += `</${ix}>`;
             }
-        })
+        });
     }
 
-    walk(ast)
-    return output
+    walk(ast);
+    return output;
 }
 
 export default function jsxToText(fragment) {
-    const ast = parseJSX(fragment)
-    return astToText(ast)
+    const ast = parseJSX(fragment);
+    return astToText(ast);
 }
