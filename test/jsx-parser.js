@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { test } from 'tap';
-import jsxToText, { parseJSX } from '../src/jsx-parser';
+import { parseJSX, jsxToText } from '../src/jsx-parser';
 
 const defaults = {};
 

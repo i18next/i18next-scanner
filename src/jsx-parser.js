@@ -62,8 +62,7 @@ export function parseJSX(fragment) {
     return stack[0].childNodes;
 }
 
-
-function astToText(ast) {
+export function astToText(ast) {
     let output = '';
 
     function walk(nodes) {
@@ -84,7 +83,7 @@ function astToText(ast) {
     return output;
 }
 
-export default function jsxToText(fragment) {
+export function jsxToText(fragment) {
     const ast = parseJSX(fragment);
     return astToText(ast);
 }

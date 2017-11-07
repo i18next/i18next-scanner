@@ -5,6 +5,7 @@ import includes from 'lodash/includes';
 import VirtualFile from 'vinyl';
 import through2 from 'through2';
 import Parser from './parser';
+import { jsxToText } from './jsx-parser';
 
 const transform = (parser, customTransform) => {
     return function _transform(file, enc, done) {
@@ -88,3 +89,6 @@ module.exports.createStream = createStream;
 
 // Parser
 module.exports.Parser = Parser;
+
+// jsxToText
+module.exports.jsxToText = jsxToText;

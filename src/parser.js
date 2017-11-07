@@ -18,7 +18,7 @@ import { parse } from 'esprima';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
 import ensureArray from './ensure-array';
-import jsxToText from './jsx-parser';
+import { jsxToText } from './jsx-parser';
 
 const defaults = {
     debug: false, // verbose logging
