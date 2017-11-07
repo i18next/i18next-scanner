@@ -2,19 +2,9 @@
 /* eslint no-continue: 0 */
 /* eslint no-eval: 0 */
 import fs from 'fs';
-import isArray from 'lodash/isArray';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
-import isUndefined from 'lodash/isUndefined';
-import isString from 'lodash/isString';
-import flatten from 'lodash/flatten';
-import union from 'lodash/union';
-import get from 'lodash/get';
-import set from 'lodash/set';
-import escapeRegExp from 'lodash/escapeRegExp';
-import includes from 'lodash/includes';
-import trim from 'lodash/trim';
+import chalk from 'chalk';
 import { parse } from 'esprima';
+import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
 import ensureArray from './ensure-array';
@@ -107,57 +97,57 @@ const matchBalancedParentheses = (str = '') => {
 
 const transformOptions = (options) => {
     // Attribute
-    if (isUndefined(get(options, 'attr.list'))) {
-        set(options, 'attr.list', defaults.attr.list);
+    if (_.isUndefined(_.get(options, 'attr.list'))) {
+        _.set(options, 'attr.list', defaults.attr.list);
     }
-    if (isUndefined(get(options, 'attr.extensions'))) {
-        set(options, 'attr.extensions', defaults.attr.extensions);
+    if (_.isUndefined(_.get(options, 'attr.extensions'))) {
+        _.set(options, 'attr.extensions', defaults.attr.extensions);
     }
 
     // Function
-    if (isUndefined(get(options, 'func.list'))) {
-        set(options, 'func.list', defaults.func.list);
+    if (_.isUndefined(_.get(options, 'func.list'))) {
+        _.set(options, 'func.list', defaults.func.list);
     }
 
     // Resource
-    if (isUndefined(get(options, 'func.extensions'))) {
-        set(options, 'func.extensions', defaults.func.extensions);
+    if (_.isUndefined(_.get(options, 'func.extensions'))) {
+        _.set(options, 'func.extensions', defaults.func.extensions);
     }
-    if (isUndefined(get(options, 'resource.loadPath'))) {
-        set(options, 'resource.loadPath', defaults.resource.loadPath);
+    if (_.isUndefined(_.get(options, 'resource.loadPath'))) {
+        _.set(options, 'resource.loadPath', defaults.resource.loadPath);
     }
-    if (isUndefined(get(options, 'resource.savePath'))) {
-        set(options, 'resource.savePath', defaults.resource.savePath);
+    if (_.isUndefined(_.get(options, 'resource.savePath'))) {
+        _.set(options, 'resource.savePath', defaults.resource.savePath);
     }
-    if (isUndefined(get(options, 'resource.jsonIndent'))) {
-        set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
+    if (_.isUndefined(_.get(options, 'resource.jsonIndent'))) {
+        _.set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
     }
 
     // Accept both nsseparator or nsSeparator
-    if (!isUndefined(options.nsseparator)) {
+    if (!_.isUndefined(options.nsseparator)) {
         options.nsSeparator = options.nsseparator;
         delete options.nsseparator;
     }
     // Allowed only string or false
-    if (!isString(options.nsSeparator)) {
+    if (!_.isString(options.nsSeparator)) {
         options.nsSeparator = false;
     }
 
     // Accept both keyseparator or keySeparator
-    if (!isUndefined(options.keyseparator)) {
+    if (!_.isUndefined(options.keyseparator)) {
         options.keySeparator = options.keyseparator;
         delete options.keyseparator;
     }
     // Allowed only string or false
-    if (!isString(options.keySeparator)) {
+    if (!_.isString(options.keySeparator)) {
         options.keySeparator = false;
     }
 
-    if (!isArray(options.ns)) {
+    if (!_.isArray(options.ns)) {
         options.ns = [options.ns];
     }
 
-    options.ns = union(flatten(options.ns.concat(options.defaultNs)));
+    options.ns = _.union(_.flatten(options.ns.concat(options.defaultNs)));
 
     return options;
 };
@@ -192,19 +182,19 @@ class Parser {
 
                 this.resStore[lng][ns] = {};
                 this.resScan[lng][ns] = {};
-                try {
-                    const stat = fs.statSync(resPath);
 
-                    if (stat.isFile()) {
+                try {
+                    if (fs.existsSync(resPath)) {
                         this.resStore[lng][ns] = JSON.parse(fs.readFileSync(resPath, 'utf-8'));
                     }
                 } catch (err) {
-                    this.log('Unable to load ' + JSON.stringify(resPath));
+                    this.log(`i18next-scanner: Unable to load resource file ${chalk.yellow(JSON.stringify(resPath))}: lng=${lng}, ns=${ns}`);
+                    this.log(err);
                 }
             });
         });
 
-        this.log(`Parser: options=${JSON.stringify(this.options)}`);
+        this.log(`i18next-scanner: options=${JSON.stringify(this.options, null, 2)}`);
     }
     log(...args) {
         const { debug } = this.options;
@@ -216,8 +206,8 @@ class Parser {
         const options = this.options;
 
         const regex = {
-            lng: new RegExp(escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
-            ns: new RegExp(escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
+            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
         return options.resource.loadPath
@@ -227,8 +217,8 @@ class Parser {
     formatResourceSavePath(lng, ns) {
         const options = this.options;
         const regex = {
-            lng: new RegExp(escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
-            ns: new RegExp(escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
+            lng: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'lng' + options.interpolation.suffix), 'g'),
+            ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
         return options.resource.savePath
@@ -241,7 +231,7 @@ class Parser {
     // i18next.t("ns:foo.bar", { count: 1 }); // matched
     // i18next.t("ns:foo.bar" + str); // not matched
     parseFuncFromString(content, opts = {}, customHandler = null) {
-        if (isFunction(opts)) {
+        if (_.isFunction(opts)) {
             customHandler = opts;
             opts = {};
         }
@@ -268,9 +258,9 @@ class Parser {
             const options = {};
             const full = r[0];
 
-            let key = trim(r[1]); // Remove leading and trailing whitespace
+            let key = _.trim(r[1]); // Remove leading and trailing whitespace
             const firstChar = key[0];
-            if (includes(['\'', '"'], firstChar)) {
+            if (_.includes(['\'', '"'], firstChar)) {
                 // Remove first and last character
                 key = key.slice(1, -1);
             }
@@ -303,7 +293,7 @@ class Parser {
 
                 try {
                     const syntax = parse('(' + code + ')');
-                    const props = get(syntax, 'body[0].expression.properties') || [];
+                    const props = _.get(syntax, 'body[0].expression.properties') || [];
                     // http://i18next.com/docs/options/
                     const supportedOptions = [
                         'defaultValue',
@@ -313,7 +303,7 @@ class Parser {
                     ];
 
                     props.forEach((prop) => {
-                        if (includes(supportedOptions, prop.key.name)) {
+                        if (_.includes(supportedOptions, prop.key.name)) {
                             if (prop.value.type === 'Literal') {
                                 options[prop.key.name] = prop.value.value;
                             } else if (prop.value.type === 'TemplateLiteral') {
@@ -327,7 +317,7 @@ class Parser {
                         }
                     });
                 } catch (err) {
-                    this.log(`Unable to parse code "${code}"`);
+                    this.log(`i18next-scanner: Unable to parse code "${code}"`);
                     this.log(err);
                 }
             }
@@ -349,15 +339,15 @@ class Parser {
         const re = new RegExp(pattern, 'gim');
         let setter = this.set.bind(this);
 
-        if (isFunction(opts)) {
+        if (_.isFunction(opts)) {
             setter = opts;
             opts = {};
         }
 
         let r;
         while ((r = re.exec(content))) {
-            const key = trim(r[1]);
-            let fragment = trim(r[2]);
+            const key = _.trim(r[1]);
+            let fragment = _.trim(r[2]);
             fragment = fragment.replace(/\s+/g, ' ');
             const defaultValue = jsxToText(fragment);
             const options = { defaultValue };
@@ -371,7 +361,7 @@ class Parser {
     parseAttrFromString(content, opts = {}, customHandler = null) {
         let setter = this.set.bind(this);
 
-        if (isFunction(opts)) {
+        if (_.isFunction(opts)) {
             setter = opts;
             opts = {};
         }
@@ -387,7 +377,7 @@ class Parser {
         const ast = parse5.parse(content);
 
         const parseAttributeValue = (key) => {
-            key = trim(key);
+            key = _.trim(key);
             if (key.length === 0) {
                 return;
             }
@@ -429,7 +419,7 @@ class Parser {
     // @param {boolean} [opts.lng] The language to use
     // @return {object}
     get(key, opts = {}) {
-        if (isPlainObject(key)) {
+        if (_.isPlainObject(key)) {
             opts = key;
             key = undefined;
         }
@@ -450,7 +440,7 @@ class Parser {
             });
         }
 
-        if (!isUndefined(key)) {
+        if (!_.isUndefined(key)) {
             let ns = this.options.defaultNs;
 
             // http://i18next.com/translate/keyBasedFallback/
@@ -461,14 +451,14 @@ class Parser {
             //   keySeparator: false
             // })
 
-            if (isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
+            if (_.isString(this.options.nsSeparator) && (key.indexOf(this.options.nsSeparator) > -1)) {
                 const parts = key.split(this.options.nsSeparator);
 
                 ns = parts[0];
                 key = parts[1];
             }
 
-            const keys = isString(this.options.keySeparator)
+            const keys = _.isString(this.options.keySeparator)
                 ? key.split(this.options.keySeparator)
                 : [key];
             const lng = opts.lng
@@ -500,7 +490,7 @@ class Parser {
     // @param {string|boolean} [options.keySeparator] The value used to override this.options.keySeparator
     set(key, options = {}) {
         // Backward compatibility
-        if (isString(options)) {
+        if (_.isString(options)) {
             const defaultValue = options;
             options = {
                 defaultValue: defaultValue
@@ -516,7 +506,7 @@ class Parser {
 
         let ns = options.ns || this.options.defaultNs;
 
-        console.assert(isString(ns) && !!ns.length, 'ns is not a valid string', ns);
+        console.assert(_.isString(ns) && !!ns.length, 'ns is not a valid string', ns);
 
         // http://i18next.com/translate/keyBasedFallback/
         // Set nsSeparator and keySeparator to false if you prefer
@@ -526,7 +516,7 @@ class Parser {
         //   keySeparator: false
         // })
 
-        if (isString(nsSeparator) && (key.indexOf(nsSeparator) > -1)) {
+        if (_.isString(nsSeparator) && (key.indexOf(nsSeparator) > -1)) {
             const parts = key.split(nsSeparator);
 
             ns = parts[0];
@@ -543,7 +533,7 @@ class Parser {
             pluralSeparator,
             defaultValue
         } = this.options;
-        const keys = isString(keySeparator)
+        const keys = _.isString(keySeparator)
             ? key.split(keySeparator)
             : [key];
 
@@ -551,8 +541,8 @@ class Parser {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
-            if (!isPlainObject(resLoad)) { // Skip undefined namespace
-                this.log('The namespace "' + ns + '" does not exist:', { key, options });
+            if (!_.isPlainObject(resLoad)) { // Skip undefined namespace
+                this.log(`i18next-scanner: The namespace ${chalk.yellow(JSON.stringify(ns))} does not exist:`, { key, options });
                 return;
             }
 
@@ -591,10 +581,10 @@ class Parser {
                     if (!context) {
                         return false;
                     }
-                    if (isUndefined(options.context)) {
+                    if (_.isUndefined(options.context)) {
                         return false;
                     }
-                    return isFunction(context)
+                    return _.isFunction(context)
                         ? context(lng, ns, key, options)
                         : !!context;
                 })();
@@ -604,10 +594,10 @@ class Parser {
                     if (!plural) {
                         return false;
                     }
-                    if (isUndefined(options.count)) {
+                    if (_.isUndefined(options.count)) {
                         return false;
                     }
-                    return isFunction(plural)
+                    return _.isFunction(plural)
                         ? plural(lng, ns, key, options)
                         : !!plural;
                 })();
@@ -639,15 +629,11 @@ class Parser {
                             resLoad[resKey] = options.defaultValue;
                         } else {
                             // Fallback to `defaultValue`
-                            resLoad[resKey] = isFunction(defaultValue)
+                            resLoad[resKey] = _.isFunction(defaultValue)
                                 ? defaultValue(lng, ns, key, options)
                                 : defaultValue;
                         }
-                        this.log('Added a new translation key { %s: %s } to %s',
-                            JSON.stringify(resKey),
-                            JSON.stringify(resLoad[resKey]),
-                            JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                        );
+                        this.log(`i18next-scanner: Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
                     }
 
                     resScan[resKey] = resLoad[resKey];
