@@ -18,7 +18,7 @@ program.on('--help', function() {
     console.log('');
     console.log('  Examples:');
     console.log('');
-    console.log('    $ i18next-scanner --config i18next-scanner.config.js --output /path/to/output \'src/**/*.{js,jsx}\' \'src/**/*.html\'');
+    console.log('    $ i18next-scanner --config i18next-scanner.config.js --output /path/to/output \'src/**/*.{js,jsx}\'');
     console.log('    $ i18next-scanner --config i18next-scanner.config.js \'src/**/*.{js,jsx}\'');
     console.log('    $ i18next-scanner \'/path/to/src/app.js\' \'/path/to/assets/index.html\'');
     console.log('');
