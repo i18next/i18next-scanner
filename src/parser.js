@@ -254,11 +254,12 @@ class Parser {
             return this;
         }
 
-        const matchPattern = funcs
+        const matchFuncs = funcs
             .map(func => ('(?:' + func + ')'))
             .join('|')
             .replace(/\./g, '\\.');
-        const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])(?:' + matchPattern + ')\\(("(?:[^"\\\\]|\\\\(?:.|$))*"|\'(?:[^\'\\\\]|\\\\(?:.|$))*\')\\s*[,)]';
+        const matchStrippedCharacters = '[\\r\\n\\s]*';
+        const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])(?:' + matchFuncs + ')\\((' + matchStrippedCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"|' + matchStrippedCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\')' + matchStrippedCharacters + '[,)]';
         const re = new RegExp(pattern, 'gim');
 
         let r;
