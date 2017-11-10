@@ -90,6 +90,8 @@ Globbing patterns are supported for specifying file paths:
 * `{}` allows for a comma-separated list of "or" expressions
 * `!` at the beginning of a pattern will negate the match
 
+_Note: Globbing patterns should be wrapped in single quotes._
+
 #### Examples
 
 * [examples/i18next-scanner.config.js](https://github.com/i18next/i18next-scanner/blob/master/examples/i18next-scanner.config.js)
