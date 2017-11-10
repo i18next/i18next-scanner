@@ -42,6 +42,7 @@
     "md5"
   ],
   "files": [
+    "bin",
     "lib",
     "tasks"
   ],
