@@ -17,6 +17,21 @@ test('set merges defaults', (t) => {
     t.end();
 });
 
+test('set warns about conflicting defaults', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    let logText;
+    parser.log = (msg) => {
+        logText = msg;
+    };
+    parser.set('key', { defaultValue: 'Default text' });
+    parser.set('key', { defaultValue: 'Another text' });
+    t.same(parser.get('key'), 'Default text');
+    t.match(logText, /different default/);
+    t.end();
+});
+
 test('Skip undefined namespace', (t) => {
     const parser = new Parser({
         ns: ['translation']
