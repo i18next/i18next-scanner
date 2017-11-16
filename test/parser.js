@@ -3,7 +3,19 @@ import path from 'path';
 import { test } from 'tap';
 import { Parser } from '../src';
 
-const defaults = {};
+test('set merges defaults', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    parser.set('key1', { defaultValue: 'Default text' });
+    parser.set('key1');
+    t.same(parser.get('key1'), 'Default text');
+
+    parser.set('key2');
+    parser.set('key2', { defaultValue: 'Default text' });
+    t.same(parser.get('key2'), 'Default text');
+    t.end();
+});
 
 test('Skip undefined namespace', (t) => {
     const parser = new Parser({

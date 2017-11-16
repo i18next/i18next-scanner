@@ -634,6 +634,9 @@ class Parser {
                                 : defaultValue;
                         }
                         this.log(`i18next-scanner: Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
+                    } else if (options.defaultValue) {
+                        // Use `options.defaultValue` if specified
+                        resLoad[resKey] = options.defaultValue;
                     }
 
                     resScan[resKey] = resLoad[resKey];
