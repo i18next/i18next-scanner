@@ -26,14 +26,24 @@ export function parseJSX(fragment) {
         ontext: (text) => {
             let txt = text;
             let m = jsExpr.exec(txt);
+
+            const addText = txt => {
+                const lastNode = stack[0].childNodes.slice(-1)[0];
+                if (lastNode && lastNode.nodeName === '#text') {
+                    lastNode.value += txt;
+                } else {
+                    stack[0].childNodes.push({
+                        nodeName: '#text',
+                        value: txt,
+                        childNodes: []
+                    });
+                }
+            };
+
             if (m) {
                 while ((m = jsExpr.exec(txt))) {
                     if (m[1]) {
-                        stack[0].childNodes.push({
-                            nodeName: '#text',
-                            value: m[1],
-                            childNodes: []
-                        });
+                        addText(m[1]);
                     }
                     stack[0].childNodes.push({
                         nodeName: '#expression',
@@ -44,11 +54,7 @@ export function parseJSX(fragment) {
                 }
             }
             if (txt) {
-                stack[0].childNodes.push({
-                    nodeName: '#text',
-                    value: txt,
-                    childNodes: []
-                });
+                addText(txt);
             }
         }
     };
