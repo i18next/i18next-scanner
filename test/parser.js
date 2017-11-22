@@ -656,6 +656,7 @@ test('Extract properties from template literals', (t) => {
         "en": {
             "translation": {
                 "property in template literals": "property in template literals",
+                "added {{foo}}\n and {{bar}}": "added {{foo}}\n and {{bar}}"
             }
         }
     };

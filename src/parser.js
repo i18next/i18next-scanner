@@ -1,5 +1,4 @@
 /* eslint no-console: 0 */
-/* eslint no-continue: 0 */
 /* eslint no-eval: 0 */
 import fs from 'fs';
 import chalk from 'chalk';
@@ -248,8 +247,22 @@ class Parser {
             .map(func => ('(?:' + func + ')'))
             .join('|')
             .replace(/\./g, '\\.');
-        const matchStrippedCharacters = '[\\r\\n\\s]*';
-        const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])(?:' + matchFuncs + ')\\((' + matchStrippedCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"|' + matchStrippedCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\')' + matchStrippedCharacters + '[,)]';
+        // `\s` matches a single whitespace character, which includes spaces, tabs, form feeds, line feeds and other unicode spaces.
+        const matchSpecialCharacters = '[\\r\\n\\s]*';
+        const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])' +
+            '(?:' + matchFuncs + ')' +
+            '\\(' +
+                '(' +
+                    // backtick (``)
+                    matchSpecialCharacters + '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
+                    '|' +
+                    // double quotes ("")
+                    matchSpecialCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
+                    '|' +
+                    // single quote ('')
+                    matchSpecialCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
+                ')' +
+            matchSpecialCharacters + '[\\,\\)]';
         const re = new RegExp(pattern, 'gim');
 
         let r;
@@ -260,7 +273,7 @@ class Parser {
 
             let key = _.trim(r[1]); // Remove leading and trailing whitespace
             const firstChar = key[0];
-            if (_.includes(['\'', '"'], firstChar)) {
+            if (_.includes(['\'', '"', '`'], firstChar)) {
                 // Remove first and last character
                 key = key.slice(1, -1);
             }
