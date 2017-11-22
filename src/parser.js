@@ -348,10 +348,11 @@ class Parser {
     // Parses translation keys from `Trans` components in JSX
     // <Trans i18nKey="some.key">Default text</Trans>
     parseTransFromString(content, opts = {}, customHandler = null) {
-        const pattern = '<Trans[^]*?i18nKey="([^"]+)"[^]*?>([^]*?)</\\s*Trans\\s*>';
+        const pattern = '<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>';
         const re = new RegExp(pattern, 'gim');
-        let setter = this.set.bind(this);
 
+        let setter = this.set.bind(this);
+        
         if (_.isFunction(opts)) {
             setter = opts;
             opts = {};
@@ -359,10 +360,13 @@ class Parser {
 
         let r;
         while ((r = re.exec(content))) {
-            const key = _.trim(r[1]);
+            const keyRegExp = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'gim');
+            const keyR = keyRegExp.exec(r[1]);
+            
             let fragment = _.trim(r[2]);
             fragment = fragment.replace(/\s+/g, ' ');
             const defaultValue = jsxToText(fragment);
+            const key = (keyR && keyR[1]) ? _.trim(keyR[1]) : defaultValue.replace(/\./g, "");
             const options = { defaultValue };
             setter(key, options);
         }
