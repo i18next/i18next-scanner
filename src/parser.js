@@ -25,9 +25,9 @@ const defaults = {
     },
 
     trans: { // Trans component (https://github.com/i18next/react-i18next)
-        list: ['Trans'],
+        // list: ['Trans'], // TODO
         extensions: ['.js', '.jsx'],
-        key: 'i18nKey',
+        // key: 'i18nKey', // TODO
         fallbackKey: false
     },
 
@@ -119,15 +119,19 @@ const transformOptions = (options) => {
     }
 
     // Trans
+    /* TODO
     if (_.isUndefined(_.get(options, 'trans.list'))) {
         _.set(options, 'trans.list', defaults.trans.list);
     }
+    */
     if (_.isUndefined(_.get(options, 'trans.extensions'))) {
         _.set(options, 'trans.extensions', defaults.trans.extensions);
     }
+    /* TODO
     if (_.isUndefined(_.get(options, 'trans.key'))) {
         _.set(options, 'trans.key', defaults.trans.key);
     }
+    */
     if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
         _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
     }
@@ -374,11 +378,12 @@ class Parser {
         }
 
         const reTrans = new RegExp('<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>', 'gim');
-        const reKey = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'im');
+        const reTransKey = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'im');
 
         let r;
         while ((r = reTrans.exec(content))) {
-            const key = _.trim(ensureArray(String(r[1] || '').match(reKey))[1] || '');
+            const transKey = ensureArray(String(r[1] || '').match(reTransKey))[1];
+            const key = _.trim(transKey || '');
             const fragment = _.trim(r[2]).replace(/\s+/g, ' ');
             const options = {
                 defaultValue: jsxToText(fragment),
