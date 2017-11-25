@@ -104,7 +104,14 @@ module.exports = {
     options: {
         debug: true,
         func: {
-            list: ['i18next.t', 'i18n.t']
+            list: ['i18next.t', 'i18n.t'],
+            extensions: ['.js', '.jsx']
+        },
+        trans: {
+            extensions: ['.js', '.jsx'],
+            fallbackKey: function(ns, value) {
+                return value;
+            }
         },
         lngs: ['en','de'],
         ns: [
@@ -171,8 +178,9 @@ parser
 // Parse Trans component
 content = fs.readFileSync('/path/to/app.jsx', 'utf-8');
 parser
-    .parseFuncFromString(content, customHandler) // pass a custom handler
-    .parseFuncFromString(content); // use default options and handler
+    .parseTransFromString(content, customHandler) // pass a custom handler
+    .parseTransFromString(content, { fallbackKey: true }) // Use fallback key when key is missing
+    .parseTransFromString(content); // use default options and handler
 
 // Parse HTML Attribute
 // <div data-i18n="key"></div>
@@ -304,6 +312,14 @@ parser.parseFuncFromString(content, { list: ['_t'] }, function(key, options) {
 Parse translation key from the [Trans component](https://github.com/i18next/react-i18next)
 ```js
 parser.parseTransFromString(content);
+
+parser.parseTransFromString(content, { fallbackKey: true });
+
+parser.parseTransFromString(content, {
+    fallbackKey: function(ns, value) {
+        return value;
+    }
+});
 
 parser.parseTransFromString(content, function(key, options) {
     options.defaultValue = key; // use key as the value

@@ -5,7 +5,14 @@ module.exports = {
     options: {
         debug: true,
         func: {
-            list: ['i18next.t', 'i18n.t']
+            list: ['i18next.t', 'i18n.t'],
+            extensions: ['.js', '.jsx']
+        },
+        trans: {
+            extensions: ['.js', '.jsx'],
+            fallbackKey: (ns, value) => {
+                return value;
+            }
         },
         lngs: ['en','de'],
         ns: [

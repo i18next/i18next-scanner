@@ -21,6 +21,9 @@ const transform = (parser, customTransform) => {
         if (includes(get(options, 'func.extensions'), extname)) {
             // Parse translation function (e.g. i18next.t('key'))
             parser.parseFuncFromString(content);
+        }
+
+        if (includes(get(options, 'trans.extensions'), extname)) {
             // Look for Trans components in JSX
             parser.parseTransFromString(content);
         }
