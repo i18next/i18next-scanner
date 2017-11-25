@@ -100,6 +100,11 @@ test('Parse translation function', (t) => {
 test('Parse Trans component', (t) => {
     const parser = new Parser({
         lngs: ['en'],
+        trans: {
+            fallbackKey: true
+        },
+        nsSeparator: false,
+        keySeparator: false,
         fallbackLng: 'en'
     });
 
@@ -113,7 +118,10 @@ test('Parse Trans component', (t) => {
                 "key3": "This is a <1>test</1>",
                 "key4": "You have <1>{{count}}</1> apples",
                 "key5": "You have <1>one <1>very</1> bad</1> apple",
-                "key6": "This is a <1><0>{{test}}</0></1>"
+                "key6": "This is a <1><0>{{test}}</0></1>",
+                "key7 default": "key7 default",
+                "key8 default <1>{{count}}</1>": "key8 default <1>{{count}}</1>",
+                "We can use Trans without i18nKey=\"...\" as well!": "We can use Trans without i18nKey=\"...\" as well!"
             }
         }
     });

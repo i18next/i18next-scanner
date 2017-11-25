@@ -24,6 +24,13 @@ const defaults = {
         extensions: ['.js', '.jsx']
     },
 
+    trans: { // Trans component (https://github.com/i18next/react-i18next)
+        list: ['Trans'],
+        extensions: ['.js', '.jsx'],
+        key: 'i18nKey',
+        fallbackKey: false
+    },
+
     lngs: ['en'], // array of supported languages
     fallbackLng: 'en', // language to lookup key if not found while calling `parser.get(key, { lng: '' })`
 
@@ -107,11 +114,25 @@ const transformOptions = (options) => {
     if (_.isUndefined(_.get(options, 'func.list'))) {
         _.set(options, 'func.list', defaults.func.list);
     }
-
-    // Resource
     if (_.isUndefined(_.get(options, 'func.extensions'))) {
         _.set(options, 'func.extensions', defaults.func.extensions);
     }
+
+    // Trans
+    if (_.isUndefined(_.get(options, 'trans.list'))) {
+        _.set(options, 'trans.list', defaults.trans.list);
+    }
+    if (_.isUndefined(_.get(options, 'trans.extensions'))) {
+        _.set(options, 'trans.extensions', defaults.trans.extensions);
+    }
+    if (_.isUndefined(_.get(options, 'trans.key'))) {
+        _.set(options, 'trans.key', defaults.trans.key);
+    }
+    if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
+        _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
+    }
+
+    // Resource
     if (_.isUndefined(_.get(options, 'resource.loadPath'))) {
         _.set(options, 'resource.loadPath', defaults.resource.loadPath);
     }
@@ -266,7 +287,6 @@ class Parser {
         const re = new RegExp(pattern, 'gim');
 
         let r;
-
         while ((r = re.exec(content))) {
             const options = {};
             const full = r[0];
@@ -348,24 +368,31 @@ class Parser {
     // Parses translation keys from `Trans` components in JSX
     // <Trans i18nKey="some.key">Default text</Trans>
     parseTransFromString(content, opts = {}, customHandler = null) {
-        const pattern = '<Trans[^]*?i18nKey="([^"]+)"[^]*?>([^]*?)</\\s*Trans\\s*>';
-        const re = new RegExp(pattern, 'gim');
-        let setter = this.set.bind(this);
-
         if (_.isFunction(opts)) {
-            setter = opts;
+            customHandler = opts;
             opts = {};
         }
 
+        const reTrans = new RegExp('<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>', 'gim');
+        const reKey = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'im');
+
         let r;
-        while ((r = re.exec(content))) {
-            const key = _.trim(r[1]);
-            let fragment = _.trim(r[2]);
-            fragment = fragment.replace(/\s+/g, ' ');
-            const defaultValue = jsxToText(fragment);
-            const options = { defaultValue };
-            setter(key, options);
+        while ((r = reTrans.exec(content))) {
+            const key = _.trim(ensureArray(String(r[1] || '').match(reKey))[1] || '');
+            const fragment = _.trim(r[2]).replace(/\s+/g, ' ');
+            const options = {
+                defaultValue: jsxToText(fragment),
+                fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
+            };
+
+            if (customHandler) {
+                customHandler(key, options);
+                continue;
+            }
+
+            this.set(key, options);
         }
+
         return this;
     }
     // Parses translation keys from `data-i18n` attribute in HTML
@@ -495,6 +522,7 @@ class Parser {
     // Set translation key with an optional defaultValue to i18n resource store
     // @param {string} key The translation key
     // @param {object} [options] The options object
+    // @param {boolean|function} [options.fallbackKey] When the key is missing, pass `true` to return `options.defaultValue` as key, or pass a function to return user-defined key.
     // @param {string} [options.defaultValue] defaultValue to return if translation not found
     // @param {number} [options.count] count value used for plurals
     // @param {string} [options.context] used for contexts (eg. male)
@@ -534,6 +562,17 @@ class Parser {
 
             ns = parts[0];
             key = parts[1];
+        }
+
+        if (!key && options.fallbackKey === true) {
+            key = options.defaultValue;
+        }
+        if (!key && typeof options.fallbackKey === 'function') {
+            key = options.fallbackKey(ns, options.defaultValue);
+        }
+        if (!key) {
+            // Ignore empty key
+            return;
         }
 
         const {
