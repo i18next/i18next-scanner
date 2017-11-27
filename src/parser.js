@@ -297,6 +297,12 @@ class Parser {
 
             let key = _.trim(r[1]); // Remove leading and trailing whitespace
             const firstChar = key[0];
+
+            // Ignore key with embedded expressions in string literals
+            if (firstChar === '`' && key.match(/\${.*?}/)) {
+                continue;
+            }
+
             if (_.includes(['\'', '"', '`'], firstChar)) {
                 // Remove first and last character
                 key = key.slice(1, -1);
