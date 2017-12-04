@@ -493,7 +493,7 @@ Below are the configuration options with their default values:
     pluralSeparator: '_',
     contextSeparator: '_',
     interpolation: {
-        pefix: '{{',
+        prefix: '{{',
         suffix: '}}'
     }
 }
