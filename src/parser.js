@@ -44,7 +44,8 @@ const defaults = {
     resource: {
         loadPath: 'i18n/{{lng}}/{{ns}}.json', // the source resource path (relative to current working directory)
         savePath: 'i18n/{{lng}}/{{ns}}.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
-        jsonIndent: 2
+        jsonIndent: 2,
+        eol: '\n'
     },
 
     keySeparator: '.', // char to separate keys
@@ -145,6 +146,9 @@ const transformOptions = (options) => {
     }
     if (_.isUndefined(_.get(options, 'resource.jsonIndent'))) {
         _.set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
+    }
+    if (_.isUndefined(_.get(options, 'resource.eol'))) {
+        _.set(options, 'resource.eol', defaults.resource.eol);
     }
 
     // Accept both nsseparator or nsSeparator
