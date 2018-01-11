@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import get from 'lodash/get';
+import os from 'os';
 import includes from 'lodash/includes';
 import VirtualFile from 'vinyl';
 import through2 from 'through2';
@@ -57,11 +58,13 @@ const flush = (parser, customFlush) => {
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
                 const resPath = parser.formatResourceSavePath(lng, ns);
-                const str = JSON.stringify(obj, null, options.resource.jsonIndent);
+                let str = JSON.stringify(obj, null, options.resource.jsonIndent);
+                // convert the JSON.stringify() LF to system EOL
+                str = str.replace(/\n/g, os.EOL);
 
                 this.push(new VirtualFile({
                     path: resPath,
-                    contents: new Buffer(str + '\n')
+                    contents: new Buffer(str + os.EOL)
                 }));
             });
         });
@@ -84,7 +87,7 @@ const createStream = (options, customTransform, customFlush) => {
     return stream;
 };
 
-// Convinience API
+// Convenience API
 module.exports = (...args) => module.exports.createStream(...args);
 
 // Basic API
