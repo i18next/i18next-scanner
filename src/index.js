@@ -50,6 +50,7 @@ const flush = (parser, customFlush) => {
 
         // Flush to resource store
         const resStore = parser.get({ sort: options.sort });
+        const eol = options.resource.eol;
 
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
@@ -57,11 +58,14 @@ const flush = (parser, customFlush) => {
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
                 const resPath = parser.formatResourceSavePath(lng, ns);
-                const str = JSON.stringify(obj, null, options.resource.jsonIndent);
+                let str = JSON.stringify(obj, null, options.resource.jsonIndent);
 
+                if (eol!=='\n') {
+                    str = str.replace(/\n/g, eol);
+                }
                 this.push(new VirtualFile({
                     path: resPath,
-                    contents: new Buffer(str + '\n')
+                    contents: new Buffer(str + eol)
                 }));
             });
         });
@@ -84,7 +88,7 @@ const createStream = (options, customTransform, customFlush) => {
     return stream;
 };
 
-// Convinience API
+// Convenience API
 module.exports = (...args) => module.exports.createStream(...args);
 
 // Basic API

@@ -624,7 +624,10 @@ Resource options:
         savePath: 'i18n/{{lng}}/{{ns}}.json',
 
         // jsonIndent to use when storing json files
-        jsonIndent: 2
+        jsonIndent: 2,
+
+        // eol to use to customize the line endings
+        eol: '\n'
     }
 }
 ```
