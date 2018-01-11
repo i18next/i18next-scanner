@@ -87,7 +87,7 @@ const createStream = (options, customTransform, customFlush) => {
     return stream;
 };
 
-// Convinience API
+// Convenience API
 module.exports = (...args) => module.exports.createStream(...args);
 
 // Basic API
