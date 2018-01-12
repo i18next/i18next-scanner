@@ -42,9 +42,18 @@ const defaults = {
 
     // resource
     resource: {
-        loadPath: 'i18n/{{lng}}/{{ns}}.json', // the source resource path (relative to current working directory)
-        savePath: 'i18n/{{lng}}/{{ns}}.json', // the target resource path (relative to the path specified with `gulp.dest(path)`)
-        jsonIndent: 2
+        // The path where resources get loaded from. Relative to current working directory.
+        loadPath: 'i18n/{{lng}}/{{ns}}.json',
+
+        // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
+        savePath: 'i18n/{{lng}}/{{ns}}.json',
+
+        // Specify the number of space characters to use as white space to insert into the output JSON string for readability purpose.
+        jsonIndent: 2,
+
+        // Normalize line endings to '\r\n', '\r', '\n', or 'auto' for the current operating system. Defaults to '\n'.
+        // Aliases: 'CRLF', 'CR', 'LF', 'crlf', 'cr', 'lf'
+        lineEnding: '\n'
     },
 
     keySeparator: '.', // char to separate keys
@@ -145,6 +154,9 @@ const transformOptions = (options) => {
     }
     if (_.isUndefined(_.get(options, 'resource.jsonIndent'))) {
         _.set(options, 'resource.jsonIndent', defaults.resource.jsonIndent);
+    }
+    if (_.isUndefined(_.get(options, 'resource.lineEnding'))) {
+        _.set(options, 'resource.lineEnding', defaults.resource.lineEnding);
     }
 
     // Accept both nsseparator or nsSeparator

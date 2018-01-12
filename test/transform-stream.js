@@ -406,3 +406,184 @@ test('Escape sequences', function(t) {
             }
         }));
 });
+
+test('Line Endings', function(t) {
+    test('Defaults to line feed (LF)', function(t) {
+        const eol = '\n';
+        const lineEnding = null;
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Auto', function(t) {
+        const isWindows = typeof process != 'undefined' && 'win32' === process.platform;
+        const eol = isWindows ? '\r\n' : '\n';
+        const lineEnding = 'auto';
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Carriage Return (CR)', function(t) {
+        const eol = '\r';
+        const lineEnding = 'CR'; // or 'cr'
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Carriage Return (\\r)', function(t) {
+        const eol = '\r';
+        const lineEnding = '\r';
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Line Feed (LF)', function(t) {
+        const eol = '\n';
+        const lineEnding = 'LF'; // or 'lf'
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Line Feed (\\n)', function(t) {
+        const eol = '\n';
+        const lineEnding = '\n';
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Line Feed + Carriage Return (CRLF)', function(t) {
+        const eol = '\r\n';
+        const lineEnding = 'CRLF'; // or 'crlf'
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    test('Line Feed + Rarriage Return (\\r\\n)', function(t) {
+        const eol = '\r\n';
+        const lineEnding = '\r\n';
+        const options = {
+            ...defaults,
+            resource: {
+                ...defaults.resource,
+                lineEnding
+            }
+        };
+
+        gulp.src('test/fixtures/modules/**/*.js')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+                t.ok(contents.endsWith(eol));
+            }));
+    });
+
+    t.end();
+});

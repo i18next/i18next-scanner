@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import eol from 'eol';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import VirtualFile from 'vinyl';
@@ -50,6 +51,8 @@ const flush = (parser, customFlush) => {
 
         // Flush to resource store
         const resStore = parser.get({ sort: options.sort });
+        const { jsonIndent } = options.resource;
+        const lineEnding = String(options.resource.lineEnding).toLowerCase();
 
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
@@ -57,11 +60,23 @@ const flush = (parser, customFlush) => {
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
                 const resPath = parser.formatResourceSavePath(lng, ns);
-                const str = JSON.stringify(obj, null, options.resource.jsonIndent);
+                let text = JSON.stringify(obj, null, jsonIndent) + '\n';
+
+                if (lineEnding === 'auto') {
+                    text = eol.auto(text);
+                } else if (lineEnding === '\r\n' || lineEnding === 'crlf') {
+                    text = eol.crlf(text);
+                } else if (lineEnding === '\n' || lineEnding === 'lf') {
+                    text = eol.lf(text);
+                } else if (lineEnding === '\r' || lineEnding === 'cr') {
+                    text = eol.cr(text);
+                } else { // Defaults to LF
+                    text = eol.lf(text);
+                }
 
                 this.push(new VirtualFile({
                     path: resPath,
-                    contents: new Buffer(str + '\n')
+                    contents: (typeof Buffer.from === 'function') ? Buffer.from(text) : new Buffer(text)
                 }));
             });
         });
@@ -84,7 +99,7 @@ const createStream = (options, customTransform, customFlush) => {
     return stream;
 };
 
-// Convinience API
+// Convenience API
 module.exports = (...args) => module.exports.createStream(...args);
 
 // Basic API

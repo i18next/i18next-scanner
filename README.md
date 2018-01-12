@@ -487,6 +487,8 @@ Below are the configuration options with their default values:
     resource: {
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
         savePath: 'i18n/{{lng}}/{{ns}}.json',
+        jsonIndent: 2,
+        lineEnding: '\n'
     },
     nsSeparator: ':',
     keySeparator: '.',
@@ -617,14 +619,18 @@ Resource options:
 ```js
 { // Default
     resource: {
-        // path where resources get loaded from
+        // The path where resources get loaded from. Relative to current working directory.
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
 
-        // path to store resources
+        // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
         savePath: 'i18n/{{lng}}/{{ns}}.json',
 
-        // jsonIndent to use when storing json files
-        jsonIndent: 2
+        // Specify the number of space characters to use as white space to insert into the output JSON string for readability purpose.
+        jsonIndent: 2,
+
+        // Normalize line endings to '\r\n', '\r', '\n', or 'auto' for the current operating system. Defaults to '\n'.
+        // Aliases: 'CRLF', 'CR', 'LF', 'crlf', 'cr', 'lf'
+        lineEnding: '\n'
     }
 }
 ```
