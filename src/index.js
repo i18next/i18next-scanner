@@ -1,3 +1,4 @@
+/* eslint-disable no-buffer-constructor */
 import fs from 'fs';
 import path from 'path';
 import eol from 'eol';
@@ -76,7 +77,9 @@ const flush = (parser, customFlush) => {
 
                 this.push(new VirtualFile({
                     path: resPath,
-                    contents: (typeof Buffer.from === 'function') ? Buffer.from(text) : new Buffer(text)
+                    contents: (typeof Buffer.from === 'function')
+                        ? Buffer.from(text)
+                        : new Buffer(text) // new Buffer() is deprecated since Node.js v5
                 }));
             });
         });
