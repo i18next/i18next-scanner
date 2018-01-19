@@ -192,8 +192,8 @@ const getStringFromAttribute = (attr) => {
     if (attr[0] === '"' || attr[1] === '\'') {
         return attr.slice(1, -1);
     }
-    throw new Error('attribute value must be a string')
-}
+    throw new Error('attribute value must be a string');
+};
 
 /**
 * Creates a new parser
@@ -403,7 +403,6 @@ class Parser {
         }
 
         const reTrans = new RegExp('<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>', 'gim');
-        const reTransKey = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'im');
         const reAttribute = /\b(\S+)\s*=\s*({.*?}|".*?"|'.*?')/gm;
 
         let r;
@@ -413,7 +412,7 @@ class Parser {
             while ((ar = reAttribute.exec(r[1]))) {
                 attributes[ar[1]] = ar[2];
             }
-            let transKey
+            let transKey;
 
             try {
                 transKey = attributes.i18nKey ? getStringFromAttribute(attributes.i18nKey) : '';
@@ -433,10 +432,10 @@ class Parser {
             }
             if (attributes.context) {
                 try {
-                    options.context = getStringFromAttribute(attributes.context)
+                    options.context = getStringFromAttribute(attributes.context);
                 } catch (e) {
                     this.log(`i18next-scanner: Trans context attribute must be a string, saw ${chalk.yellow(attributes.context)}`);
-                    continue
+                    continue;
                 }
             }
 
