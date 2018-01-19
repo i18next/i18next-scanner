@@ -13,5 +13,6 @@ const mycomp = () => (
         <Trans>key7 default</Trans>
         <Trans count={1}>key8 default {{count}}</Trans>
         <Trans>We can use Trans without i18nKey="..." as well!</Trans>
+        <Trans i18nKey="key9" context="male">A boyfriend</Trans>
     </div>
 )

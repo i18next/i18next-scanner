@@ -118,11 +118,15 @@ test('Parse Trans component #1', (t) => {
                 "key2": "Key 2 default value",
                 "key3": "This is a <1>test</1>",
                 "key4": "You have <1>{{count}}</1> apples",
+                "key4_plural": "You have <1>{{count}}</1> apples",
                 "key5": "You have <1>one <1>very</1> bad</1> apple",
                 "key6": "This is a <1><0>{{test}}</0></1>",
                 "key7 default": "key7 default",
                 "key8 default <1>{{count}}</1>": "key8 default <1>{{count}}</1>",
-                "We can use Trans without i18nKey=\"...\" as well!": "We can use Trans without i18nKey=\"...\" as well!"
+                "key8 default <1>{{count}}</1>_plural": "key8 default <1>{{count}}</1>",
+                "We can use Trans without i18nKey=\"...\" as well!": "We can use Trans without i18nKey=\"...\" as well!",
+                "key9": "A boyfriend",
+                "key9_male": "A boyfriend",
             }
         }
     });
@@ -151,11 +155,15 @@ test('Parse Trans component #2', (t) => {
                 "key2": "Key 2 default value",
                 "key3": "This is a <1>test</1>",
                 "key4": "You have <1>{{count}}</1> apples",
+                "key4_plural": "You have <1>{{count}}</1> apples",
                 "key5": "You have <1>one <1>very</1> bad</1> apple",
                 "key6": "This is a <1><0>{{test}}</0></1>",
                 "4f516979d203813c6bf4ea56043719e11095744f": "key7 default",
                 "8f5c444dd42fe9a3e42a8ab3a677e04a4a708105": "key8 default <1>{{count}}</1>",
-                "09e944775f89d688fd87cf7abc95a737dd4c54f6": "We can use Trans without i18nKey=\"...\" as well!"
+                "8f5c444dd42fe9a3e42a8ab3a677e04a4a708105_plural": "key8 default <1>{{count}}</1>",
+                "09e944775f89d688fd87cf7abc95a737dd4c54f6": "We can use Trans without i18nKey=\"...\" as well!",
+                "key9": "A boyfriend",
+                "key9_male": "A boyfriend"
             }
         }
     });
