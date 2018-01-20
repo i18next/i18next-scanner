@@ -25,9 +25,9 @@ const defaults = {
     },
 
     trans: { // Trans component (https://github.com/i18next/react-i18next)
-        // list: ['Trans'], // TODO
+        component: 'Trans',
+        i18nKey: 'i18nKey',
         extensions: ['.js', '.jsx'],
-        // key: 'i18nKey', // TODO
         fallbackKey: false
     },
 
@@ -128,19 +128,15 @@ const transformOptions = (options) => {
     }
 
     // Trans
-    /* TODO
-    if (_.isUndefined(_.get(options, 'trans.list'))) {
-        _.set(options, 'trans.list', defaults.trans.list);
+    if (_.isUndefined(_.get(options, 'trans.component'))) {
+        _.set(options, 'trans.component', defaults.trans.component);
     }
-    */
+    if (_.isUndefined(_.get(options, 'trans.i18nKey'))) {
+        _.set(options, 'trans.i18nKey', defaults.trans.i18nKey);
+    }
     if (_.isUndefined(_.get(options, 'trans.extensions'))) {
         _.set(options, 'trans.extensions', defaults.trans.extensions);
     }
-    /* TODO
-    if (_.isUndefined(_.get(options, 'trans.key'))) {
-        _.set(options, 'trans.key', defaults.trans.key);
-    }
-    */
     if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
         _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
     }
@@ -402,7 +398,10 @@ class Parser {
             opts = {};
         }
 
-        const reTrans = new RegExp('<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>', 'gim');
+        const component = opts.component || this.options.trans.component;
+        const i18nKey = opts.i18nKey || this.options.trans.i18nKey;
+
+        const reTrans = new RegExp('<' + component + '([^]*?)>([^]*?)</\\s*' + component + '\\s*>', 'gim');
         const reAttribute = /\b(\S+)\s*=\s*({.*?}|".*?"|'.*?')/gm;
 
         let r;
@@ -415,9 +414,9 @@ class Parser {
             let transKey;
 
             try {
-                transKey = attributes.i18nKey ? getStringFromAttribute(attributes.i18nKey) : '';
+                transKey = attributes[i18nKey] ? getStringFromAttribute(attributes[i18nKey]) : '';
             } catch (e) {
-                this.log(`i18next-scanner: i18nKey value must be a static string, saw ${chalk.yellow(attributes.i18nKey)}`);
+                this.log(`i18next-scanner: i18nKey value must be a static string, saw ${chalk.yellow(attributes[i18nKey])}`);
                 continue;
             }
 

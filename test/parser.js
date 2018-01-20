@@ -170,6 +170,32 @@ test('Parse Trans component #2', (t) => {
     t.end();
 });
 
+test('Parse Trans component #3', (t) => {
+    const parser = new Parser({
+        lngs: ['en'],
+        trans: {
+            component: 'I18N',
+            i18nKey: '__t',
+            fallbackKey: true
+        },
+        nsSeparator: false,
+        keySeparator: false,
+        fallbackLng: 'en'
+    });
+
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
+    parser.parseTransFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "key10": "A wrapper component with key",
+                "A wrapper component without key": "A wrapper component without key"
+            }
+        }
+    });
+    t.end();
+});
+
 test('Parse HTML attribute', (t) => {
     const parser = new Parser({
         lngs: ['en'],

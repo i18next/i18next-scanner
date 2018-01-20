@@ -108,9 +108,11 @@ module.exports = {
             extensions: ['.js', '.jsx']
         },
         trans: {
+            component: 'Trans',
+            i18nKey: 'i18nKey',
             extensions: ['.js', '.jsx'],
             fallbackKey: function(ns, value) {
-                return value;
+                return sha1(value); // return a sha1 as the key
             }
         },
         lngs: ['en','de'],
@@ -181,7 +183,8 @@ parser
 content = fs.readFileSync('/path/to/app.jsx', 'utf-8');
 parser
     .parseTransFromString(content, customHandler) // pass a custom handler
-    .parseTransFromString(content, { fallbackKey: true }) // Use fallback key when key is missing
+    .parseTransFromString(content, { component: 'Trans', i18nKey: 'i18nKey' })
+    .parseTransFromString(content, { fallbackKey: true }) // Uses defaultValue as the fallback key when the i18nKey attribute is missing
     .parseTransFromString(content); // use default options and handler
 
 // Parse HTML Attribute
@@ -291,7 +294,7 @@ const html = '<div data-i18n="key"></div>';
 parser.parseAttrFromString(html);
 
 parser.get();
-````
+```
 
 #### parser.parseFuncFromString
 Parse translation key from JS function
@@ -315,11 +318,15 @@ Parse translation key from the [Trans component](https://github.com/i18next/reac
 ```js
 parser.parseTransFromString(content);
 
+parser.parseTransFromString(context, { component: 'Trans', i18nKey: 'i18nKey' });
+
+// Uses defaultValue as the fallback key when the i18nKey attribute is missing
 parser.parseTransFromString(content, { fallbackKey: true });
 
+// Returns a hash value as the fallback key
 parser.parseTransFromString(content, {
     fallbackKey: function(ns, value) {
-        return value;
+        return sha1(value);
     }
 });
 
@@ -482,6 +489,12 @@ Below are the configuration options with their default values:
         list: ['i18next.t', 'i18n.t'],
         extensions: ['.js', '.jsx']
     },
+    trans: {
+        component: 'Trans',
+        i18nKey: 'i18nKey',
+        extensions: ['.js', '.jsx'],
+        fallbackKey: false
+    },
     lngs: ['en'],
     ns: ['translation'],
     defaultNs: 'translation',
@@ -560,6 +573,36 @@ You can set func to `false` to disable parsing translation function as below:
 ```js
 {
     func: false
+}
+```
+
+#### trans
+
+Type: `Object` or `false`
+
+If an `Object` is supplied, you can specify a list of extensions, or override the default.
+```js
+{ // Default
+    trans: {
+        component: 'Trans',
+        i18nKey: 'i18nKey',
+        extensions: ['.js', '.jsx'],
+        fallbackKey: false
+    }
+}
+```
+
+You can set trans to `false` to disable parsing Trans component as below:
+```js
+{
+    trans: false
+}
+```
+
+The fallbackKey can either be a boolean value, or a function like so:
+```js
+fallbackKey: function(ns, value) {
+    return sha1(value); // returns a hash value as the fallback key
 }
 ```
 
