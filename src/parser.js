@@ -188,6 +188,13 @@ const transformOptions = (options) => {
     return options;
 };
 
+const getStringFromAttribute = (attr) => {
+    if (attr[0] === '"' || attr[1] === '\'') {
+        return attr.slice(1, -1);
+    }
+    throw new Error('attribute value must be a string');
+};
+
 /**
 * Creates a new parser
 * @constructor
@@ -396,17 +403,41 @@ class Parser {
         }
 
         const reTrans = new RegExp('<Trans([^]*?)>([^]*?)</\\s*Trans\\s*>', 'gim');
-        const reTransKey = new RegExp('[^]*i18nKey="([^"]+)"[^]*', 'im');
+        const reAttribute = /\b(\S+)\s*=\s*({.*?}|".*?"|'.*?')/gm;
 
         let r;
         while ((r = reTrans.exec(content))) {
-            const transKey = ensureArray(String(r[1] || '').match(reTransKey))[1];
+            const attributes = {};
+            let ar;
+            while ((ar = reAttribute.exec(r[1]))) {
+                attributes[ar[1]] = ar[2];
+            }
+            let transKey;
+
+            try {
+                transKey = attributes.i18nKey ? getStringFromAttribute(attributes.i18nKey) : '';
+            } catch (e) {
+                this.log(`i18next-scanner: i18nKey value must be a static string, saw ${chalk.yellow(attributes.i18nKey)}`);
+                continue;
+            }
+
             const key = _.trim(transKey || '');
             const fragment = _.trim(r[2]).replace(/\s+/g, ' ');
             const options = {
                 defaultValue: jsxToText(fragment),
                 fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
             };
+            if (attributes.count) {
+                options.count = 1;
+            }
+            if (attributes.context) {
+                try {
+                    options.context = getStringFromAttribute(attributes.context);
+                } catch (e) {
+                    this.log(`i18next-scanner: Trans context attribute must be a string, saw ${chalk.yellow(attributes.context)}`);
+                    continue;
+                }
+            }
 
             if (customHandler) {
                 customHandler(key, options);
