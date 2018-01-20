@@ -121,6 +121,7 @@ module.exports = {
             'locale',
             'resource'
         ],
+        defaultLng: 'en',
         defaultNs: 'resource',
         defaultValue: '__STRING_NOT_TRANSLATED__',
         resource: {
@@ -498,6 +499,7 @@ Below are the configuration options with their default values:
     },
     lngs: ['en'],
     ns: ['translation'],
+    defaultLng: 'en',
     defaultNs: 'translation',
     defaultValue: '',
     resource: {
@@ -619,6 +621,12 @@ An array of supported languages.
 Type: `String` or `Array` Default: `['translation']`
 
 A namespace string or an array of namespaces.
+
+#### defaultLng
+
+Type: `String` Default: `'en'`
+
+The default language used for checking default values.
 
 #### defaultNs
 

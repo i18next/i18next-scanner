@@ -36,6 +36,8 @@ const defaults = {
 
     ns: [], // string or array of namespaces
 
+    defaultLng: 'en', // default language used for checking default values
+
     defaultNs: 'translation', // default namespace used if not passed to translation function
 
     defaultValue: '', // default value used if not passed to `parser.set`
@@ -636,6 +638,7 @@ class Parser {
             plural,
             pluralFallback,
             pluralSeparator,
+            defaultLng,
             defaultValue
         } = this.options;
         const keys = _.isString(keySeparator)
@@ -743,10 +746,9 @@ class Parser {
                         if (!resLoad[resKey]) {
                             // Use `options.defaultValue` if specified
                             resLoad[resKey] = options.defaultValue;
-                        } else if (resLoad[resKey] !== options.defaultValue) {
-                            // We already had a different default.
-                            const k = chalk.yellow(JSON.stringify(resKey));
-                            this.log(`i18next-scanner: Translation key ${k} has multiple different default values. Using first default`);
+                        } else if ((resLoad[resKey] !== options.defaultValue) && (lng === defaultLng)) {
+                            // A default value has provided but it's different with the expected default
+                            this.log(`i18next-scanner: The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
                         }
                     }
 

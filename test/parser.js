@@ -29,7 +29,7 @@ test('set warns about conflicting defaults', (t) => {
     parser.set('key', { defaultValue: 'Default text' });
     parser.set('key', { defaultValue: 'Another text' });
     t.same(parser.get('key'), 'Default text');
-    t.match(logText, /different default/);
+    t.match(logText, /different default value/);
     t.end();
 });
 
