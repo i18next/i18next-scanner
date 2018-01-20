@@ -112,7 +112,8 @@ module.exports = {
             i18nKey: 'i18nKey',
             extensions: ['.js', '.jsx'],
             fallbackKey: function(ns, value) {
-                return sha1(value); // return a sha1 as the key
+                // Returns a hash value as the fallback key
+                return sha1(value);
             }
         },
         lngs: ['en','de'],
@@ -323,9 +324,9 @@ parser.parseTransFromString(context, { component: 'Trans', i18nKey: 'i18nKey' })
 // Uses defaultValue as the fallback key when the i18nKey attribute is missing
 parser.parseTransFromString(content, { fallbackKey: true });
 
-// Returns a hash value as the fallback key
 parser.parseTransFromString(content, {
     fallbackKey: function(ns, value) {
+        // Returns a hash value as the fallback key
         return sha1(value);
     }
 });
@@ -602,7 +603,8 @@ You can set trans to `false` to disable parsing Trans component as below:
 The fallbackKey can either be a boolean value, or a function like so:
 ```js
 fallbackKey: function(ns, value) {
-    return sha1(value); // returns a hash value as the fallback key
+    // Returns a hash value as the fallback key
+    return sha1(value);
 }
 ```
 
