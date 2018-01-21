@@ -2,11 +2,15 @@
 /* eslint no-eval: 0 */
 import fs from 'fs';
 import chalk from 'chalk';
+import cloneDeep from 'clone-deep';
+import deepMerge from 'deepmerge';
+import ensureArray from 'ensure-array';
 import { parse } from 'esprima';
 import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
-import ensureArray from './ensure-array';
+import flattenObjectKeys from './flatten-object-keys';
+import omitEmptyObject from './omit-empty-object';
 import { jsxToText } from './jsx-parser';
 
 const defaults = {
@@ -521,15 +525,34 @@ class Parser {
 
         let resStore = {};
         if (this.options.removeUnusedKeys) {
-            resStore = this.resScan;
+            // Merge two objects `resStore` and `resScan` deeply, returning a new merged object with the elements from both `resStore` and `resScan`.
+            const resMerged = deepMerge(this.resStore, this.resScan);
+
+            Object.keys(this.resStore).forEach((lng) => {
+                Object.keys(this.resStore[lng]).forEach((ns) => {
+                    const resStoreKeys = flattenObjectKeys(_.get(this.resStore, [lng, ns], {}));
+                    const resScanKeys = flattenObjectKeys(_.get(this.resScan, [lng, ns], {}));
+                    const unusedKeys = _.differenceWith(resStoreKeys, resScanKeys, _.isEqual);
+
+                    for (let i = 0; i < unusedKeys.length; ++i) {
+                        _.unset(resMerged[lng][ns], unusedKeys[i]);
+                    }
+
+                    // Omit empty object
+                    resMerged[lng][ns] = omitEmptyObject(resMerged[lng][ns]);
+                });
+            });
+
+            resStore = resMerged;
         } else {
-            resStore = this.resStore;
+            resStore = cloneDeep(this.resStore);
         }
 
-        if (opts.sort) { // sort by key
+        if (opts.sort) {
             Object.keys(resStore).forEach((lng) => {
                 const namespaces = resStore[lng];
                 Object.keys(namespaces).forEach((ns) => {
+                    // Deeply sort an object by its keys without mangling any arrays inside of it
                     resStore[lng][ns] = sortObject(namespaces[ns]);
                 });
             });
