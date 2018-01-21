@@ -57,7 +57,7 @@
     "gulp-sort": "^2.0.0",
     "htmlparser2": "^3.9.2",
     "lodash": "^4.17.4",
-    "parse5": "^3.0.3",
+    "parse5": "^4.0.0",
     "sortobject": "^1.1.1",
     "through2": "^2.0.3",
     "vinyl": "^2.1.0",
