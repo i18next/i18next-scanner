@@ -56,7 +56,7 @@
     "esprima": "^4.0.0",
     "gulp-sort": "^2.0.0",
     "htmlparser2": "^3.9.2",
-    "lodash": "^4.17.4",
+    "lodash": "^4.0.0",
     "parse5": "^4.0.0",
     "sortobject": "^1.1.1",
     "through2": "^2.0.3",
