@@ -75,11 +75,19 @@ const flush = (parser, customFlush) => {
                     text = eol.lf(text);
                 }
 
+                let contents = null;
+
+                try {
+                    // "Buffer.from(string[, encoding])" is added in Node.js v5.10.0
+                    contents = Buffer.from(text);
+                } catch (e) {
+                    // Fallback to "new Buffer(string[, encoding])" which is deprecated since Node.js v6.0.0
+                    contents = new Buffer(text)
+                }
+
                 this.push(new VirtualFile({
                     path: resPath,
-                    contents: (typeof Buffer.from === 'function')
-                        ? Buffer.from(text)
-                        : new Buffer(text) // new Buffer() is deprecated since Node.js v5
+                    contents: contents
                 }));
             });
         });
