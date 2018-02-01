@@ -82,7 +82,7 @@ const flush = (parser, customFlush) => {
                     contents = Buffer.from(text);
                 } catch (e) {
                     // Fallback to "new Buffer(string[, encoding])" which is deprecated since Node.js v6.0.0
-                    contents = new Buffer(text)
+                    contents = new Buffer(text);
                 }
 
                 this.push(new VirtualFile({
