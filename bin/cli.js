@@ -3,9 +3,10 @@
 var fs = require('fs');
 var path = require('path');
 var program = require('commander');
-var scanner = require('../lib');
-var vfs = require('vinyl-fs');
+var ensureArray = require('ensure-array');
 var sort = require('gulp-sort');
+var vfs = require('vinyl-fs');
+var scanner = require('../lib');
 var pkg = require('../package.json');
 
 program
@@ -19,14 +20,24 @@ program.on('--help', function() {
     console.log('  Examples:');
     console.log('');
     console.log('    $ i18next-scanner --config i18next-scanner.config.js --output /path/to/output \'src/**/*.{js,jsx}\'');
-    console.log('    $ i18next-scanner --config i18next-scanner.config.js \'src/**/*.{js,jsx}\'');
-    console.log('    $ i18next-scanner \'/path/to/src/app.js\' \'/path/to/assets/index.html\'');
+    console.log('    $ i18next-scanner --config i18next-scanner.config.js "src/**/*.{js,jsx}"');
+    console.log('    $ i18next-scanner "/path/to/src/app.js" "/path/to/assets/index.html"');
     console.log('');
 });
 
 program.parse(process.argv);
 
-var src = [].concat(program.args || []);
+var src = ensureArray(program.args)
+    .map(function(s) {
+        s = s.trim();
+
+        // On Windows, arguments contain spaces must be enclosed with double quotes, not single quotes.
+        if (s.match(/(^'.*'$|^".*"$)/)) {
+            // Remove first and last character
+            s = s.slice(1, -1);
+        }
+        return s;
+    });
 
 if (!program.config || !program.output || src.length === 0) {
     program.help();
