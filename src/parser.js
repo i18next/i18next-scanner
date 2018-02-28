@@ -191,7 +191,7 @@ const transformOptions = (options) => {
 };
 
 const getStringFromAttribute = (attr) => {
-    if (attr[0] === '"' || attr[1] === '\'') {
+    if (attr[0] === '"' || attr[0] === '\'') {
         return attr.slice(1, -1);
     }
     throw new Error('attribute value must be a string');

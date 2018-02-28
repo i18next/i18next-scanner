@@ -1,6 +1,7 @@
 const mycomp = () => (
     <React.Fragment>
         <Trans i18nKey="key1">Key 1 default</Trans>
+        <Trans i18nKey='key1SingleQuote'>Key must be key1SingleQuote</Trans>
         <Trans i18nKey="key2">
             Key 2
             default value
