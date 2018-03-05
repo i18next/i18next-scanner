@@ -463,6 +463,8 @@ class Parser {
         if (_.isFunction(opts)) {
             setter = opts;
             opts = {};
+        } else if (_.isFunction(customHandler)) {
+            setter = customHandler;
         }
 
         const attrs = (opts.list !== undefined)
@@ -503,6 +505,9 @@ class Parser {
                 }
                 if (node.childNodes) {
                     walk(node.childNodes);
+                }
+                if (node.content && node.content.childNodes) {
+                    walk(node.content.childNodes);
                 }
             });
         };
