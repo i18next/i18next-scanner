@@ -506,6 +506,9 @@ class Parser {
                 if (node.childNodes) {
                     walk(node.childNodes);
                 }
+                if (node.content && node.content.childNodes) {
+                  walk(node.content.childNodes);
+                }
             });
         };
 
