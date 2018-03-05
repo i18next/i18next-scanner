@@ -463,6 +463,8 @@ class Parser {
         if (_.isFunction(opts)) {
             setter = opts;
             opts = {};
+        } else if (_.isFunction(customHandler)) {
+            setter = customHandler;
         }
 
         const attrs = (opts.list !== undefined)
