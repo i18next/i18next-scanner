@@ -199,49 +199,138 @@ test('Parse Trans component #3', (t) => {
 });
 
 test('Parse HTML attribute', (t) => {
-    const parser = new Parser({
-        lngs: ['en'],
-        fallbackLng: 'en'
-    });
-    const customHandler = function(key) {
-        const defaultValue = '__TRANSLATION__'; // optional default value
-        parser.set(key, defaultValue);
-    };
+    test('parseAttrFromString(content)', (t) => {
+        const parser = new Parser({
+            lngs: ['en'],
+            fallbackLng: 'en'
+        });
 
-    // <div data-i18n="key"></div>
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
-    parser
-        .parseAttrFromString(content, customHandler) // pass a custom handler
-        .parseAttrFromString(content, { list: ['data-i18n']}) // override `func.list`
-        .parseAttrFromString(content, { list: ['data-i18n']}, customHandler)
-        .parseAttrFromString(content); // using default options and handler
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
+        parser.parseAttrFromString(content);
 
-    t.same(parser.get(), {
-        en: {
-            translation: {
-                "key4": "__TRANSLATION__",
-                "key3": "__TRANSLATION__",
-                "key2": "__TRANSLATION__",
-                "key1": "__TRANSLATION__"
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key1": "",
+                    "key2": "",
+                    "key3": "",
+                    "key4": ""
+                }
             }
-        }
+        });
+
+        t.end();
     });
 
-    // Sort keys in alphabetical order
-    t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
-        en: {
-            translation: {
-                "key1": "__TRANSLATION__",
-                "key2": "__TRANSLATION__",
-                "key3": "__TRANSLATION__",
-                "key4": "__TRANSLATION__"
-          }
-        }
-    }));
+    test('parseAttrFromString(content, { list: ["data-i18n"] })', (t) => {
+        const parser = new Parser({
+            lngs: ['en'],
+            fallbackLng: 'en'
+        });
 
-    t.equal(parser.get('key1', { lng: 'en' }), '__TRANSLATION__');
-    t.equal(parser.get('key1', { lng: 'de' }), undefined);
-    t.equal(parser.get('nokey', { lng: 'en' }), undefined);
+        // <div data-i18n="key"></div>
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
+        parser.parseAttrFromString(content, { list: ['data-i18n']});
+
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key1": "",
+                    "key2": "",
+                    "key3": "",
+                    "key4": ""
+                }
+            }
+        });
+
+        t.end();
+    });
+
+    test('parseAttrFromString(content, customHandler)', (t) => {
+        const parser = new Parser({
+            lngs: ['en'],
+            fallbackLng: 'en'
+        });
+        const customHandler = function(key) {
+            const defaultValue = '__TRANSLATION__'; // optional default value
+            parser.set(key, defaultValue);
+        };
+
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
+        parser.parseAttrFromString(content, customHandler);
+
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key4": "__TRANSLATION__",
+                    "key3": "__TRANSLATION__",
+                    "key2": "__TRANSLATION__",
+                    "key1": "__TRANSLATION__"
+                }
+            }
+        });
+
+        // Sort keys in alphabetical order
+        t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
+            en: {
+                translation: {
+                    "key1": "__TRANSLATION__",
+                    "key2": "__TRANSLATION__",
+                    "key3": "__TRANSLATION__",
+                    "key4": "__TRANSLATION__"
+              }
+            }
+        }));
+
+        t.equal(parser.get('key1', { lng: 'en' }), '__TRANSLATION__');
+        t.equal(parser.get('key1', { lng: 'de' }), undefined);
+        t.equal(parser.get('nokey', { lng: 'en' }), undefined);
+
+        t.end();
+    });
+
+    test('parseAttrFromString(content, { list: ["data-i18n"] }, customHandler)', (t) => {
+        const parser = new Parser({
+            lngs: ['en'],
+            fallbackLng: 'en'
+        });
+        const customHandler = function(key) {
+            const defaultValue = '__TRANSLATION__'; // optional default value
+            parser.set(key, defaultValue);
+        };
+
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
+        parser.parseAttrFromString(content, { list: ['data-i18n']}, customHandler);
+
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    "key4": "__TRANSLATION__",
+                    "key3": "__TRANSLATION__",
+                    "key2": "__TRANSLATION__",
+                    "key1": "__TRANSLATION__"
+                }
+            }
+        });
+
+        // Sort keys in alphabetical order
+        t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
+            en: {
+                translation: {
+                    "key1": "__TRANSLATION__",
+                    "key2": "__TRANSLATION__",
+                    "key3": "__TRANSLATION__",
+                    "key4": "__TRANSLATION__"
+              }
+            }
+        }));
+
+        t.equal(parser.get('key1', { lng: 'en' }), '__TRANSLATION__');
+        t.equal(parser.get('key1', { lng: 'de' }), undefined);
+        t.equal(parser.get('nokey', { lng: 'en' }), undefined);
+
+        t.end();
+    });
 
     t.end();
 });
