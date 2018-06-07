@@ -17,5 +17,7 @@ const mycomp = () => (
         <Trans i18nKey="key9" context="male">A boyfriend</Trans>
         <I18N __t="key10">A wrapper component with key</I18N>
         <I18N>A wrapper component without key</I18N>
+        <Trans i18nKey="key11" defaults="The component might be self-closing" />
+        <Trans i18nKey="key12" defaults="Hello <0>{{planet}}</0>!" tOptions={{planet: "World"}} components={[<strong>stuff</strong>]} />
     </React.Fragment>
 )

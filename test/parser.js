@@ -128,6 +128,8 @@ test('Parse Trans component #1', (t) => {
                 "We can use Trans without i18nKey=\"...\" as well!": "We can use Trans without i18nKey=\"...\" as well!",
                 "key9": "A boyfriend",
                 "key9_male": "A boyfriend",
+                "key11": "The component might be self-closing",
+                "key12": "Hello <0>{{planet}}</0>!"
             }
         }
     });
@@ -165,7 +167,9 @@ test('Parse Trans component #2', (t) => {
                 "8f5c444dd42fe9a3e42a8ab3a677e04a4a708105_plural": "key8 default <1>{{count}}</1>",
                 "09e944775f89d688fd87cf7abc95a737dd4c54f6": "We can use Trans without i18nKey=\"...\" as well!",
                 "key9": "A boyfriend",
-                "key9_male": "A boyfriend"
+                "key9_male": "A boyfriend",
+                "key11": "The component might be self-closing",
+                "key12": "Hello <0>{{planet}}</0>!"
             }
         }
     });
