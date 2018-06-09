@@ -31,6 +31,7 @@ const defaults = {
     trans: { // Trans component (https://github.com/i18next/react-i18next)
         component: 'Trans',
         i18nKey: 'i18nKey',
+        defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
         fallbackKey: false
     },
@@ -139,6 +140,9 @@ const transformOptions = (options) => {
     }
     if (_.isUndefined(_.get(options, 'trans.i18nKey'))) {
         _.set(options, 'trans.i18nKey', defaults.trans.i18nKey);
+    }
+    if (_.isUndefined(_.get(options, 'trans.defaultsKey'))) {
+        _.set(options, 'trans.defaultsKey', defaults.trans.defaultsKey);
     }
     if (_.isUndefined(_.get(options, 'trans.extensions'))) {
         _.set(options, 'trans.extensions', defaults.trans.extensions);
@@ -406,8 +410,9 @@ class Parser {
 
         const component = opts.component || this.options.trans.component;
         const i18nKey = opts.i18nKey || this.options.trans.i18nKey;
+        const defaultsKey = opts.defaultsKey || this.options.trans.defaultsKey;
 
-        const reTrans = new RegExp('<' + component + '([^]*?)>([^]*?)</\\s*' + component + '\\s*>', 'gim');
+        const reTrans = new RegExp('<' + component + '([^]*?)((/>)|(>([^]*?)</\\s*' + component + '\\s*>))', 'gim');
         const reAttribute = /\b(\S+)\s*=\s*({.*?}|".*?"|'.*?')/gm;
 
         let r;
@@ -426,10 +431,18 @@ class Parser {
                 continue;
             }
 
+            let defaultsString;
+            try {
+                defaultsString = attributes[defaultsKey] ? getStringFromAttribute(attributes[defaultsKey]) : '';
+            } catch (e) {
+                this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(attributes[defaultsKey])}`);
+                continue;
+            }
+
             const key = _.trim(transKey || '');
-            const fragment = _.trim(r[2]).replace(/\s+/g, ' ');
+            const fragment = _.trim(r[5]).replace(/\s+/g, ' ');
             const options = {
-                defaultValue: jsxToText(fragment),
+                defaultValue: defaultsString || jsxToText(fragment),
                 fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
             };
             if (attributes.count) {
