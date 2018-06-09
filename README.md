@@ -110,6 +110,7 @@ module.exports = {
         trans: {
             component: 'Trans',
             i18nKey: 'i18nKey',
+            defaultsKey: 'defaults',
             extensions: ['.js', '.jsx'],
             fallbackKey: function(ns, value) {
                 // Returns a hash value as the fallback key
@@ -185,7 +186,7 @@ parser
 content = fs.readFileSync('/path/to/app.jsx', 'utf-8');
 parser
     .parseTransFromString(content, customHandler) // pass a custom handler
-    .parseTransFromString(content, { component: 'Trans', i18nKey: 'i18nKey' })
+    .parseTransFromString(content, { component: 'Trans', i18nKey: 'i18nKey', defaultsKey: 'defaults' })
     .parseTransFromString(content, { fallbackKey: true }) // Uses defaultValue as the fallback key when the i18nKey attribute is missing
     .parseTransFromString(content); // use default options and handler
 
@@ -494,6 +495,7 @@ Below are the configuration options with their default values:
     trans: {
         component: 'Trans',
         i18nKey: 'i18nKey',
+        defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
         fallbackKey: false
     },
@@ -589,6 +591,7 @@ If an `Object` is supplied, you can specify a list of extensions, or override th
     trans: {
         component: 'Trans',
         i18nKey: 'i18nKey',
+        defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
         fallbackKey: false
     }
