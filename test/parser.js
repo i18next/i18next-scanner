@@ -98,7 +98,7 @@ test('Parse translation function', (t) => {
     t.end();
 });
 
-test('Parse Trans component #1', (t) => {
+test('Parse Trans components', (t) => {
     const parser = new Parser({
         lngs: ['en'],
         trans: {
@@ -114,29 +114,46 @@ test('Parse Trans component #1', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "key1": "Key 1 default",
-                "key1SingleQuote": "Key must be key1SingleQuote",
-                "key2": "Key 2 default value",
-                "key3": "This is a <1>test</1>",
-                "key4": "You have <1>{{count}}</1> apples",
-                "key4_plural": "You have <1>{{count}}</1> apples",
-                "key5": "You have <1>one <1>very</1> bad</1> apple",
-                "key6": "This is a <1><0>{{test}}</0></1>",
-                "key7 default": "key7 default",
-                "key8 default <1>{{count}}</1>": "key8 default <1>{{count}}</1>",
-                "key8 default <1>{{count}}</1>_plural": "key8 default <1>{{count}}</1>",
-                "We can use Trans without i18nKey=\"...\" as well!": "We can use Trans without i18nKey=\"...\" as well!",
-                "key9": "A boyfriend",
-                "key9_male": "A boyfriend",
-                "key11": "The component might be self-closing",
-                "key12": "Hello <0>{{planet}}</0>!"
+                // quote style
+                "jsx-quotes-double": "Use double quotes for the i18nKey attribute",
+                "jsx-quotes-single": "Use single quote for the i18nKey attribute",
+
+                // plural
+                "plural": "You have <1>{{count}}</1> apples",
+                "plural_plural": "You have <1>{{count}}</1> apples",
+
+                // context
+                "context": "A boyfriend",
+                "context_male": "A boyfriend",
+
+                // i18nKey
+                "multiline-text-string": "multiline text string",
+                "string-literal": "This is a <1>test</1>",
+                "object-expression": "This is a <1><0>{{test}}</0></1>",
+                "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
+                "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                // fallback key
+                "multiline text string": "multiline text string",
+                "This is a <1>test</1>": "This is a <1>test</1>",
+                "This is a <1><0>{{test}}</0></1>": "This is a <1><0>{{test}}</0></1>",
+                "2 + 2 = <1>{{result}}</1>": "2 + 2 = <1>{{result}}</1>",
+                "Go to <1>Administration > Tools</1> to download administrative tools.": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                // defaults
+                "The component might be self-closing": "The component might be self-closing",
+                "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
             }
         }
     });
     t.end();
 });
 
-test('Parse Trans component #2', (t) => {
+test('Parse Trans components with fallback key', (t) => {
     const parser = new Parser({
         lngs: ['en'],
         trans: {
@@ -154,33 +171,50 @@ test('Parse Trans component #2', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "key1": "Key 1 default",
-                "key1SingleQuote": "Key must be key1SingleQuote",
-                "key2": "Key 2 default value",
-                "key3": "This is a <1>test</1>",
-                "key4": "You have <1>{{count}}</1> apples",
-                "key4_plural": "You have <1>{{count}}</1> apples",
-                "key5": "You have <1>one <1>very</1> bad</1> apple",
-                "key6": "This is a <1><0>{{test}}</0></1>",
-                "4f516979d203813c6bf4ea56043719e11095744f": "key7 default",
-                "8f5c444dd42fe9a3e42a8ab3a677e04a4a708105": "key8 default <1>{{count}}</1>",
-                "8f5c444dd42fe9a3e42a8ab3a677e04a4a708105_plural": "key8 default <1>{{count}}</1>",
-                "09e944775f89d688fd87cf7abc95a737dd4c54f6": "We can use Trans without i18nKey=\"...\" as well!",
-                "key9": "A boyfriend",
-                "key9_male": "A boyfriend",
-                "key11": "The component might be self-closing",
-                "key12": "Hello <0>{{planet}}</0>!"
+                // quote style
+                "jsx-quotes-double": "Use double quotes for the i18nKey attribute",
+                "jsx-quotes-single": "Use single quote for the i18nKey attribute",
+
+                // plural
+                "plural": "You have <1>{{count}}</1> apples",
+                "plural_plural": "You have <1>{{count}}</1> apples",
+
+                // context
+                "context": "A boyfriend",
+                "context_male": "A boyfriend",
+
+                // i18nKey
+                "multiline-text-string": "multiline text string",
+                "string-literal": "This is a <1>test</1>",
+                "object-expression": "This is a <1><0>{{test}}</0></1>",
+                "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
+                "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                // fallback key
+                "32876cbad378f3153c900c297ed2efa06243e0e2": "multiline text string",
+                "e4ca61dff6bc759d214e32c4e37c8ae594ca163d": "This is a <1>test</1>",
+                "0ce90193dd25c93cdc12f25a36d31004a74c63de": "This is a <1><0>{{test}}</0></1>",
+                "493781e20cd3cfd5b3137963519571c3d97ab383": "2 + 2 = <1>{{result}}</1>",
+                "083eac6b4f73ec317824caaaeea57fba3b83c1d9": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                "938c04be9e14562b7532a19458fe92b65c6ef941": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                "9c3ca5d5d8089e96135c8c7c9f42ba34a635fb47": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                // defaults
+                "7551746c2d33a1d0a24658c22821c8700fa58a0d": "Hello <1>{{planet}}</1>!",
+                "7e514af8f77b74e74f86dc22a2cb173680462e34": "The component might be self-closing",
             }
         }
     });
     t.end();
 });
 
-test('Parse Trans component #3', (t) => {
+test('Parse wrapped Trans components', (t) => {
     const parser = new Parser({
         lngs: ['en'],
         trans: {
-            component: 'I18N',
+            component: 'I18n',
             i18nKey: '__t',
             fallbackKey: true
         },
@@ -194,7 +228,7 @@ test('Parse Trans component #3', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "key10": "A wrapper component with key",
+                "mykey": "A wrapper component with key",
                 "A wrapper component without key": "A wrapper component without key"
             }
         }

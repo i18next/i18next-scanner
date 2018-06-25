@@ -11,7 +11,7 @@ import parse5 from 'parse5';
 import sortObject from 'sortobject';
 import flattenObjectKeys from './flatten-object-keys';
 import omitEmptyObject from './omit-empty-object';
-import { jsxToText } from './jsx-parser';
+import jsxToString from './jsx-to-string';
 
 const defaults = {
     debug: false, // verbose logging
@@ -440,9 +440,9 @@ class Parser {
             }
 
             const key = _.trim(transKey || '');
-            const fragment = _.trim(r[5]).replace(/\s+/g, ' ');
+            const code = _.trim(r[5]);
             const options = {
-                defaultValue: defaultsString || jsxToText(fragment),
+                defaultValue: defaultsString || jsxToString(code),
                 fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
             };
             if (attributes.count) {
