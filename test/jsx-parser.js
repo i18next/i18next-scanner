@@ -1,5 +1,26 @@
 import { test } from 'tap';
-import jsxToString from '../src/jsx-to-string';
+import { parse } from 'acorn-jsx';
+import ensureArray from 'ensure-array';
+import _get from 'lodash/get';
+import nodesToString from '../src/nodes-to-string';
+
+const jsxToString = (code) => {
+    try {
+        const ast = parse(`<Trans>${code}</Trans>`, {
+            plugins: { jsx: true }
+        });
+
+        const nodes = ensureArray(_get(ast, 'body[0].expression.children'));
+        if (nodes.length === 0) {
+            return '';
+        }
+
+        return nodesToString(nodes);
+    } catch (e) {
+        console.error(e);
+        return '';
+    }
+};
 
 test('JSX to i18next', (t) => {
     t.same(jsxToString('Basic text'), 'Basic text');

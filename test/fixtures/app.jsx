@@ -41,6 +41,7 @@ const mycomp = () => (
             </Trans>
         </Fragment>
         <Fragment>
+            <Trans>Hello, World!</Trans>
             <Trans>
                 multiline
                 text
@@ -74,11 +75,12 @@ const mycomp = () => (
         </Fragment>
         <Fragment>
             <Trans defaults="The component might be self-closing" />
+            <Trans defaults="Some <0>{variable}</0>" />
             <Trans defaults="Hello <1>{{planet}}</1>!" tOptions={{planet: "World"}} components={[<strong>stuff</strong>]} />
         </Fragment>
         <Fragment>
-            <I18n __t="mykey">A wrapper component with key</I18N>
-            <I18n>A wrapper component without key</I18N>
+            <I18n __t="mykey">A wrapper component with key</I18n>
+            <I18n>A wrapper component without key</I18n>
         </Fragment>
     </Fragment>
 )

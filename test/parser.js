@@ -105,7 +105,7 @@ test('Parse Trans components', (t) => {
             fallbackKey: true
         },
         nsSeparator: false,
-        keySeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
         fallbackLng: 'en'
     });
 
@@ -136,6 +136,7 @@ test('Parse Trans components', (t) => {
                 "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
 
                 // fallback key
+                "Hello, World!": "Hello, World!",
                 "multiline text string": "multiline text string",
                 "This is a <1>test</1>": "This is a <1>test</1>",
                 "This is a <1><0>{{test}}</0></1>": "This is a <1><0>{{test}}</0></1>",
@@ -146,6 +147,7 @@ test('Parse Trans components', (t) => {
 
                 // defaults
                 "The component might be self-closing": "The component might be self-closing",
+                "Some <0>{variable}</0>": "Some <0>{variable}</0>",
                 "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
             }
         }
@@ -162,7 +164,7 @@ test('Parse Trans components with fallback key', (t) => {
             }
         },
         nsSeparator: false,
-        keySeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
         fallbackLng: 'en'
     });
 
@@ -193,6 +195,7 @@ test('Parse Trans components with fallback key', (t) => {
                 "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
 
                 // fallback key
+                "0a0a9f2a6772942557ab5355d76af442f8f65e01": "Hello, World!",
                 "32876cbad378f3153c900c297ed2efa06243e0e2": "multiline text string",
                 "e4ca61dff6bc759d214e32c4e37c8ae594ca163d": "This is a <1>test</1>",
                 "0ce90193dd25c93cdc12f25a36d31004a74c63de": "This is a <1><0>{{test}}</0></1>",
@@ -203,6 +206,7 @@ test('Parse Trans components with fallback key', (t) => {
 
                 // defaults
                 "7551746c2d33a1d0a24658c22821c8700fa58a0d": "Hello <1>{{planet}}</1>!",
+                "253344d83465052dd6573c8c0abcd76f02fc3a97": "Some <0>{variable}</0>",
                 "7e514af8f77b74e74f86dc22a2cb173680462e34": "The component might be self-closing",
             }
         }
@@ -219,8 +223,8 @@ test('Parse wrapped Trans components', (t) => {
             fallbackKey: true
         },
         nsSeparator: false,
-        keySeparator: false,
-        fallbackLng: 'en'
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
+        fallbackLng: 'en',
     });
 
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
@@ -566,7 +570,7 @@ test('Override keySeparator with a false value', (t) => {
 
 test('Multiline (Line Endings: LF)', (t) => {
     const parser = new Parser({
-        nsSeparator: false,
+        nsSeparator: false
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/multiline-unix.js'), 'utf-8');
     parser.parseFuncFromString(content);
@@ -583,7 +587,7 @@ test('Multiline (Line Endings: LF)', (t) => {
 
 test('Multiline (Line Endings: CRLF)', (t) => {
     const parser = new Parser({
-        nsSeparator: false,
+        nsSeparator: false
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/multiline-dos.js'), 'utf-8');
     parser.parseFuncFromString(content);

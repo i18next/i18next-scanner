@@ -1,6 +1,7 @@
 /* eslint no-console: 0 */
 /* eslint no-eval: 0 */
 import fs from 'fs';
+import jsxwalk from 'acorn-jsx-walk';
 import chalk from 'chalk';
 import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
@@ -11,7 +12,7 @@ import parse5 from 'parse5';
 import sortObject from 'sortobject';
 import flattenObjectKeys from './flatten-object-keys';
 import omitEmptyObject from './omit-empty-object';
-import jsxToString from './jsx-to-string';
+import nodesToString from './nodes-to-string';
 
 const defaults = {
     debug: false, // verbose logging
@@ -192,13 +193,6 @@ const transformOptions = (options) => {
     options.ns = _.union(_.flatten(options.ns.concat(options.defaultNs)));
 
     return options;
-};
-
-const getStringFromAttribute = (attr) => {
-    if (attr[0] === '"' || attr[0] === '\'') {
-        return attr.slice(1, -1);
-    }
-    throw new Error('attribute value must be a string');
 };
 
 /**
@@ -412,57 +406,66 @@ class Parser {
         const i18nKey = opts.i18nKey || this.options.trans.i18nKey;
         const defaultsKey = opts.defaultsKey || this.options.trans.defaultsKey;
 
-        const reTrans = new RegExp('<' + component + '([^]*?)((/>)|(>([^]*?)</\\s*' + component + '\\s*>))', 'gim');
-        const reAttribute = /\b(\S+)\s*=\s*({.*?}|".*?"|'.*?')/gm;
+        try {
+            jsxwalk(content, {
+                JSXElement: (node) => {
+                    if (node.openingElement.name.name !== component) {
+                        return;
+                    }
 
-        let r;
-        while ((r = reTrans.exec(content))) {
-            const attributes = {};
-            let ar;
-            while ((ar = reAttribute.exec(r[1]))) {
-                attributes[ar[1]] = ar[2];
-            }
-            let transKey;
+                    const attr = ensureArray(node.openingElement.attributes)
+                        .reduce((acc, attribute) => {
+                            if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier') {
+                                return acc;
+                            }
 
-            try {
-                transKey = attributes[i18nKey] ? getStringFromAttribute(attributes[i18nKey]) : '';
-            } catch (e) {
-                this.log(`i18next-scanner: i18nKey value must be a static string, saw ${chalk.yellow(attributes[i18nKey])}`);
-                continue;
-            }
+                            const { name } = attribute.name;
 
-            let defaultsString;
-            try {
-                defaultsString = attributes[defaultsKey] ? getStringFromAttribute(attributes[defaultsKey]) : '';
-            } catch (e) {
-                this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(attributes[defaultsKey])}`);
-                continue;
-            }
+                            if (attribute.value.type === 'Literal') {
+                                acc[name] = attribute.value.value;
+                            } else if (attribute.value.type === 'JSXExpressionContainer') {
+                                acc[name] = attribute.value.expression;
+                            }
 
-            const key = _.trim(transKey || '');
-            const code = _.trim(r[5]);
-            const options = {
-                defaultValue: defaultsString || jsxToString(code),
-                fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
-            };
-            if (attributes.count) {
-                options.count = 1;
-            }
-            if (attributes.context) {
-                try {
-                    options.context = getStringFromAttribute(attributes.context);
-                } catch (e) {
-                    this.log(`i18next-scanner: Trans context attribute must be a string, saw ${chalk.yellow(attributes.context)}`);
-                    continue;
+                            return acc;
+                        }, {});
+
+                    const transKey = _.trim(attr[i18nKey]);
+
+                    const defaultsString = attr[defaultsKey] || '';
+                    if (typeof defaultsString !== 'string') {
+                        this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
+                    }
+
+                    const options = {
+                        defaultValue: defaultsString || nodesToString(node.children),
+                        fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
+                    };
+
+                    if (Object.prototype.hasOwnProperty.call(attr, 'count')) {
+                        options.count = Number(attr.count) || 0;
+                    }
+
+                    if (Object.prototype.hasOwnProperty.call(attr, 'context')) {
+                        options.context = attr.context;
+
+                        if (typeof options.context !== 'string') {
+                            this.log(`i18next-scanner: The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
+                        }
+                    }
+
+                    if (customHandler) {
+                        customHandler(transKey, options);
+                        return;
+                    }
+
+                    this.set(transKey, options);
                 }
-            }
-
-            if (customHandler) {
-                customHandler(key, options);
-                continue;
-            }
-
-            this.set(key, options);
+            });
+        } catch (err) {
+            this.log(`i18next-scanner: Unable to parse ${component} component with the content`);
+            this.log(err);
+            this.log(content);
         }
 
         return this;
@@ -660,15 +663,25 @@ class Parser {
             key = parts[1];
         }
 
-        if (!key && options.fallbackKey === true) {
-            key = options.defaultValue;
-        }
-        if (!key && typeof options.fallbackKey === 'function') {
-            key = options.fallbackKey(ns, options.defaultValue);
-        }
-        if (!key) {
-            // Ignore empty key
-            return;
+        let keys = [];
+
+        if (key) {
+            keys = _.isString(keySeparator) ? key.split(keySeparator) : [key];
+        } else {
+            // fallback key
+            if (options.fallbackKey === true) {
+                key = options.defaultValue;
+            }
+            if (typeof options.fallbackKey === 'function') {
+                key = options.fallbackKey(ns, options.defaultValue);
+            }
+
+            if (!key) {
+                // Ignore empty key
+                return;
+            }
+
+            keys = [key];
         }
 
         const {
@@ -682,9 +695,6 @@ class Parser {
             defaultLng,
             defaultValue
         } = this.options;
-        const keys = _.isString(keySeparator)
-            ? key.split(keySeparator)
-            : [key];
 
         lngs.forEach((lng) => {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
