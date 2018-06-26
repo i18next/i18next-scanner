@@ -12,6 +12,9 @@ const defaults = {
     func: {
         list: ['_t', 't']
     },
+    trans: {
+        fallbackKey: true
+    },
     lngs: ['en','de'],
     ns: [
         'locale',
@@ -146,6 +149,68 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
                   "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
                   "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
                   "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }));
+});
+
+test('[Trans Component] fallbackKey', function(t) {
+    const options = _.merge({}, defaults, {
+        trans: {
+            extensions: ['.js', '.jsx'], // with extensions
+            fallbackKey: function(ns, value) {
+                return value;
+            }
+        },
+        nsSeparator: false,
+        keySeparator: '.' // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
+    });
+
+    gulp.src('test/fixtures/**/app.jsx')
+        .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    // quote style
+                    "jsx-quotes-double": "Use double quotes for the i18nKey attribute",
+                    "jsx-quotes-single": "Use single quote for the i18nKey attribute",
+
+                    // plural
+                    "plural": "You have <1>{{count}}</1> apples",
+                    "plural_plural": "You have <1>{{count}}</1> apples",
+
+                    // context
+                    "context": "A boyfriend",
+                    "context_male": "A boyfriend",
+
+                    // i18nKey
+                    "multiline-text-string": "multiline text string",
+                    "string-literal": "This is a <1>test</1>",
+                    "object-expression": "This is a <1><0>{{test}}</0></1>",
+                    "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
+                    "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                    "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                    "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                    // fallback key
+                    "multiline text string": "multiline text string",
+                    "This is a <1>test</1>": "This is a <1>test</1>",
+                    "This is a <1><0>{{test}}</0></1>": "This is a <1><0>{{test}}</0></1>",
+                    "2 + 2 = <1>{{result}}</1>": "2 + 2 = <1>{{result}}</1>",
+                    "Go to <1>Administration > Tools</1> to download administrative tools.": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                    "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+
+                    // defaults
+                    "The component might be self-closing": "The component might be self-closing",
+                    "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
                 };
                 t.same(found, wanted);
             }

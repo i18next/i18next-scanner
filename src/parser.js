@@ -660,15 +660,25 @@ class Parser {
             key = parts[1];
         }
 
-        if (!key && options.fallbackKey === true) {
-            key = options.defaultValue;
-        }
-        if (!key && typeof options.fallbackKey === 'function') {
-            key = options.fallbackKey(ns, options.defaultValue);
-        }
-        if (!key) {
-            // Ignore empty key
-            return;
+        let keys = [];
+
+        if (key) {
+            keys = _.isString(keySeparator) ? key.split(keySeparator) : [key];
+        } else {
+            // fallback key
+            if (options.fallbackKey === true) {
+                key = options.defaultValue;
+            }
+            if (typeof options.fallbackKey === 'function') {
+                key = options.fallbackKey(ns, options.defaultValue);
+            }
+
+            if (!key) {
+                // Ignore empty key
+                return;
+            }
+
+            keys = [key];
         }
 
         const {
@@ -682,9 +692,6 @@ class Parser {
             defaultLng,
             defaultValue
         } = this.options;
-        const keys = _.isString(keySeparator)
-            ? key.split(keySeparator)
-            : [key];
 
         lngs.forEach((lng) => {
             let resLoad = this.resStore[lng] && this.resStore[lng][ns];
