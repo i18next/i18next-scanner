@@ -105,7 +105,7 @@ test('Parse Trans components', (t) => {
             fallbackKey: true
         },
         nsSeparator: false,
-        keySeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
         fallbackLng: 'en'
     });
 
@@ -162,7 +162,7 @@ test('Parse Trans components with fallback key', (t) => {
             }
         },
         nsSeparator: false,
-        keySeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
         fallbackLng: 'en'
     });
 
@@ -219,8 +219,8 @@ test('Parse wrapped Trans components', (t) => {
             fallbackKey: true
         },
         nsSeparator: false,
-        keySeparator: false,
-        fallbackLng: 'en'
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
+        fallbackLng: 'en',
     });
 
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
@@ -566,7 +566,7 @@ test('Override keySeparator with a false value', (t) => {
 
 test('Multiline (Line Endings: LF)', (t) => {
     const parser = new Parser({
-        nsSeparator: false,
+        nsSeparator: false
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/multiline-unix.js'), 'utf-8');
     parser.parseFuncFromString(content);
@@ -583,7 +583,7 @@ test('Multiline (Line Endings: LF)', (t) => {
 
 test('Multiline (Line Endings: CRLF)', (t) => {
     const parser = new Parser({
-        nsSeparator: false,
+        nsSeparator: false
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/multiline-dos.js'), 'utf-8');
     parser.parseFuncFromString(content);
