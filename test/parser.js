@@ -875,3 +875,39 @@ test('Extract properties from template literals', (t) => {
 
     t.end();
 });
+
+test('Custom keySeparator and nsSeparator', (t) => {
+    const parser = new Parser({
+        ns: ['translation', 'myNamespace'],
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key;
+            }
+            return '__NOT_TRANSLATED__';
+        },
+        keySeparator: false,
+        nsSeparator: false
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/custom-separators.js'), 'utf8');
+    const wanted = {
+        "en": {
+            "translation": {
+                "myNamespace|firstKey>secondKey>without custom separators": "myNamespace|firstKey>secondKey>without custom separators",
+                "myNamespace:firstKey.secondKey.without custom separators 2": "myNamespace:firstKey.secondKey.without custom separators 2"
+            },
+            "myNamespace": {
+                "firstKey": {
+                    "secondKey": {
+                        "with custom separators": "with custom separators",
+                        "with custom separators 2": "with custom separators 2",
+                    }
+                }
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+
+    t.end();
+});
