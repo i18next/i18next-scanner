@@ -361,7 +361,9 @@ class Parser {
                         'defaultValue',
                         'count',
                         'context',
-                        'ns'
+                        'ns',
+                        'keySeparator',
+                        'nsSeparator',
                     ];
 
                     props.forEach((prop) => {
