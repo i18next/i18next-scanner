@@ -109,7 +109,7 @@ test('Parse Trans components', (t) => {
         fallbackLng: 'en'
     });
 
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans.jsx'), 'utf-8');
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {
@@ -149,6 +149,11 @@ test('Parse Trans components', (t) => {
                 "The component might be self-closing": "The component might be self-closing",
                 "Some <0>{variable}</0>": "Some <0>{variable}</0>",
                 "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
+
+                // props
+                "translation from props": "translation from props",
+                "translation from nested props": "translation from nested props",
+                "translation from deeply nested props": "translation from deeply nested props"
             }
         }
     });
@@ -168,7 +173,7 @@ test('Parse Trans components with fallback key', (t) => {
         fallbackLng: 'en'
     });
 
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans.jsx'), 'utf-8');
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {
@@ -208,6 +213,11 @@ test('Parse Trans components with fallback key', (t) => {
                 "7551746c2d33a1d0a24658c22821c8700fa58a0d": "Hello <1>{{planet}}</1>!",
                 "253344d83465052dd6573c8c0abcd76f02fc3a97": "Some <0>{variable}</0>",
                 "7e514af8f77b74e74f86dc22a2cb173680462e34": "The component might be self-closing",
+
+                // props
+                "c38f91deba88fc3bb582cc73dc658210324b01ec": "translation from props",
+                "5bf216b4068991e3a2f5e55ae36c03add490a63f": "translation from nested props",
+                "6fadff01c49d0ebe862a3aa33688735c03728197": "translation from deeply nested props"
             }
         }
     });
@@ -227,7 +237,7 @@ test('Parse wrapped Trans components', (t) => {
         fallbackLng: 'en',
     });
 
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.jsx'), 'utf-8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans.jsx'), 'utf-8');
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {

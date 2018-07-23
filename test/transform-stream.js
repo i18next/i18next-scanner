@@ -167,7 +167,7 @@ test('[Trans Component] fallbackKey', function(t) {
         keySeparator: '.' // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
     });
 
-    gulp.src('test/fixtures/**/app.jsx')
+    gulp.src('test/fixtures/**/trans.jsx')
         .pipe(scanner(options))
         .on('end', function() {
             t.end();
@@ -213,6 +213,11 @@ test('[Trans Component] fallbackKey', function(t) {
                     "The component might be self-closing": "The component might be self-closing",
                     "Some <0>{variable}</0>": "Some <0>{variable}</0>",
                     "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
+
+                    // props
+                    "translation from props": "translation from props",
+                    "translation from nested props": "translation from nested props",
+                    "translation from deeply nested props": "translation from deeply nested props"
                 };
                 t.same(found, wanted);
             }
