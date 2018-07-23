@@ -239,12 +239,14 @@ class Parser {
 
         this.log(`i18next-scanner: options=${JSON.stringify(this.options, null, 2)}`);
     }
+
     log(...args) {
         const { debug } = this.options;
         if (debug) {
             console.log.apply(this, args);
         }
     }
+
     formatResourceLoadPath(lng, ns) {
         const options = this.options;
 
@@ -257,6 +259,7 @@ class Parser {
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
     }
+
     formatResourceSavePath(lng, ns) {
         const options = this.options;
         const regex = {
@@ -268,6 +271,7 @@ class Parser {
             .replace(regex.lng, lng)
             .replace(regex.ns, ns);
     }
+
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar") // matched
     // i18next.t('ns:foo.bar') // matched
@@ -396,6 +400,7 @@ class Parser {
 
         return this;
     }
+
     // Parses translation keys from `Trans` components in JSX
     // <Trans i18nKey="some.key">Default text</Trans>
     parseTransFromString(content, opts = {}, customHandler = null) {
@@ -408,62 +413,81 @@ class Parser {
         const i18nKey = opts.i18nKey || this.options.trans.i18nKey;
         const defaultsKey = opts.defaultsKey || this.options.trans.defaultsKey;
 
-        try {
-            jsxwalk(content, {
-                JSXElement: (node) => {
-                    if (node.openingElement.name.name !== component) {
-                        return;
-                    }
+        const parseJSXElement = (node) => {
+            if (!node) {
+                return;
+            }
 
-                    const attr = ensureArray(node.openingElement.attributes)
-                        .reduce((acc, attribute) => {
-                            if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier') {
-                                return acc;
-                            }
+            ensureArray(node.openingElement.attributes).forEach(attribute => {
+                const value = attribute.value;
 
-                            const { name } = attribute.name;
-
-                            if (attribute.value.type === 'Literal') {
-                                acc[name] = attribute.value.value;
-                            } else if (attribute.value.type === 'JSXExpressionContainer') {
-                                acc[name] = attribute.value.expression;
-                            }
-
-                            return acc;
-                        }, {});
-
-                    const transKey = _.trim(attr[i18nKey]);
-
-                    const defaultsString = attr[defaultsKey] || '';
-                    if (typeof defaultsString !== 'string') {
-                        this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
-                    }
-
-                    const options = {
-                        defaultValue: defaultsString || nodesToString(node.children),
-                        fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
-                    };
-
-                    if (Object.prototype.hasOwnProperty.call(attr, 'count')) {
-                        options.count = Number(attr.count) || 0;
-                    }
-
-                    if (Object.prototype.hasOwnProperty.call(attr, 'context')) {
-                        options.context = attr.context;
-
-                        if (typeof options.context !== 'string') {
-                            this.log(`i18next-scanner: The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
-                        }
-                    }
-
-                    if (customHandler) {
-                        customHandler(transKey, options);
-                        return;
-                    }
-
-                    this.set(transKey, options);
+                if (!(value && value.type === 'JSXExpressionContainer')) {
+                    return;
                 }
+
+                const expression = value.expression;
+                if (!(expression && expression.type === 'JSXElement')) {
+                    return;
+                }
+
+                parseJSXElement(expression);
             });
+
+            if (node.openingElement.name.name !== component) {
+                return;
+            }
+
+            const attr = ensureArray(node.openingElement.attributes)
+                .reduce((acc, attribute) => {
+                    if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier') {
+                        return acc;
+                    }
+
+                    const { name } = attribute.name;
+
+                    if (attribute.value.type === 'Literal') {
+                        acc[name] = attribute.value.value;
+                    } else if (attribute.value.type === 'JSXExpressionContainer') {
+                        acc[name] = attribute.value.expression;
+                    }
+
+                    return acc;
+                }, {});
+
+            const transKey = _.trim(attr[i18nKey]);
+
+            const defaultsString = attr[defaultsKey] || '';
+            if (typeof defaultsString !== 'string') {
+                this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
+            }
+
+            const options = {
+                defaultValue: defaultsString || nodesToString(node.children),
+                fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
+            };
+
+            if (Object.prototype.hasOwnProperty.call(attr, 'count')) {
+                options.count = Number(attr.count) || 0;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(attr, 'context')) {
+                options.context = attr.context;
+
+                if (typeof options.context !== 'string') {
+                    this.log(`i18next-scanner: The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
+                }
+            }
+
+            if (customHandler) {
+                customHandler(transKey, options);
+                return;
+            }
+
+            this.set(transKey, options);
+        };
+
+        try {
+            jsxwalk(content, { JSXElement: parseJSXElement });
         } catch (err) {
             this.log(`i18next-scanner: Unable to parse ${component} component with the content`);
             this.log(err);
@@ -472,6 +496,7 @@ class Parser {
 
         return this;
     }
+
     // Parses translation keys from `data-i18n` attribute in HTML
     // <div data-i18n="[attr]ns:foo.bar;[attr]ns:foo.baz">
     // </div>
@@ -534,6 +559,7 @@ class Parser {
 
         return this;
     }
+
     // Get the value of a translation key or the whole resource store containing translation information
     // @param {string} [key] The translation key
     // @param {object} [opts] The opts object
@@ -620,6 +646,7 @@ class Parser {
 
         return resStore;
     }
+
     // Set translation key with an optional defaultValue to i18n resource store
     // @param {string} key The translation key
     // @param {object} [options] The options object
@@ -810,6 +837,7 @@ class Parser {
             });
         });
     }
+
     // Returns a JSON string containing translation information
     // @param {object} [options] The options object
     // @param {boolean} [options.sort] True to sort object by key
