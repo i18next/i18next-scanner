@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+const Component = (props) => props.children;
+
 const mycomp = () => (
     <Fragment>
         <Fragment>
@@ -77,6 +79,39 @@ const mycomp = () => (
             <Trans defaults="The component might be self-closing" />
             <Trans defaults="Some <0>{variable}</0>" />
             <Trans defaults="Hello <1>{{planet}}</1>!" tOptions={{planet: "World"}} components={[<strong>stuff</strong>]} />
+        </Fragment>
+        <Fragment>
+            <Component
+                render={(
+                    <Trans>translation from props</Trans>
+                )}
+            />
+            <Component
+                render={(
+                    <Component
+                        render={(
+                            <Trans>translation from nested props</Trans>
+                        )}
+                    />
+                )}
+            />
+            <Component
+                render={(
+                    <Component
+                        render={(
+                            <Component
+                                render={(
+                                    <Component
+                                        render={(
+                                            <Trans>translation from deeply nested props</Trans>
+                                        )}
+                                    />
+                                )}
+                            />
+                        )}
+                    />
+                )}
+            />
         </Fragment>
         <Fragment>
             <I18n __t="mykey">A wrapper component with key</I18n>
