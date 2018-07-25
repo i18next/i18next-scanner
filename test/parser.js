@@ -153,7 +153,9 @@ test('Parse Trans components', (t) => {
                 // props
                 "translation from props": "translation from props",
                 "translation from nested props": "translation from nested props",
-                "translation from deeply nested props": "translation from deeply nested props"
+                "translation from deeply nested props": "translation from deeply nested props",
+                "tooltip1": "Some tooltip text",
+                "tooltip2": "Some tooltip text"
             }
         }
     });
@@ -217,7 +219,9 @@ test('Parse Trans components with fallback key', (t) => {
                 // props
                 "c38f91deba88fc3bb582cc73dc658210324b01ec": "translation from props",
                 "5bf216b4068991e3a2f5e55ae36c03add490a63f": "translation from nested props",
-                "6fadff01c49d0ebe862a3aa33688735c03728197": "translation from deeply nested props"
+                "6fadff01c49d0ebe862a3aa33688735c03728197": "translation from deeply nested props",
+                "tooltip1": "Some tooltip text",
+                "tooltip2": "Some tooltip text"
             }
         }
     });

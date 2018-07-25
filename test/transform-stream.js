@@ -217,7 +217,9 @@ test('[Trans Component] fallbackKey', function(t) {
                     // props
                     "translation from props": "translation from props",
                     "translation from nested props": "translation from nested props",
-                    "translation from deeply nested props": "translation from deeply nested props"
+                    "translation from deeply nested props": "translation from deeply nested props",
+                    "tooltip1": "Some tooltip text",
+                    "tooltip2": "Some tooltip text"
                 };
                 t.same(found, wanted);
             }
