@@ -433,6 +433,12 @@ class Parser {
                 parseJSXElement(expression);
             });
 
+            ensureArray(node.children).forEach(childNode => {
+                if (childNode.type === 'JSXElement') {
+                    parseJSXElement(childNode);
+                }
+            });
+
             if (node.openingElement.name.name !== component) {
                 return;
             }
