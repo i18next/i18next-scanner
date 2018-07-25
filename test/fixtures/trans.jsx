@@ -1,8 +1,6 @@
 import { Fragment } from 'react';
 
-const Component = (props) => props.children;
-
-const mycomp = () => (
+const Component = () => (
     <Fragment>
         <Fragment>
             <Trans i18nKey="jsx-quotes-double">Use double quotes for the i18nKey attribute</Trans>
@@ -112,10 +110,36 @@ const mycomp = () => (
                     />
                 )}
             />
+            <Tooltip
+                content={(
+                    <TooltipTextContainer>
+                        <Trans i18nKey="tooltip1" parent={'span'} i18n={i18n} t={t}>
+                            Some tooltip text
+                        </Trans>
+                    </TooltipTextContainer>
+                )}
+            >
+                <InfoIconStyled />
+            </Tooltip>
+            <Tooltip
+                content={(
+                    <TooltipTextContainer>
+                        <AnotherContainer>
+                            <Trans i18nKey="tooltip2" parent={'span'} i18n={i18n} t={t}>
+                                Some tooltip text
+                            </Trans>
+                        </AnotherContainer>
+                    </TooltipTextContainer>
+                )}
+            >
+                <InfoStyleIcon />
+            </Tooltip>
         </Fragment>
         <Fragment>
             <I18n __t="mykey">A wrapper component with key</I18n>
             <I18n>A wrapper component without key</I18n>
         </Fragment>
     </Fragment>
-)
+);
+
+export default Component;
