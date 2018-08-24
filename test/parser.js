@@ -925,3 +925,29 @@ test('Custom keySeparator and nsSeparator', (t) => {
 
     t.end();
 });
+
+test('Should accept trailing comma in functions', (t) => {
+    const content = `
+        i18next.t(
+            'friend',
+        )
+    `
+    class ParserMock extends Parser {
+        log(msg) {
+            if (msg.startsWith("i18next-scanner: Unable to parse code")) {
+                Parser.prototype.log = originalLog;
+                throw new Error('Should not run into catch');
+            }
+        }
+    }
+    const parser = new ParserMock({ debug: true });
+    parser.parseFuncFromString(content, {});
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                "friend": ""
+            }
+        }
+    });
+    t.end();
+});
