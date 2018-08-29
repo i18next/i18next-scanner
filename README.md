@@ -525,7 +525,7 @@ Below are the configuration options with their default values:
 
 Type: `Boolean` Default: `false`
 
-Set to `true` to trun on debug output.
+Set to `true` to turn on debug output.
 
 #### removeUnusedKeys
 
