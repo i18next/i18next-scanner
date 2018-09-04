@@ -155,6 +155,35 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
         }));
 });
 
+test('[Trans Component] defaultValue is respected', function(t) {
+    const options = _.merge({}, defaults, {
+        trans: {
+            extensions: ['.js', '.jsx'], // with extensions
+            fallbackKey: true
+        },
+        defaultValue: 'Test default value',
+        nsSeparator: false,
+        keySeparator: false
+    });
+
+    gulp.src('test/fixtures/**/trans-defaultValue.jsx')
+        .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+    
+                if (file.path === 'i18n/en/resource.json') {
+                    const found = JSON.parse(contents);
+                    const wanted = {
+                        "Trans component should respect the defaultValue option": "Test default value",
+                    };
+                    t.same(found, wanted);
+                }
+            }));
+});
+
 test('[Trans Component] fallbackKey', function(t) {
     const options = _.merge({}, defaults, {
         trans: {
