@@ -358,7 +358,7 @@ class Parser {
                 }
 
                 try {
-                    const syntax = parse('(' + code + ')');
+                    const syntax = code.trim() !== '' ? parse('(' + code + ')') : {};
                     const props = _.get(syntax, 'body[0].expression.properties') || [];
                     // http://i18next.com/docs/options/
                     const supportedOptions = [
