@@ -10,6 +10,7 @@ import { parse } from 'esprima';
 import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
+import i18next from 'i18next';
 import flattenObjectKeys from './flatten-object-keys';
 import omitEmptyObject from './omit-empty-object';
 import nodesToString from './nodes-to-string';
@@ -195,6 +196,53 @@ const transformOptions = (options) => {
     return options;
 };
 
+// Get an array of plurals suffixes for a given language.
+// @param {string} lng The language.
+// @param {string} pluralSeparator pluralSeparator, default '_'.
+// @param {string} [version]  i18next json version, default 'v3'.
+// @return {array|boolean} Return array of suffixes of false if lng is not supported.
+const getPluralSuffixes = (lng, pluralSeparator = '_', version = 'v3') => {
+    const rule = i18next.services.pluralResolver.getRule(lng);
+
+    let suffixes = [];
+
+    if (!rule) {
+        return false;
+    } else if (rule.numbers.length === 2) {
+        suffixes = ['', `${pluralSeparator}plural`];
+    } else {
+        let res = [];
+        suffixes = rule.numbers.reduce((red, n, i) => {
+            let nr;
+
+            if (version === 'v3') {
+                if (rule.numbers.length === 1) {
+                    return [`${pluralSeparator}0`];
+                }
+                res.push(`${pluralSeparator}${i}`);
+                return res;
+            } else if (version === 'v2') {
+                if (rule.numbers.length === 1) {
+                    return [''];
+                }
+                res.push(`${pluralSeparator}${rule.numbers[i]}`);
+                return res;
+            } else {
+                res = red;
+                nr = rule.numbers[i];
+                if (nr === 1) {
+                    res.push('');
+                } else {
+                    res.push(`${pluralSeparator}plural_${rule.numbers[i]}`);
+                }
+                return res;
+            }
+        }, '');
+    }
+
+    return suffixes;
+};
+
 /**
 * Creates a new parser
 * @constructor
@@ -208,6 +256,9 @@ class Parser {
     // The resScan only stores translation keys parsed from code
     resScan = {};
 
+    // The all plurals suffixes for each of target languages.
+    pluralSuffixes = [];
+
     constructor(options) {
         this.options = transformOptions({
             ...this.options,
@@ -220,6 +271,10 @@ class Parser {
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
             this.resScan[lng] = this.resScan[lng] || {};
+            this.pluralSuffixes[lng] = getPluralSuffixes(lng, this.options.pluralSeparator);
+            if (!this.pluralSuffixes[lng]) {
+                throw new TypeError(`Unexpected languages ${lng}`);
+            }
             namespaces.forEach((ns) => {
                 const resPath = this.formatResourceLoadPath(lng, ns);
 
@@ -726,7 +781,6 @@ class Parser {
             contextSeparator,
             plural,
             pluralFallback,
-            pluralSeparator,
             defaultLng,
             defaultValue
         } = this.options;
@@ -796,24 +850,26 @@ class Parser {
                         : !!plural;
                 })();
 
-                if (!containsContext && !containsPlural) {
-                    resKeys.push(key);
-                }
-
-                if ((containsContext && contextFallback) || (containsPlural && pluralFallback)) {
-                    resKeys.push(key);
-                }
-
-                if (containsContext) {
-                    resKeys.push(`${key}${contextSeparator}${options.context}`);
-                }
-
                 if (containsPlural) {
-                    resKeys.push(`${key}${pluralSeparator}plural`);
-                }
+                    let suffixes = pluralFallback ? this.pluralSuffixes[lng] : this.pluralSuffixes[lng].slice(1);
 
-                if (containsContext && containsPlural) {
-                    resKeys.push(`${key}${contextSeparator}${options.context}${pluralSeparator}plural`);
+                    suffixes.forEach((pluralSuffix) => {
+                        resKeys.push(`${key}${pluralSuffix}`);
+                    });
+
+                    if (containsContext && containsPlural) {
+                        suffixes.forEach((pluralSuffix) => {
+                            resKeys.push(`${key}${contextSeparator}${options.context}${pluralSuffix}`);
+                        });
+                    }
+                } else {
+                    if (!containsContext || (containsContext && contextFallback)) {
+                        resKeys.push(key);
+                    }
+
+                    if (containsContext) {
+                        resKeys.push(`${key}${contextSeparator}${options.context}`);
+                    }
                 }
 
                 resKeys.forEach(resKey => {
@@ -856,5 +912,7 @@ class Parser {
         return JSON.stringify(this.get(others), replacer, space);
     }
 }
+
+i18next.init();
 
 export default Parser;
