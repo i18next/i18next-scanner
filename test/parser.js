@@ -636,6 +636,28 @@ test('Plural', (t) => {
         t.end();
     });
 
+    test('Languages with multiple plurals', (t) => {
+        const parser = new Parser({lngs: ['ru']})
+        const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
+        parser.parseFuncFromString(content, { propsFilter: props => props });
+        t.same(parser.get(), {
+            ru: {
+                translation: {
+                    "key_0": "",
+                    "key_1": "",
+                    "key_2": "",
+                    "keyWithCount_0": "",
+                    "keyWithCount_1": "",
+                    "keyWithCount_2": "",
+                    "keyWithVariable_0": "",
+                    "keyWithVariable_1": "",
+                    "keyWithVariable_2": ""
+                }
+            }
+        });
+        t.end();
+    });
+
     test('User defined function', (t) => {
         const parser = new Parser({
             plural: (lng, ns, key, options) => {

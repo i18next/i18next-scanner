@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "2.6.6",
+  "version": "2.7.0",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -59,6 +59,7 @@
     "eol": "^0.9.1",
     "esprima": "^4.0.0",
     "gulp-sort": "^2.0.0",
+    "i18next": "^11.10.1",
     "lodash": "^4.0.0",
     "parse5": "^5.0.0",
     "sortobject": "^1.1.1",
