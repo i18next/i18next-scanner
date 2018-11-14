@@ -53,6 +53,9 @@ const defaults = {
         // The path where resources get loaded from. Relative to current working directory.
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
 
+        // Stop executing when loading or parse errors.
+        stopWhenLoadingFail: true,
+
         // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
         savePath: 'i18n/{{lng}}/{{ns}}.json',
 
@@ -156,6 +159,9 @@ const transformOptions = (options) => {
     if (_.isUndefined(_.get(options, 'resource.loadPath'))) {
         _.set(options, 'resource.loadPath', defaults.resource.loadPath);
     }
+    if (_.isUndefined(_.get(options, 'resource.stopWhenLoadingFail'))) {
+        _.set(options, 'resource.stopWhenLoadingFail', defaults.resource.stopWhenLoadingFail);
+    }
     if (_.isUndefined(_.get(options, 'resource.savePath'))) {
         _.set(options, 'resource.savePath', defaults.resource.savePath);
     }
@@ -216,6 +222,7 @@ class Parser {
 
         const lngs = this.options.lngs;
         const namespaces = this.options.ns;
+        const stopWhenLoadingFail = this.options.resource.stopWhenLoadingFail;
 
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
@@ -231,8 +238,12 @@ class Parser {
                         this.resStore[lng][ns] = JSON.parse(fs.readFileSync(resPath, 'utf-8'));
                     }
                 } catch (err) {
-                    this.log(`i18next-scanner: Unable to load resource file ${chalk.yellow(JSON.stringify(resPath))}: lng=${lng}, ns=${ns}`);
-                    this.log(err);
+                    console.log(`i18next-scanner: Unable to load resource file ${chalk.yellow(JSON.stringify(resPath))}: lng=${lng}, ns=${ns}`);
+                    if (stopWhenLoadingFail) {
+                        throw err;
+                    } else {
+                        this.log(err);
+                    }
                 }
             });
         });
