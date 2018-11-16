@@ -199,9 +199,8 @@ const transformOptions = (options) => {
 // Get an array of plurals suffixes for a given language.
 // @param {string} lng The language.
 // @param {string} pluralSeparator pluralSeparator, default '_'.
-// @param {string} [version]  i18next json version, default 'v3'.
 // @return {array|boolean} Return array of suffixes of false if lng is not supported.
-const getPluralSuffixes = (lng, pluralSeparator = '_', version = 'v3') => {
+const getPluralSuffixes = (lng, pluralSeparator = '_') => {
     const rule = i18next.services.pluralResolver.getRule(lng);
 
     let suffixes = [];
@@ -213,30 +212,11 @@ const getPluralSuffixes = (lng, pluralSeparator = '_', version = 'v3') => {
     } else {
         let res = [];
         suffixes = rule.numbers.reduce((red, n, i) => {
-            let nr;
-
-            if (version === 'v3') {
-                if (rule.numbers.length === 1) {
-                    return [`${pluralSeparator}0`];
-                }
-                res.push(`${pluralSeparator}${i}`);
-                return res;
-            } else if (version === 'v2') {
-                if (rule.numbers.length === 1) {
-                    return [''];
-                }
-                res.push(`${pluralSeparator}${rule.numbers[i]}`);
-                return res;
-            } else {
-                res = red;
-                nr = rule.numbers[i];
-                if (nr === 1) {
-                    res.push('');
-                } else {
-                    res.push(`${pluralSeparator}plural_${rule.numbers[i]}`);
-                }
-                return res;
+            if (rule.numbers.length === 1) {
+                return [`${pluralSeparator}0`];
             }
+            res.push(`${pluralSeparator}${i}`);
+            return res;
         }, '');
     }
 
@@ -257,7 +237,7 @@ class Parser {
     resScan = {};
 
     // The all plurals suffixes for each of target languages.
-    pluralSuffixes = [];
+    pluralSuffixes = {};
 
     constructor(options) {
         this.options = transformOptions({
@@ -273,7 +253,8 @@ class Parser {
             this.resScan[lng] = this.resScan[lng] || {};
             this.pluralSuffixes[lng] = getPluralSuffixes(lng, this.options.pluralSeparator);
             if (!this.pluralSuffixes[lng]) {
-                throw new TypeError(`Unexpected languages ${lng}`);
+                this.log(`i18next-scanner: Unexpected language ${lng}`);
+                return;
             }
             namespaces.forEach((ns) => {
                 const resPath = this.formatResourceLoadPath(lng, ns);
