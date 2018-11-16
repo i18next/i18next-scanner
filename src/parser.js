@@ -257,7 +257,7 @@ class Parser {
     resScan = {};
 
     // The all plurals suffixes for each of target languages.
-    pluralSuffixes = [];
+    pluralSuffixes = {};
 
     constructor(options) {
         this.options = transformOptions({
