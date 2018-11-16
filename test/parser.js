@@ -951,3 +951,24 @@ test('Should accept trailing comma in functions', (t) => {
     });
     t.end();
 });
+
+test('Default values test', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/default-values.js'), 'utf8');
+    const wanted = {
+        'en': {
+            'translation': {
+                'product': {
+                    'bread': 'Bread',
+                    'milk': 'Milk',
+                    'boiledEgg': 'Boiled Egg'
+                }
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+
+    t.end();
+});
