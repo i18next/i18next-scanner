@@ -68,16 +68,16 @@ test('Parse translation function', (t) => {
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.js'), 'utf-8');
     parser
         .parseFuncFromString(content, customHandler) // pass a custom handler
-        .parseFuncFromString(content, { list: ['i18next.t']}) // override `func.list`
-        .parseFuncFromString(content, { list: ['i18next.t']}, customHandler)
+        .parseFuncFromString(content, { list: ['i18next.t'] }) // override `func.list`
+        .parseFuncFromString(content, { list: ['i18next.t'] }, customHandler)
         .parseFuncFromString(content); // using default options and handler
 
     t.same(parser.get(), {
         en: {
             translation: {
-                "key2": "__TRANSLATION__",
-                "key1": "__TRANSLATION__"
-          }
+                'key2': '__TRANSLATION__',
+                'key1': '__TRANSLATION__'
+            }
         }
     });
 
@@ -85,9 +85,9 @@ test('Parse translation function', (t) => {
     t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
         en: {
             translation: {
-                "key1": "__TRANSLATION__",
-                "key2": "__TRANSLATION__"
-          }
+                'key1': '__TRANSLATION__',
+                'key2': '__TRANSLATION__'
+            }
         }
     }));
 
@@ -115,47 +115,47 @@ test('Parse Trans components', (t) => {
         en: {
             translation: {
                 // quote style
-                "jsx-quotes-double": "Use double quotes for the i18nKey attribute",
-                "jsx-quotes-single": "Use single quote for the i18nKey attribute",
+                'jsx-quotes-double': 'Use double quotes for the i18nKey attribute',
+                'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
                 // plural
-                "plural": "You have <1>{{count}}</1> apples",
-                "plural_plural": "You have <1>{{count}}</1> apples",
+                'plural': 'You have <1>{{count}}</1> apples',
+                'plural_plural': 'You have <1>{{count}}</1> apples',
 
                 // context
-                "context": "A boyfriend",
-                "context_male": "A boyfriend",
+                'context': 'A boyfriend',
+                'context_male': 'A boyfriend',
 
                 // i18nKey
-                "multiline-text-string": "multiline text string",
-                "string-literal": "This is a <1>test</1>",
-                "object-expression": "This is a <1><0>{{test}}</0></1>",
-                "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
-                "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
-                "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
-                "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                'multiline-text-string': 'multiline text string',
+                'string-literal': 'This is a <1>test</1>',
+                'object-expression': 'This is a <1><0>{{test}}</0></1>',
+                'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
+                'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+                'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
                 // fallback key
-                "Hello, World!": "Hello, World!",
-                "multiline text string": "multiline text string",
-                "This is a <1>test</1>": "This is a <1>test</1>",
-                "This is a <1><0>{{test}}</0></1>": "This is a <1><0>{{test}}</0></1>",
-                "2 + 2 = <1>{{result}}</1>": "2 + 2 = <1>{{result}}</1>",
-                "Go to <1>Administration > Tools</1> to download administrative tools.": "Go to <1>Administration > Tools</1> to download administrative tools.",
-                "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                'Hello, World!': 'Hello, World!',
+                'multiline text string': 'multiline text string',
+                'This is a <1>test</1>': 'This is a <1>test</1>',
+                'This is a <1><0>{{test}}</0></1>': 'This is a <1><0>{{test}}</0></1>',
+                '2 + 2 = <1>{{result}}</1>': '2 + 2 = <1>{{result}}</1>',
+                'Go to <1>Administration > Tools</1> to download administrative tools.': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
                 // defaults
-                "The component might be self-closing": "The component might be self-closing",
-                "Some <0>{variable}</0>": "Some <0>{variable}</0>",
-                "Hello <1>{{planet}}</1>!": "Hello <1>{{planet}}</1>!",
+                'The component might be self-closing': 'The component might be self-closing',
+                'Some <0>{variable}</0>': 'Some <0>{variable}</0>',
+                'Hello <1>{{planet}}</1>!': 'Hello <1>{{planet}}</1>!',
 
                 // props
-                "translation from props": "translation from props",
-                "translation from nested props": "translation from nested props",
-                "translation from deeply nested props": "translation from deeply nested props",
-                "tooltip1": "Some tooltip text",
-                "tooltip2": "Some tooltip text"
+                'translation from props': 'translation from props',
+                'translation from nested props': 'translation from nested props',
+                'translation from deeply nested props': 'translation from deeply nested props',
+                'tooltip1': 'Some tooltip text',
+                'tooltip2': 'Some tooltip text'
             }
         }
     });
@@ -181,47 +181,47 @@ test('Parse Trans components with fallback key', (t) => {
         en: {
             translation: {
                 // quote style
-                "jsx-quotes-double": "Use double quotes for the i18nKey attribute",
-                "jsx-quotes-single": "Use single quote for the i18nKey attribute",
+                'jsx-quotes-double': 'Use double quotes for the i18nKey attribute',
+                'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
                 // plural
-                "plural": "You have <1>{{count}}</1> apples",
-                "plural_plural": "You have <1>{{count}}</1> apples",
+                'plural': 'You have <1>{{count}}</1> apples',
+                'plural_plural': 'You have <1>{{count}}</1> apples',
 
                 // context
-                "context": "A boyfriend",
-                "context_male": "A boyfriend",
+                'context': 'A boyfriend',
+                'context_male': 'A boyfriend',
 
                 // i18nKey
-                "multiline-text-string": "multiline text string",
-                "string-literal": "This is a <1>test</1>",
-                "object-expression": "This is a <1><0>{{test}}</0></1>",
-                "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
-                "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
-                "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
-                "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                'multiline-text-string': 'multiline text string',
+                'string-literal': 'This is a <1>test</1>',
+                'object-expression': 'This is a <1><0>{{test}}</0></1>',
+                'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
+                'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+                'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
                 // fallback key
-                "0a0a9f2a6772942557ab5355d76af442f8f65e01": "Hello, World!",
-                "32876cbad378f3153c900c297ed2efa06243e0e2": "multiline text string",
-                "e4ca61dff6bc759d214e32c4e37c8ae594ca163d": "This is a <1>test</1>",
-                "0ce90193dd25c93cdc12f25a36d31004a74c63de": "This is a <1><0>{{test}}</0></1>",
-                "493781e20cd3cfd5b3137963519571c3d97ab383": "2 + 2 = <1>{{result}}</1>",
-                "083eac6b4f73ec317824caaaeea57fba3b83c1d9": "Go to <1>Administration > Tools</1> to download administrative tools.",
-                "938c04be9e14562b7532a19458fe92b65c6ef941": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
-                "9c3ca5d5d8089e96135c8c7c9f42ba34a635fb47": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
+                '0a0a9f2a6772942557ab5355d76af442f8f65e01': 'Hello, World!',
+                '32876cbad378f3153c900c297ed2efa06243e0e2': 'multiline text string',
+                'e4ca61dff6bc759d214e32c4e37c8ae594ca163d': 'This is a <1>test</1>',
+                '0ce90193dd25c93cdc12f25a36d31004a74c63de': 'This is a <1><0>{{test}}</0></1>',
+                '493781e20cd3cfd5b3137963519571c3d97ab383': '2 + 2 = <1>{{result}}</1>',
+                '083eac6b4f73ec317824caaaeea57fba3b83c1d9': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                '938c04be9e14562b7532a19458fe92b65c6ef941': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+                '9c3ca5d5d8089e96135c8c7c9f42ba34a635fb47': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
                 // defaults
-                "7551746c2d33a1d0a24658c22821c8700fa58a0d": "Hello <1>{{planet}}</1>!",
-                "253344d83465052dd6573c8c0abcd76f02fc3a97": "Some <0>{variable}</0>",
-                "7e514af8f77b74e74f86dc22a2cb173680462e34": "The component might be self-closing",
+                '7551746c2d33a1d0a24658c22821c8700fa58a0d': 'Hello <1>{{planet}}</1>!',
+                '253344d83465052dd6573c8c0abcd76f02fc3a97': 'Some <0>{variable}</0>',
+                '7e514af8f77b74e74f86dc22a2cb173680462e34': 'The component might be self-closing',
 
                 // props
-                "c38f91deba88fc3bb582cc73dc658210324b01ec": "translation from props",
-                "5bf216b4068991e3a2f5e55ae36c03add490a63f": "translation from nested props",
-                "6fadff01c49d0ebe862a3aa33688735c03728197": "translation from deeply nested props",
-                "tooltip1": "Some tooltip text",
-                "tooltip2": "Some tooltip text"
+                'c38f91deba88fc3bb582cc73dc658210324b01ec': 'translation from props',
+                '5bf216b4068991e3a2f5e55ae36c03add490a63f': 'translation from nested props',
+                '6fadff01c49d0ebe862a3aa33688735c03728197': 'translation from deeply nested props',
+                'tooltip1': 'Some tooltip text',
+                'tooltip2': 'Some tooltip text'
             }
         }
     });
@@ -246,8 +246,8 @@ test('Parse wrapped Trans components', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "mykey": "A wrapper component with key",
-                "A wrapper component without key": "A wrapper component without key"
+                'mykey': 'A wrapper component with key',
+                'A wrapper component without key': 'A wrapper component without key'
             }
         }
     });
@@ -267,10 +267,10 @@ test('Parse HTML attribute', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key1": "",
-                    "key2": "",
-                    "key3": "",
-                    "key4": ""
+                    'key1': '',
+                    'key2': '',
+                    'key3': '',
+                    'key4': ''
                 }
             }
         });
@@ -286,15 +286,15 @@ test('Parse HTML attribute', (t) => {
 
         // <div data-i18n="key"></div>
         const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
-        parser.parseAttrFromString(content, { list: ['data-i18n']});
+        parser.parseAttrFromString(content, { list: ['data-i18n'] });
 
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key1": "",
-                    "key2": "",
-                    "key3": "",
-                    "key4": ""
+                    'key1': '',
+                    'key2': '',
+                    'key3': '',
+                    'key4': ''
                 }
             }
         });
@@ -318,10 +318,10 @@ test('Parse HTML attribute', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key4": "__TRANSLATION__",
-                    "key3": "__TRANSLATION__",
-                    "key2": "__TRANSLATION__",
-                    "key1": "__TRANSLATION__"
+                    'key4': '__TRANSLATION__',
+                    'key3': '__TRANSLATION__',
+                    'key2': '__TRANSLATION__',
+                    'key1': '__TRANSLATION__'
                 }
             }
         });
@@ -330,11 +330,11 @@ test('Parse HTML attribute', (t) => {
         t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
             en: {
                 translation: {
-                    "key1": "__TRANSLATION__",
-                    "key2": "__TRANSLATION__",
-                    "key3": "__TRANSLATION__",
-                    "key4": "__TRANSLATION__"
-              }
+                    'key1': '__TRANSLATION__',
+                    'key2': '__TRANSLATION__',
+                    'key3': '__TRANSLATION__',
+                    'key4': '__TRANSLATION__'
+                }
             }
         }));
 
@@ -356,15 +356,15 @@ test('Parse HTML attribute', (t) => {
         };
 
         const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/app.html'), 'utf-8');
-        parser.parseAttrFromString(content, { list: ['data-i18n']}, customHandler);
+        parser.parseAttrFromString(content, { list: ['data-i18n'] }, customHandler);
 
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key4": "__TRANSLATION__",
-                    "key3": "__TRANSLATION__",
-                    "key2": "__TRANSLATION__",
-                    "key1": "__TRANSLATION__"
+                    'key4': '__TRANSLATION__',
+                    'key3': '__TRANSLATION__',
+                    'key2': '__TRANSLATION__',
+                    'key1': '__TRANSLATION__'
                 }
             }
         });
@@ -373,11 +373,11 @@ test('Parse HTML attribute', (t) => {
         t.same(JSON.stringify(parser.get({ sort: true })), JSON.stringify({
             en: {
                 translation: {
-                    "key1": "__TRANSLATION__",
-                    "key2": "__TRANSLATION__",
-                    "key3": "__TRANSLATION__",
-                    "key4": "__TRANSLATION__"
-              }
+                    'key1': '__TRANSLATION__',
+                    'key2': '__TRANSLATION__',
+                    'key3': '__TRANSLATION__',
+                    'key4': '__TRANSLATION__'
+                }
             }
         }));
 
@@ -409,13 +409,13 @@ test('Gettext style i18n', (t) => {
     t.same(resStore, {
         en: {
             translation: {
-                "Loading...": "Loading...",
-                "This value does not exist.": "This value does not exist.",
-                "YouTube has more than {{count}} billion users.": "YouTube has more than {{count}} billion users.",
-                "YouTube has more than {{count}} billion users._plural": "YouTube has more than {{count}} billion users.",
-                "You have {{count}} messages.": "You have {{count}} messages.",
-                "You have {{count}} messages._plural": "You have {{count}} messages."
-          }
+                'Loading...': 'Loading...',
+                'This value does not exist.': 'This value does not exist.',
+                'YouTube has more than {{count}} billion users.': 'YouTube has more than {{count}} billion users.',
+                'YouTube has more than {{count}} billion users._plural': 'YouTube has more than {{count}} billion users.',
+                'You have {{count}} messages.': 'You have {{count}} messages.',
+                'You have {{count}} messages._plural': 'You have {{count}} messages.'
+            }
         }
     });
     t.end();
@@ -434,14 +434,14 @@ test('Quotes', (t) => {
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/quotes.js'), 'utf8');
     const wanted = {
-        "en": {
-            "translation": {
-                "Primary 'email' activation": "Primary 'email' activation",
-                "Primary \"email\" activation": "Primary \"email\" activation",
-                "name='email' value='{{email}}'": "name='email' value='{{email}}'",
-                "name=\"email\" value=\"{{email}}\"": "name=\"email\" value=\"{{email}}\"",
-                "name=\"email\" value='{{email}}'": "name=\"email\" value='{{email}}'",
-                "name='email' value=\"{{email}}\"": "name='email' value=\"{{email}}\"",
+        'en': {
+            'translation': {
+                'Primary \'email\' activation': 'Primary \'email\' activation',
+                'Primary "email" activation': 'Primary "email" activation',
+                'name=\'email\' value=\'{{email}}\'': 'name=\'email\' value=\'{{email}}\'',
+                'name="email" value="{{email}}"': 'name="email" value="{{email}}"',
+                'name="email" value=\'{{email}}\'': 'name="email" value=\'{{email}}\'',
+                'name=\'email\' value="{{email}}"': 'name=\'email\' value="{{email}}"',
             }
         }
     };
@@ -591,8 +591,8 @@ test('Multiline (Line Endings: LF)', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "this is a multiline string": "",
-                "this is another multiline string": ""
+                'this is a multiline string': '',
+                'this is another multiline string': ''
             }
         }
     });
@@ -608,8 +608,8 @@ test('Multiline (Line Endings: CRLF)', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "this is a multiline string": "",
-                "this is another multiline string": ""
+                'this is a multiline string': '',
+                'this is another multiline string': ''
             }
         }
     });
@@ -618,18 +618,18 @@ test('Multiline (Line Endings: CRLF)', (t) => {
 
 test('Plural', (t) => {
     test('Default options', (t) => {
-        const parser = new Parser()
+        const parser = new Parser();
         const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
         parser.parseFuncFromString(content, { propsFilter: props => props });
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key": "",
-                    "key_plural": "",
-                    "keyWithCount": "",
-                    "keyWithCount_plural": "",
-                    "keyWithVariable": "",
-                    "keyWithVariable_plural": ""
+                    'key': '',
+                    'key_plural': '',
+                    'keyWithCount': '',
+                    'keyWithCount_plural': '',
+                    'keyWithVariable': '',
+                    'keyWithVariable_plural': ''
                 }
             }
         });
@@ -656,11 +656,11 @@ test('Plural', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "key": "",
-                    "keyWithCount": "",
-                    "keyWithCount_plural": "",
-                    "keyWithVariable": "",
-                    "keyWithVariable_plural": ""
+                    'key': '',
+                    'keyWithCount': '',
+                    'keyWithCount_plural': '',
+                    'keyWithVariable': '',
+                    'keyWithVariable_plural': ''
                 }
             }
         });
@@ -679,13 +679,13 @@ test('Namespace', (t) => {
     t.same(parser.get(), {
         en: {
             othernamespace: {
-                "friend": ""
+                'friend': ''
             },
             translation: {}
         }
     });
     t.end();
-})
+});
 
 test('Context', (t) => {
     test('Default options', (t) => {
@@ -695,9 +695,9 @@ test('Context', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend": "",
-                    "friend_male": "",
-                    "friend_female": ""
+                    'friend': '',
+                    'friend_male': '',
+                    'friend_female': ''
                 }
             }
         });
@@ -721,8 +721,8 @@ test('Context', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend": "",
-                    "friend_male": ""
+                    'friend': '',
+                    'friend_male': ''
                 }
             }
         });
@@ -741,12 +741,12 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend": "",
-                    "friend_plural": "",
-                    "friend_male": "",
-                    "friend_male_plural": "",
-                    "friend_female": "",
-                    "friend_female_plural": ""
+                    'friend': '',
+                    'friend_plural': '',
+                    'friend_male': '',
+                    'friend_male_plural': '',
+                    'friend_female': '',
+                    'friend_female_plural': ''
                 }
             }
         });
@@ -762,9 +762,9 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend": "",
-                    "friend_male": "",
-                    "friend_female": ""
+                    'friend': '',
+                    'friend_male': '',
+                    'friend_female': ''
                 }
             }
         });
@@ -781,8 +781,8 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend_male": "",
-                    "friend_female": ""
+                    'friend_male': '',
+                    'friend_female': ''
                 }
             }
         });
@@ -798,8 +798,8 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend": "",
-                    "friend_plural": ""
+                    'friend': '',
+                    'friend_plural': ''
                 }
             }
         });
@@ -816,7 +816,7 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    "friend_plural": ""
+                    'friend_plural': ''
                 }
             }
         });
@@ -876,10 +876,10 @@ test('Extract properties from template literals', (t) => {
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8');
     const wanted = {
-        "en": {
-            "translation": {
-                "property in template literals": "property in template literals",
-                "added {{foo}}\n and {{bar}}": "added {{foo}}\n and {{bar}}"
+        'en': {
+            'translation': {
+                'property in template literals': 'property in template literals',
+                'added {{foo}}\n and {{bar}}': 'added {{foo}}\n and {{bar}}'
             }
         }
     };
@@ -904,16 +904,16 @@ test('Custom keySeparator and nsSeparator', (t) => {
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/custom-separators.js'), 'utf8');
     const wanted = {
-        "en": {
-            "translation": {
-                "myNamespace|firstKey>secondKey>without custom separators": "myNamespace|firstKey>secondKey>without custom separators",
-                "myNamespace:firstKey.secondKey.without custom separators 2": "myNamespace:firstKey.secondKey.without custom separators 2"
+        'en': {
+            'translation': {
+                'myNamespace|firstKey>secondKey>without custom separators': 'myNamespace|firstKey>secondKey>without custom separators',
+                'myNamespace:firstKey.secondKey.without custom separators 2': 'myNamespace:firstKey.secondKey.without custom separators 2'
             },
-            "myNamespace": {
-                "firstKey": {
-                    "secondKey": {
-                        "with custom separators": "with custom separators",
-                        "with custom separators 2": "with custom separators 2",
+            'myNamespace': {
+                'firstKey': {
+                    'secondKey': {
+                        'with custom separators': 'with custom separators',
+                        'with custom separators 2': 'with custom separators 2',
                     }
                 }
             }
@@ -931,11 +931,11 @@ test('Should accept trailing comma in functions', (t) => {
         i18next.t(
             'friend',
         )
-    `
+    `;
     class ParserMock extends Parser {
         log(msg) {
-            if (msg.startsWith("i18next-scanner: Unable to parse code")) {
-                Parser.prototype.log = originalLog;
+            if (msg.startsWith('i18next-scanner: Unable to parse code')) {
+                Parser.prototype.log = originalLog; // eslint-disable-line no-undef
                 throw new Error('Should not run into catch');
             }
         }
@@ -945,7 +945,7 @@ test('Should accept trailing comma in functions', (t) => {
     t.same(parser.get(), {
         en: {
             translation: {
-                "friend": ""
+                'friend': ''
             }
         }
     });
