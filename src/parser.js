@@ -359,31 +359,36 @@ class Parser {
 
                 try {
                     const syntax = code.trim() !== '' ? parse('(' + code + ')') : {};
-                    const props = _.get(syntax, 'body[0].expression.properties') || [];
-                    // http://i18next.com/docs/options/
-                    const supportedOptions = [
-                        'defaultValue',
-                        'count',
-                        'context',
-                        'ns',
-                        'keySeparator',
-                        'nsSeparator',
-                    ];
 
-                    props.forEach((prop) => {
-                        if (_.includes(supportedOptions, prop.key.name)) {
-                            if (prop.value.type === 'Literal') {
-                                options[prop.key.name] = prop.value.value;
-                            } else if (prop.value.type === 'TemplateLiteral') {
-                                options[prop.key.name] = prop.value.quasis
-                                    .map(element => element.value.cooked)
-                                    .join('');
-                            } else {
-                                // Unable to get value of the property
-                                options[prop.key.name] = '';
+                    if (_.get(syntax, 'body[0].expression.type') === 'Literal') {
+                        options.defaultValue = _.get(syntax, 'body[0].expression.value');
+                    } else {
+                        const props = _.get(syntax, 'body[0].expression.properties') || [];
+                        // http://i18next.com/docs/options/
+                        const supportedOptions = [
+                            'defaultValue',
+                            'count',
+                            'context',
+                            'ns',
+                            'keySeparator',
+                            'nsSeparator',
+                        ];
+
+                        props.forEach((prop) => {
+                            if (_.includes(supportedOptions, prop.key.name)) {
+                                if (prop.value.type === 'Literal') {
+                                    options[prop.key.name] = prop.value.value;
+                                } else if (prop.value.type === 'TemplateLiteral') {
+                                    options[prop.key.name] = prop.value.quasis
+                                        .map(element => element.value.cooked)
+                                        .join('');
+                                } else {
+                                    // Unable to get value of the property
+                                    options[prop.key.name] = '';
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 } catch (err) {
                     this.log(`i18next-scanner: Unable to parse code "${code}"`);
                     this.log(err);
