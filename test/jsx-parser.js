@@ -1,14 +1,13 @@
 import { test } from 'tap';
-import { parse } from 'acorn-jsx';
+import { Parser } from 'acorn';
+import jsx from 'acorn-jsx';
 import ensureArray from 'ensure-array';
 import _get from 'lodash/get';
 import nodesToString from '../src/nodes-to-string';
 
 const jsxToString = (code) => {
     try {
-        const ast = parse(`<Trans>${code}</Trans>`, {
-            plugins: { jsx: true }
-        });
+        const ast = Parser.extend(jsx()).parse(`<Trans>${code}</Trans>`);
 
         const nodes = ensureArray(_get(ast, 'body[0].expression.children'));
         if (nodes.length === 0) {
