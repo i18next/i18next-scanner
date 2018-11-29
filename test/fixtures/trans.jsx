@@ -2,6 +2,9 @@ import { Fragment } from 'react';
 
 const Component = () => (
     <Fragment>
+        {
+            // Empty expression should not fail
+        }
         <Fragment>
             <Trans i18nKey="jsx-quotes-double">Use double quotes for the i18nKey attribute</Trans>
             <Trans i18nKey='jsx-quotes-single'>Use single quote for the i18nKey attribute</Trans>

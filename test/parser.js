@@ -254,6 +254,53 @@ test('Parse wrapped Trans components', (t) => {
     t.end();
 });
 
+test('Parse Trans components with modern acorn features', (t) => {
+    const parser = new Parser({
+        lngs: ['en'],
+        trans: {
+            fallbackKey: true
+        },
+        nsSeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
+        fallbackLng: 'en'
+    });
+
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans-acorn.jsx'), 'utf-8');
+    parser.parseTransFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                // Passing keys to <Trans> via object spread is not yet supported:
+                'Spread i18nKey': 'Spread i18nKey',
+                // 'spread': 'Spread i18nKey', // this would be expected.
+                'simple': 'Simple i18nKey'
+            }
+        }
+    });
+    t.end();
+});
+
+test('Parse Trans components should fail with broken syntax', (t) => {
+    const parser = new Parser({
+        lngs: ['en'],
+        trans: {
+            fallbackKey: true
+        },
+        nsSeparator: false,
+        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
+        fallbackLng: 'en'
+    });
+
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans-acorn-broken.jsx'), 'utf-8');
+    parser.parseTransFromString(content);
+    t.same(parser.get(), {
+        en: {
+            translation: {}
+        }
+    });
+    t.end();
+});
+
 test('Parse HTML attribute', (t) => {
     test('parseAttrFromString(content)', (t) => {
         const parser = new Parser({
