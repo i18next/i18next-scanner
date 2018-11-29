@@ -1,7 +1,6 @@
 /* eslint no-console: 0 */
 /* eslint no-eval: 0 */
 import fs from 'fs';
-import jsxwalk from 'acorn-jsx-walk';
 import chalk from 'chalk';
 import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
@@ -11,6 +10,7 @@ import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
 import i18next from 'i18next';
+import jsxwalk from './acorn-jsx-walk';
 import flattenObjectKeys from './flatten-object-keys';
 import omitEmptyObject from './omit-empty-object';
 import nodesToString from './nodes-to-string';
