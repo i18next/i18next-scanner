@@ -419,6 +419,7 @@ class Parser {
                     // http://i18next.com/docs/options/
                     const supportedOptions = [
                         'defaultValue',
+                        'defaultValue_plural',
                         'count',
                         'context',
                         'ns',
@@ -782,6 +783,7 @@ class Parser {
             contextSeparator,
             plural,
             pluralFallback,
+            pluralSeparator,
             defaultLng,
             defaultValue
         } = this.options;
@@ -875,7 +877,9 @@ class Parser {
 
                 resKeys.forEach(resKey => {
                     if (resLoad[resKey] === undefined) {
-                        if (options.defaultValue !== undefined) {
+                        if (options.defaultValue_plural !== undefined && resKey.endsWith(`${pluralSeparator}plural`)) {
+                            resLoad[resKey] = options.defaultValue_plural;
+                        } else if (options.defaultValue !== undefined) {
                             // Use `options.defaultValue` if specified
                             resLoad[resKey] = options.defaultValue;
                         } else {
@@ -885,11 +889,19 @@ class Parser {
                                 : defaultValue;
                         }
                         this.log(`i18next-scanner: Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
-                    } else if (options.defaultValue) {
+                    } else if (options.defaultValue && (!options.defaultValue_plural || !resKey.endsWith(`${pluralSeparator}plural`))) {
                         if (!resLoad[resKey]) {
                             // Use `options.defaultValue` if specified
                             resLoad[resKey] = options.defaultValue;
                         } else if ((resLoad[resKey] !== options.defaultValue) && (lng === defaultLng)) {
+                            // A default value has provided but it's different with the expected default
+                            this.log(`i18next-scanner: The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
+                        }
+                    } else if (options.defaultValue_plural && resKey.endsWith(`${pluralSeparator}plural`)) {
+                        if (!resLoad[resKey]) {
+                            // Use `options.defaultValue_plural` if specified
+                            resLoad[resKey] = options.defaultValue_plural;
+                        } else if ((resLoad[resKey] !== options.defaultValue_plural) && (lng === defaultLng)) {
                             // A default value has provided but it's different with the expected default
                             this.log(`i18next-scanner: The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
                         }
