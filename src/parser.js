@@ -272,6 +272,38 @@ class Parser {
             .replace(regex.ns, ns);
     }
 
+    fixStringAfterRegExp(strToFix) {
+        let fixedString = _.trim(strToFix); // Remove leading and trailing whitespace
+        const firstChar = fixedString[0];
+
+        // Ignore key with embedded expressions in string literals
+        if (firstChar === '`' && fixedString.match(/\${.*?}/)) {
+            return null;
+        }
+
+        if (_.includes(['\'', '"', '`'], firstChar)) {
+            // Remove first and last character
+            fixedString = fixedString.slice(1, -1);
+        }
+
+        // restore multiline strings
+        fixedString = fixedString.replace(/(\\\n|\\\r\n)/g, '');
+
+        // JavaScript character escape sequences
+        // https://mathiasbynens.be/notes/javascript-escapes
+
+        // Single character escape sequences
+        // Note: IE < 9 treats '\v' as 'v' instead of a vertical tab ('\x0B'). If cross-browser compatibility is a concern, use \x0B instead of \v.
+        // Another thing to note is that the \v and \0 escapes are not allowed in JSON strings.
+        fixedString = fixedString.replace(/(\\b|\\f|\\n|\\r|\\t|\\v|\\0|\\\\|\\"|\\')/g, (match) => eval(`"${match}"`));
+
+        // * Octal escapes have been deprecated in ES5.
+        // * Hexadecimal escape sequences: \\x[a-fA-F0-9]{2}
+        // * Unicode escape sequences: \\u[a-fA-F0-9]{4}
+        fixedString = fixedString.replace(/(\\x[a-fA-F0-9]{2}|\\u[a-fA-F0-9]{4})/g, (match) => eval(`"${match}"`));
+        return fixedString;
+    }
+
     // i18next.t('ns:foo.bar') // matched
     // i18next.t("ns:foo.bar") // matched
     // i18next.t('ns:foo.bar') // matched
@@ -297,20 +329,23 @@ class Parser {
             .replace(/\./g, '\\.');
         // `\s` matches a single whitespace character, which includes spaces, tabs, form feeds, line feeds and other unicode spaces.
         const matchSpecialCharacters = '[\\r\\n\\s]*';
+        const stringGroup =
+            '(' +
+            // backtick (``)
+            matchSpecialCharacters + '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
+            '|' +
+            // double quotes ("")
+            matchSpecialCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
+            '|' +
+            // single quote ('')
+            matchSpecialCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
+            matchSpecialCharacters +
+            ')';
         const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])' +
             '(?:' + matchFuncs + ')' +
-            '\\(' +
-                '(' +
-                    // backtick (``)
-                    matchSpecialCharacters + '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
-                    '|' +
-                    // double quotes ("")
-                    matchSpecialCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
-                    '|' +
-                    // single quote ('')
-                    matchSpecialCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
-                ')' +
-            matchSpecialCharacters + '[\\,\\)]';
+            '\\(' + stringGroup +
+            '(?:[\\,]' + stringGroup + ')?' +
+            '[\\,\\)]';
         const re = new RegExp(pattern, 'gim');
 
         let r;
@@ -318,34 +353,18 @@ class Parser {
             const options = {};
             const full = r[0];
 
-            let key = _.trim(r[1]); // Remove leading and trailing whitespace
-            const firstChar = key[0];
-
-            // Ignore key with embedded expressions in string literals
-            if (firstChar === '`' && key.match(/\${.*?}/)) {
+            let key = this.fixStringAfterRegExp(r[1], true);
+            if (!key) {
                 continue;
             }
 
-            if (_.includes(['\'', '"', '`'], firstChar)) {
-                // Remove first and last character
-                key = key.slice(1, -1);
+            if (r[2] !== undefined) {
+                const defaultValue = this.fixStringAfterRegExp(r[2], false);
+                if (!defaultValue) {
+                    continue;
+                }
+                options.defaultValue = defaultValue;
             }
-
-            // restore multiline strings
-            key = key.replace(/(\\\n|\\\r\n)/g, '');
-
-            // JavaScript character escape sequences
-            // https://mathiasbynens.be/notes/javascript-escapes
-
-            // Single character escape sequences
-            // Note: IE < 9 treats '\v' as 'v' instead of a vertical tab ('\x0B'). If cross-browser compatibility is a concern, use \x0B instead of \v.
-            // Another thing to note is that the \v and \0 escapes are not allowed in JSON strings.
-            key = key.replace(/(\\b|\\f|\\n|\\r|\\t|\\v|\\0|\\\\|\\"|\\')/g, (match) => eval(`"${match}"`));
-
-            // * Octal escapes have been deprecated in ES5.
-            // * Hexadecimal escape sequences: \\x[a-fA-F0-9]{2}
-            // * Unicode escape sequences: \\u[a-fA-F0-9]{4}
-            key = key.replace(/(\\x[a-fA-F0-9]{2}|\\u[a-fA-F0-9]{4})/g, (match) => eval(`"${match}"`));
 
             const endsWithComma = (full[full.length - 1] === ',');
             if (endsWithComma) {
@@ -360,35 +379,31 @@ class Parser {
                 try {
                     const syntax = code.trim() !== '' ? parse('(' + code + ')') : {};
 
-                    if (_.get(syntax, 'body[0].expression.type') === 'Literal') {
-                        options.defaultValue = _.get(syntax, 'body[0].expression.value');
-                    } else {
-                        const props = _.get(syntax, 'body[0].expression.properties') || [];
-                        // http://i18next.com/docs/options/
-                        const supportedOptions = [
-                            'defaultValue',
-                            'count',
-                            'context',
-                            'ns',
-                            'keySeparator',
-                            'nsSeparator',
-                        ];
+                    const props = _.get(syntax, 'body[0].expression.properties') || [];
+                    // http://i18next.com/docs/options/
+                    const supportedOptions = [
+                        'defaultValue',
+                        'count',
+                        'context',
+                        'ns',
+                        'keySeparator',
+                        'nsSeparator',
+                    ];
 
-                        props.forEach((prop) => {
-                            if (_.includes(supportedOptions, prop.key.name)) {
-                                if (prop.value.type === 'Literal') {
-                                    options[prop.key.name] = prop.value.value;
-                                } else if (prop.value.type === 'TemplateLiteral') {
-                                    options[prop.key.name] = prop.value.quasis
-                                        .map(element => element.value.cooked)
-                                        .join('');
-                                } else {
-                                    // Unable to get value of the property
-                                    options[prop.key.name] = '';
-                                }
+                    props.forEach((prop) => {
+                        if (_.includes(supportedOptions, prop.key.name)) {
+                            if (prop.value.type === 'Literal') {
+                                options[prop.key.name] = prop.value.value;
+                            } else if (prop.value.type === 'TemplateLiteral') {
+                                options[prop.key.name] = prop.value.quasis
+                                    .map(element => element.value.cooked)
+                                    .join('');
+                            } else {
+                                // Unable to get value of the property
+                                options[prop.key.name] = '';
                             }
-                        });
-                    }
+                        }
+                    });
                 } catch (err) {
                     this.log(`i18next-scanner: Unable to parse code "${code}"`);
                     this.log(err);

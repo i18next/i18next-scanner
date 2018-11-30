@@ -675,8 +675,12 @@ test('Plural', (t) => {
                     'key_plural': '',
                     'keyWithCount': '',
                     'keyWithCount_plural': '',
+                    'keyWithDefaultValueAndCount': '{{count}} item',
+                    'keyWithDefaultValueAndCount_plural': '{{count}} item',
                     'keyWithVariable': '',
-                    'keyWithVariable_plural': ''
+                    'keyWithVariable_plural': '',
+                    'keyWithDefaultValueAndVariable': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_plural': '{{count}} item'
                 }
             }
         });
@@ -706,8 +710,12 @@ test('Plural', (t) => {
                     'key': '',
                     'keyWithCount': '',
                     'keyWithCount_plural': '',
+                    'keyWithDefaultValueAndCount': '{{count}} item',
+                    'keyWithDefaultValueAndCount_plural': '{{count}} item',
                     'keyWithVariable': '',
-                    'keyWithVariable_plural': ''
+                    'keyWithVariable_plural': '',
+                    'keyWithDefaultValueAndVariable': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_plural': '{{count}} item'
                 }
             }
         });
@@ -793,7 +801,13 @@ test('Context with plural combined', (t) => {
                     'friend_male': '',
                     'friend_male_plural': '',
                     'friend_female': '',
-                    'friend_female_plural': ''
+                    'friend_female_plural': '',
+                    'friendWithDefaultValue': '{{count}} boyfriend',
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendWithDefaultValue_male': '{{count}} boyfriend',
+                    'friendWithDefaultValue_male_plural': '{{count}} boyfriend',
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend'
                 }
             }
         });
@@ -811,7 +825,10 @@ test('Context with plural combined', (t) => {
                 translation: {
                     'friend': '',
                     'friend_male': '',
-                    'friend_female': ''
+                    'friend_female': '',
+                    'friendWithDefaultValue': '{{count}} boyfriend',
+                    'friendWithDefaultValue_male': '{{count}} boyfriend',
+                    'friendWithDefaultValue_female': '{{count}} girlfriend'
                 }
             }
         });
@@ -829,7 +846,9 @@ test('Context with plural combined', (t) => {
             en: {
                 translation: {
                     'friend_male': '',
-                    'friend_female': ''
+                    'friend_female': '',
+                    'friendWithDefaultValue_male': '{{count}} boyfriend',
+                    'friendWithDefaultValue_female': '{{count}} girlfriend'
                 }
             }
         });
@@ -846,7 +865,9 @@ test('Context with plural combined', (t) => {
             en: {
                 translation: {
                     'friend': '',
-                    'friend_plural': ''
+                    'friend_plural': '',
+                    'friendWithDefaultValue': '{{count}} boyfriend',
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
                 }
             }
         });
@@ -863,7 +884,8 @@ test('Context with plural combined', (t) => {
         t.same(parser.get(), {
             en: {
                 translation: {
-                    'friend_plural': ''
+                    'friend_plural': '',
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
                 }
             }
         });
@@ -1008,7 +1030,8 @@ test('Default values test', (t) => {
                 'product': {
                     'bread': 'Bread',
                     'milk': 'Milk',
-                    'boiledEgg': 'Boiled Egg'
+                    'boiledEgg': 'Boiled Egg',
+                    'potato': '{{color}} potato'
                 }
             }
         }

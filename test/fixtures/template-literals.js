@@ -10,3 +10,4 @@ i18n.t(`errors.${e.errors[key].result}`)
 i18n.t(`errors.${defaultError}`)
 i18n.t(`string text
  ${expression} string text`);
+i18n.t('good_key', `errors.${defaultError}`);
