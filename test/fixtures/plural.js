@@ -10,6 +10,7 @@ i18next.t('keyWithDefaultValueAndCount', '{{count}} item', { count: 0 }); // out
 i18next.t('keyWithDefaultValueAndCount', '{{count}} item', { count: 1 }); // output: '0 items'
 i18next.t('keyWithDefaultValueAndCount', '{{count}} item', { count: 5 }); // output: '0 items'
 i18next.t('keyWithDefaultValueAndCount', '{{count}} item', { count: 100 }); // output: '0 items'
+i18next.t('keyWithCountAndDefaultValues', { defaultValue: '{{count}} item', defaultValue_plural: '{{count}} items', count: 123 }); // output: '123 items'
 
 // Variables
 const one = 1;

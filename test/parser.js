@@ -18,6 +18,35 @@ test('set merges defaults', (t) => {
     t.end();
 });
 
+test('set merges defaults (plural case)', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    parser.set('key1', { defaultValue: 'Default text', defaultValue_plural: 'Default plural text', count: 2 });
+    parser.set('key1');
+    parser.set('key1_plural');
+    t.same(parser.get('key1'), 'Default text');
+    t.same(parser.get('key1_plural'), 'Default plural text');
+
+    parser.set('key2');
+    parser.set('key2_plural');
+    parser.set('key2', { defaultValue: 'Default text', defaultValue_plural: 'Default plural text', count: 2 });
+    t.same(parser.get('key2'), 'Default text');
+    t.same(parser.get('key2_plural'), 'Default plural text');
+    t.end();
+});
+
+test('set merges defaults (plural case without default plural value)', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    parser.set('key2', { count: 2 });
+    t.same(parser.get('key2_plural'), '');
+    parser.set('key2', { defaultValue: 'Default text', count: 2 });
+    t.same(parser.get('key2_plural'), 'Default text');
+    t.end();
+});
+
 test('set warns about conflicting defaults', (t) => {
     const parser = new Parser({
         ns: ['translation']
@@ -29,6 +58,22 @@ test('set warns about conflicting defaults', (t) => {
     parser.set('key', { defaultValue: 'Default text' });
     parser.set('key', { defaultValue: 'Another text' });
     t.same(parser.get('key'), 'Default text');
+    t.match(logText, /different default value/);
+    t.end();
+});
+
+test('set warns about conflicting defaults (plural case)', (t) => {
+    const parser = new Parser({
+        ns: ['translation']
+    });
+    let logText;
+    parser.log = (msg) => {
+        logText = msg;
+    };
+    parser.set('key', { defaultValue: 'Default text', defaultValue_plural: 'Default plural text', count: 2 });
+    parser.set('key', { defaultValue: 'Default text', defaultValue_plural: 'Another plural text', count: 2 });
+    t.same(parser.get('key'), 'Default text');
+    t.same(parser.get('key_plural'), 'Default plural text');
     t.match(logText, /different default value/);
     t.end();
 });
@@ -673,6 +718,8 @@ test('Plural', (t) => {
                 translation: {
                     'key': '',
                     'key_plural': '',
+                    'keyWithCountAndDefaultValues': '{{count}} item',
+                    'keyWithCountAndDefaultValues_plural': '{{count}} items',
                     'keyWithCount': '',
                     'keyWithCount_plural': '',
                     'keyWithDefaultValueAndCount': '{{count}} item',
@@ -702,7 +749,16 @@ test('Plural', (t) => {
                     'keyWithCount_2': '',
                     'keyWithVariable_0': '',
                     'keyWithVariable_1': '',
-                    'keyWithVariable_2': ''
+                    'keyWithVariable_2': '',
+                    'keyWithCountAndDefaultValues_0': '{{count}} item',
+                    'keyWithCountAndDefaultValues_1': '{{count}} item',
+                    'keyWithCountAndDefaultValues_2': '{{count}} item',
+                    'keyWithDefaultValueAndCount_0': '{{count}} item',
+                    'keyWithDefaultValueAndCount_1': '{{count}} item',
+                    'keyWithDefaultValueAndCount_2': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_0': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_1': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_2': '{{count}} item'
                 }
             }
         });
@@ -729,6 +785,9 @@ test('Plural', (t) => {
                     'key_0': '',
                     'keyWithCount_0': '',
                     'keyWithVariable_0': '',
+                    'keyWithCountAndDefaultValues_0': '{{count}} item',
+                    'keyWithDefaultValueAndCount_0': '{{count}} item',
+                    'keyWithDefaultValueAndVariable_0': '{{count}} item',
                 }
             }
         });
@@ -757,6 +816,8 @@ test('Plural', (t) => {
                 translation: {
                     'key': '',
                     'keyWithCount': '',
+                    'keyWithCountAndDefaultValues': '{{count}} item',
+                    'keyWithCountAndDefaultValues_plural': '{{count}} items',
                     'keyWithCount_plural': '',
                     'keyWithDefaultValueAndCount': '{{count}} item',
                     'keyWithDefaultValueAndCount_plural': '{{count}} item',
