@@ -196,29 +196,28 @@ const transformOptions = (options) => {
     return options;
 };
 
-// Get an array of plurals suffixes for a given language.
+// Get an array of plural suffixes for a given language.
 // @param {string} lng The language.
 // @param {string} pluralSeparator pluralSeparator, default '_'.
-// @return {array|boolean} Return array of suffixes of false if lng is not supported.
+// @return {array} An array of plural suffixes.
 const getPluralSuffixes = (lng, pluralSeparator = '_') => {
     const rule = i18next.services.pluralResolver.getRule(lng);
 
-    let suffixes = [];
-
-    if (!rule) {
-        return false;
-    } else if (rule.numbers.length === 2) {
-        suffixes = ['', `${pluralSeparator}plural`];
-    } else {
-        let res = [];
-        suffixes = rule.numbers.reduce((red, n, i) => {
-            if (rule.numbers.length === 1) {
-                return [`${pluralSeparator}0`];
-            }
-            res.push(`${pluralSeparator}${i}`);
-            return res;
-        }, '');
+    if (!(rule && rule.numbers)) {
+        return []; // Return an empty array if lng is not supported
     }
+
+    if (rule.numbers.length === 1) {
+        return [`${pluralSeparator}0`];
+    }
+
+    if (rule.numbers.length === 2) {
+        return ['', `${pluralSeparator}plural`];
+    }
+
+    const suffixes = rule.numbers.reduce((acc, n, i) => {
+        return acc.concat(`${pluralSeparator}${i}`);
+    }, []);
 
     return suffixes;
 };
@@ -251,11 +250,12 @@ class Parser {
         lngs.forEach((lng) => {
             this.resStore[lng] = this.resStore[lng] || {};
             this.resScan[lng] = this.resScan[lng] || {};
-            this.pluralSuffixes[lng] = getPluralSuffixes(lng, this.options.pluralSeparator);
-            if (!this.pluralSuffixes[lng]) {
-                this.log(`i18next-scanner: Unexpected language ${lng}`);
-                return;
+
+            this.pluralSuffixes[lng] = ensureArray(getPluralSuffixes(lng, this.options.pluralSeparator));
+            if (this.pluralSuffixes[lng].length === 0) {
+                this.log(`i18next-scanner: No plural rule found for: ${lng}`);
             }
+
             namespaces.forEach((ns) => {
                 const resPath = this.formatResourceLoadPath(lng, ns);
 
@@ -854,7 +854,9 @@ class Parser {
                 })();
 
                 if (containsPlural) {
-                    let suffixes = pluralFallback ? this.pluralSuffixes[lng] : this.pluralSuffixes[lng].slice(1);
+                    let suffixes = pluralFallback
+                        ? this.pluralSuffixes[lng]
+                        : this.pluralSuffixes[lng].slice(1);
 
                     suffixes.forEach((pluralSuffix) => {
                         resKeys.push(`${key}${pluralSuffix}`);

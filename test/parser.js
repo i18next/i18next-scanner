@@ -770,7 +770,9 @@ test('Plural', (t) => {
         const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
         parser.parseFuncFromString(content, { propsFilter: props => props });
         t.same(parser.get(), {
-            zz: {}
+            zz: {
+                translation: {}
+            }
         });
         t.end();
     });
