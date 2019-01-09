@@ -366,17 +366,16 @@ class Parser {
         // `\s` matches a single whitespace character, which includes spaces, tabs, form feeds, line feeds and other unicode spaces.
         const matchSpecialCharacters = '[\\r\\n\\s]*';
         const stringGroup =
-            '(' +
+            matchSpecialCharacters + '(' +
             // backtick (``)
-            matchSpecialCharacters + '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
+            '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
             '|' +
             // double quotes ("")
-            matchSpecialCharacters + '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
+            '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
             '|' +
             // single quote ('')
-            matchSpecialCharacters + '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
-            matchSpecialCharacters +
-            ')';
+            '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
+            ')' + matchSpecialCharacters;
         const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])' +
             '(?:' + matchFuncs + ')' +
             '\\(' + stringGroup +
