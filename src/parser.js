@@ -49,6 +49,8 @@ const defaults = {
 
     defaultValue: '', // default value used if not passed to `parser.set`
 
+    transformDefaultValue: undefined,
+
     // resource
     resource: {
         // The path where resources get loaded from. Relative to current working directory.
@@ -785,7 +787,8 @@ class Parser {
             pluralFallback,
             pluralSeparator,
             defaultLng,
-            defaultValue
+            defaultValue,
+            transformDefaultValue
         } = this.options;
 
         lngs.forEach((lng) => {
@@ -889,6 +892,9 @@ class Parser {
                             resLoad[resKey] = _.isFunction(defaultValue)
                                 ? defaultValue(lng, ns, key, options)
                                 : defaultValue;
+                        }
+                        if (transformDefaultValue) {
+                            resLoad[resKey] = transformDefaultValue(resLoad[resKey]);
                         }
                         this.log(`i18next-scanner: Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
                     } else if (options.defaultValue && (!options.defaultValue_plural || !resKey.endsWith(`${pluralSeparator}plural`))) {
