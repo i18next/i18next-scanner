@@ -1142,7 +1142,9 @@ test('Default values test', (t) => {
                     'bread': 'Bread',
                     'milk': 'Milk',
                     'boiledEgg': 'Boiled Egg',
-                    'potato': '{{color}} potato'
+                    'cheese': 'Cheese',
+                    'potato': '{{color}} potato',
+                    'carrot': '{{size}} carrot',
                 }
             }
         }
