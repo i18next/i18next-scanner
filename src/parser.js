@@ -137,20 +137,22 @@ const transformOptions = (options) => {
     }
 
     // Trans
-    if (_.isUndefined(_.get(options, 'trans.component'))) {
-        _.set(options, 'trans.component', defaults.trans.component);
-    }
-    if (_.isUndefined(_.get(options, 'trans.i18nKey'))) {
-        _.set(options, 'trans.i18nKey', defaults.trans.i18nKey);
-    }
-    if (_.isUndefined(_.get(options, 'trans.defaultsKey'))) {
-        _.set(options, 'trans.defaultsKey', defaults.trans.defaultsKey);
-    }
-    if (_.isUndefined(_.get(options, 'trans.extensions'))) {
-        _.set(options, 'trans.extensions', defaults.trans.extensions);
-    }
-    if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
-        _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
+    if (_.get(options, 'trans')) {
+        if (_.isUndefined(_.get(options, 'trans.component'))) {
+            _.set(options, 'trans.component', defaults.trans.component);
+        }
+        if (_.isUndefined(_.get(options, 'trans.i18nKey'))) {
+            _.set(options, 'trans.i18nKey', defaults.trans.i18nKey);
+        }
+        if (_.isUndefined(_.get(options, 'trans.defaultsKey'))) {
+            _.set(options, 'trans.defaultsKey', defaults.trans.defaultsKey);
+        }
+        if (_.isUndefined(_.get(options, 'trans.extensions'))) {
+            _.set(options, 'trans.extensions', defaults.trans.extensions);
+        }
+        if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
+            _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
+        }
     }
 
     // Resource
