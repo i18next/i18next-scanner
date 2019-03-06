@@ -40,10 +40,9 @@ const defaults = {
         extensions: ['.js', '.jsx'],
         fallbackKey: false,
         acorn: {
-            sourceType: 'module',
-            ecmaVersion: 10,
-            injectors: [],
-            plugins: {}
+            ecmaVersion: 10, // defaults to 10
+            sourceType: 'module', // defaults to 'module'
+            // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
         }
     },
 
