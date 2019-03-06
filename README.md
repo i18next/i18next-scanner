@@ -97,10 +97,18 @@ _Note: Globbing patterns should be wrapped in single quotes._
 * [examples/i18next-scanner.config.js](https://github.com/i18next/i18next-scanner/blob/master/examples/i18next-scanner.config.js)
 
 ```js
-var fs = require('fs');
-var chalk = require('chalk');
+const fs = require('fs');
+const chalk = require('chalk');
 
 module.exports = {
+    input: [
+        'app/**/*.{js,jsx}',
+        // Use ! to filter out files or directories
+        '!app/**/*.spec.{js,jsx}',
+        '!app/i18n/**',
+        '!**/node_modules/**',
+    ],
+    output: './',
     options: {
         debug: true,
         func: {
@@ -113,8 +121,11 @@ module.exports = {
             defaultsKey: 'defaults',
             extensions: ['.js', '.jsx'],
             fallbackKey: function(ns, value) {
-                // Returns a hash value as the fallback key
-                return sha1(value);
+                return value;
+            },
+            acorn: {
+                injectors: [],
+                plugins: {}
             }
         },
         lngs: ['en','de'],
@@ -347,7 +358,7 @@ parser.parseAttrFromString(content)
 parser.parseAttrFromString(content, { list: ['data-i18n'] });
 
 parser.parseAttrFromString(content, function(key) {
-    var defaultValue = key; // use key as the value
+    const defaultValue = key; // use key as the value
     parser.set(key, defaultValue);
 });
 
@@ -390,7 +401,7 @@ parser.set(key, {
 
 ### Transform Stream API
 ```js
-var scanner = require('i18next-scanner');
+const scanner = require('i18next-scanner');
 scanner.createStream(options, customTransform /* optional */, customFlush /* optional */);
 ```
 
@@ -398,11 +409,11 @@ scanner.createStream(options, customTransform /* optional */, customFlush /* opt
 The optional `customTransform` function is provided as the 2nd argument for the transform stream API. It must have the following signature: `function (file, encoding, done) {}`. A minimal implementation should call the `done()` function to indicate that the transformation is done, even if that transformation means discarding the file.
 For example:
 ```js
-var scanner = require('i18next-scanner');
-var vfs = require('vinyl-fs');
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
+const scanner = require('i18next-scanner');
+const vfs = require('vinyl-fs');
+const customTransform = function _transform(file, enc, done) {
+    const parser = this.parser;
+    const content = fs.readFileSync(file.path, enc);
 
     // add your code
     done();
@@ -416,12 +427,12 @@ vfs.src(['/path/to/src'])
 To parse a translation key, call `parser.set(key, defaultValue)` to assign the key with an optional `defaultValue`.
 For example:
 ```js
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
+const customTransform = function _transform(file, enc, done) {
+    const parser = this.parser;
+    const content = fs.readFileSync(file.path, enc);
     
     parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
-        var defaultValue = '__L10N__';
+        const defaultValue = '__L10N__';
         parser.set(key, defaultValue);
     });
     
@@ -432,14 +443,14 @@ var customTransform = function _transform(file, enc, done) {
 Alternatively, you may call `parser.set(defaultKey, value)` to assign the value with a default key. The `defaultKey` should be unique string and can never be `null`, `undefined`, or empty.
 For example:
 ```js
-var hash = require('sha1');
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var content = fs.readFileSync(file.path, enc);
+const hash = require('sha1');
+const customTransform = function _transform(file, enc, done) {
+    const parser = this.parser;
+    const content = fs.readFileSync(file.path, enc);
     
     parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
-        var value = key;
-        var defaultKey = hash(value);
+        const value = key;
+        const defaultKey = hash(value);
         parser.set(defaultKey, value);
     });
     
@@ -451,17 +462,17 @@ var customTransform = function _transform(file, enc, done) {
 The optional `customFlush` function is provided as the last argument for the transform stream API, it is called just prior to the stream ending. You can implement your `customFlush` function to override the default `flush` function. When everything's done, call the `done()` function to indicate the stream is finished.
 For example:
 ```js
-var scanner = require('i18next-scanner');
-var vfs = require('vinyl-fs');
-var customFlush = function _flush(done) {
-    var parser = this.parser;
-    var resStore = parser.getResourceStore();
+const scanner = require('i18next-scanner');
+const vfs = require('vinyl-fs');
+const customFlush = function _flush(done) {
+    const parser = this.parser;
+    const resStore = parser.getResourceStore();
 
     // loop over the resStore
     Object.keys(resStore).forEach(function(lng) {
-        var namespaces = resStore[lng];
+        const namespaces = resStore[lng];
         Object.keys(namespaces).forEach(function(ns) {
-            var obj = namespaces[ns];
+            const obj = namespaces[ns];
             // add your code
         });
     });

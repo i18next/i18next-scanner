@@ -2,6 +2,14 @@ var fs = require('fs');
 var chalk = require('chalk');
 
 module.exports = {
+    input: [
+        'app/**/*.{js,jsx}',
+        // Use ! to filter out files or directories
+        '!app/**/*.spec.{js,jsx}',
+        '!app/i18n/**',
+        '!**/node_modules/**',
+    ],
+    output: './',
     options: {
         debug: true,
         func: {
@@ -9,9 +17,16 @@ module.exports = {
             extensions: ['.js', '.jsx']
         },
         trans: {
+            component: 'Trans',
+            i18nKey: 'i18nKey',
+            defaultsKey: 'defaults',
             extensions: ['.js', '.jsx'],
-            fallbackKey: (ns, value) => {
+            fallbackKey: function(ns, value) {
                 return value;
+            },
+            acorn: {
+                injectors: [],
+                plugins: {}
             }
         },
         lngs: ['en','de'],
@@ -19,11 +34,14 @@ module.exports = {
             'locale',
             'resource'
         ],
+        defaultLng: 'en',
         defaultNs: 'resource',
         defaultValue: '__STRING_NOT_TRANSLATED__',
         resource: {
             loadPath: 'i18n/{{lng}}/{{ns}}.json',
-            savePath: 'i18n/{{lng}}/{{ns}}.json'
+            savePath: 'i18n/{{lng}}/{{ns}}.json',
+            jsonIndent: 2,
+            lineEnding: '\n'
         },
         nsSeparator: false, // namespace separator
         keySeparator: false, // key separator

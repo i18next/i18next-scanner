@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var path = require('path');
-var program = require('commander');
-var ensureArray = require('ensure-array');
-var sort = require('gulp-sort');
-var vfs = require('vinyl-fs');
-var scanner = require('../lib');
-var pkg = require('../package.json');
+const fs = require('fs');
+const path = require('path');
+const program = require('commander');
+const ensureArray = require('ensure-array');
+const sort = require('gulp-sort');
+const vfs = require('vinyl-fs');
+const scanner = require('../lib');
+const pkg = require('../package.json');
 
 program
     .version(pkg.version)
     .usage('[options] <file ...>')
     .option('--config <config>', 'Path to the config file (default: i18next-scanner.config.js)', 'i18next-scanner.config.js')
-    .option('--output <path>', 'Path to the output directory (default: .)', '.');
+    .option('--output <path>', 'Path to the output directory (default: .)');
 
 program.on('--help', function() {
     console.log('');
@@ -27,8 +27,22 @@ program.on('--help', function() {
 
 program.parse(process.argv);
 
-var src = ensureArray(program.args)
-    .map(function(s) {
+if (!program.config) {
+    program.help();
+    return;
+}
+
+let config = {};
+try {
+    config = require(path.resolve(program.config));
+} catch (err) {
+    console.error('i18next-scanner:', err);
+    return;
+}
+
+{ // Input
+    config.input = (program.args.length > 0) ? program.args : ensureArray(config.input);
+    config.input = config.input.map(function(s) {
         s = s.trim();
 
         // On Windows, arguments contain spaces must be enclosed with double quotes, not single quotes.
@@ -39,20 +53,21 @@ var src = ensureArray(program.args)
         return s;
     });
 
-if (!program.config || !program.output || src.length === 0) {
-    program.help();
-    return;
+    if (config.input.length === 0) {
+        program.help();
+        return;
+    }
 }
 
-var config = {};
-try {
-    config = require(path.resolve(program.config));
-} catch (err) {
-    console.error('i18next-scanner:', err);
-    return;
+{ // Output
+    config.output = program.output || config.output;
+
+    if (!config.output) {
+        config.output = '.';
+    }
 }
 
-vfs.src(src)
+vfs.src(config.input)
     .pipe(sort()) // Sort files in stream by path
     .pipe(scanner(config.options, config.transform, config.flush))
-    .pipe(vfs.dest(program.output))
+    .pipe(vfs.dest(config.output))
