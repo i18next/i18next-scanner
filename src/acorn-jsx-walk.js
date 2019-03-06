@@ -1,9 +1,5 @@
 // Originally from: https://github.com/sderosiaux/acorn-jsx-walk
-
-import { Parser } from 'acorn';
 import { simple as walk, base } from 'acorn-walk';
-import jsx from 'acorn-jsx';
-import stage3 from 'acorn-stage3';
 
 //
 // Extends acorn walk with JSX elements
@@ -53,10 +49,6 @@ Object.assign(base, {
     JSXText() {}
 });
 
-export default (source, options) => {
-    const ast = Parser.extend(stage3, jsx()).parse(source, {
-        sourceType: 'module',
-        ecmaVersion: 10,
-    });
-    walk(ast, options || {});
+export default (ast, options) => {
+    walk(ast, { ...options });
 };

@@ -16,17 +16,29 @@ const transform = (parser, customTransform) => {
 
         if (includes(get(options, 'attr.extensions'), extname)) {
             // Parse attribute (e.g. data-i18n="key")
-            parser.parseAttrFromString(content);
+            parser.parseAttrFromString(content, {
+                transformOptions: {
+                    filepath: file.path
+                }
+            });
         }
 
         if (includes(get(options, 'func.extensions'), extname)) {
             // Parse translation function (e.g. i18next.t('key'))
-            parser.parseFuncFromString(content);
+            parser.parseFuncFromString(content, {
+                transformOptions: {
+                    filepath: file.path
+                }
+            });
         }
 
         if (includes(get(options, 'trans.extensions'), extname)) {
             // Look for Trans components in JSX
-            parser.parseTransFromString(content);
+            parser.parseTransFromString(content, {
+                transformOptions: {
+                    filepath: file.path
+                }
+            });
         }
 
         if (typeof customTransform === 'function') {

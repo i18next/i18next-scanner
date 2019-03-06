@@ -1,6 +1,9 @@
 /* eslint no-console: 0 */
 /* eslint no-eval: 0 */
 import fs from 'fs';
+import * as acorn from 'acorn';
+import acornJsx from 'acorn-jsx';
+import acornStage3 from 'acorn-stage3';
 import chalk from 'chalk';
 import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
@@ -35,7 +38,13 @@ const defaults = {
         i18nKey: 'i18nKey',
         defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
-        fallbackKey: false
+        fallbackKey: false,
+        acorn: {
+            sourceType: 'module',
+            ecmaVersion: 10,
+            injectors: [],
+            plugins: {}
+        }
     },
 
     lngs: ['en'], // array of supported languages
@@ -119,7 +128,7 @@ const matchBalancedParentheses = (str = '') => {
     return str.substring(start, i);
 };
 
-const transformOptions = (options) => {
+const normalizeOptions = (options) => {
     // Attribute
     if (_.isUndefined(_.get(options, 'attr.list'))) {
         _.set(options, 'attr.list', defaults.attr.list);
@@ -152,6 +161,9 @@ const transformOptions = (options) => {
         }
         if (_.isUndefined(_.get(options, 'trans.fallbackKey'))) {
             _.set(options, 'trans.fallbackKey', defaults.trans.fallbackKey);
+        }
+        if (_.isUndefined(_.get(options, 'trans.acorn'))) {
+            _.set(options, 'trans.acorn', defaults.trans.acorn);
         }
     }
 
@@ -241,7 +253,7 @@ class Parser {
     pluralSuffixes = {};
 
     constructor(options) {
-        this.options = transformOptions({
+        this.options = normalizeOptions({
             ...this.options,
             ...options
         });
@@ -255,7 +267,7 @@ class Parser {
 
             this.pluralSuffixes[lng] = ensureArray(getPluralSuffixes(lng, this.options.pluralSeparator));
             if (this.pluralSuffixes[lng].length === 0) {
-                this.log(`i18next-scanner: No plural rule found for: ${lng}`);
+                this.log(`No plural rule found for: ${lng}`);
             }
 
             namespaces.forEach((ns) => {
@@ -269,20 +281,24 @@ class Parser {
                         this.resStore[lng][ns] = JSON.parse(fs.readFileSync(resPath, 'utf-8'));
                     }
                 } catch (err) {
-                    this.log(`i18next-scanner: Unable to load resource file ${chalk.yellow(JSON.stringify(resPath))}: lng=${lng}, ns=${ns}`);
-                    this.log(err);
+                    this.error(`Unable to load resource file ${chalk.yellow(JSON.stringify(resPath))}: lng=${lng}, ns=${ns}`);
+                    this.error(err);
                 }
             });
         });
 
-        this.log(`i18next-scanner: options=${JSON.stringify(this.options, null, 2)}`);
+        this.log(`options=${JSON.stringify(this.options, null, 2)}`);
     }
 
     log(...args) {
         const { debug } = this.options;
         if (debug) {
-            console.log.apply(this, args);
+            console.log.apply(this, [chalk.cyan('i18next-scanner:')].concat(args));
         }
+    }
+
+    error(...args) {
+        console.error.apply(this, [chalk.red('i18next-scanner:')].concat(args));
     }
 
     formatResourceLoadPath(lng, ns) {
@@ -443,8 +459,8 @@ class Parser {
                         }
                     });
                 } catch (err) {
-                    this.log(`i18next-scanner: Unable to parse code "${code}"`);
-                    this.log(err);
+                    this.error(`Unable to parse code "${code}"`);
+                    this.error(err);
                 }
             }
 
@@ -467,9 +483,14 @@ class Parser {
             opts = {};
         }
 
-        const component = opts.component || this.options.trans.component;
-        const i18nKey = opts.i18nKey || this.options.trans.i18nKey;
-        const defaultsKey = opts.defaultsKey || this.options.trans.defaultsKey;
+        const {
+            transformOptions = {}, // object
+            component = this.options.trans.component, // string
+            i18nKey = this.options.trans.i18nKey, // string
+            defaultsKey = this.options.trans.defaultsKey, // string
+            fallbackKey, // boolean|function
+            acorn: acornOptions = this.options.trans.acorn, // object
+        } = { ...opts };
 
         const parseJSXElement = (node) => {
             if (!node) {
@@ -522,12 +543,12 @@ class Parser {
 
             const defaultsString = attr[defaultsKey] || '';
             if (typeof defaultsString !== 'string') {
-                this.log(`i18next-scanner: defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
+                this.log(`defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
             }
 
             const options = {
                 defaultValue: defaultsString || nodesToString(node.children),
-                fallbackKey: opts.fallbackKey || this.options.trans.fallbackKey
+                fallbackKey: fallbackKey || this.options.trans.fallbackKey
             };
 
             if (Object.prototype.hasOwnProperty.call(attr, 'count')) {
@@ -538,7 +559,7 @@ class Parser {
                 options.context = attr.context;
 
                 if (typeof options.context !== 'string') {
-                    this.log(`i18next-scanner: The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
+                    this.log(`The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
                 }
             }
 
@@ -551,11 +572,24 @@ class Parser {
         };
 
         try {
-            jsxwalk(content, { JSXElement: parseJSXElement });
+            const ast = acorn.Parser.extend(acornStage3, acornJsx())
+                .parse(content, {
+                    ...defaults.trans.acorn,
+                    ...acornOptions
+                });
+
+            jsxwalk(ast, {
+                JSXElement: parseJSXElement
+            });
         } catch (err) {
-            this.log(`i18next-scanner: Unable to parse ${component} component with the content`);
-            this.log(err);
-            this.log(content);
+            if (transformOptions.filepath) {
+                this.error(`Unable to parse ${chalk.blue(component)} component from ${chalk.yellow(JSON.stringify(transformOptions.filepath))}`);
+                console.error('    ' + err);
+            } else {
+                this.error(`Unable to parse ${chalk.blue(component)} component:`);
+                console.error(content);
+                console.error('    ' + err);
+            }
         }
 
         return this;
@@ -794,7 +828,7 @@ class Parser {
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
             if (!_.isPlainObject(resLoad)) { // Skip undefined namespace
-                this.log(`i18next-scanner: The namespace ${chalk.yellow(JSON.stringify(ns))} does not exist:`, { key, options });
+                this.log(`The namespace ${chalk.yellow(JSON.stringify(ns))} does not exist:`, { key, options });
                 return;
             }
 
@@ -891,14 +925,14 @@ class Parser {
                                 ? defaultValue(lng, ns, key, options)
                                 : defaultValue;
                         }
-                        this.log(`i18next-scanner: Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
+                        this.log(`Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
                     } else if (options.defaultValue && (!options.defaultValue_plural || !resKey.endsWith(`${pluralSeparator}plural`))) {
                         if (!resLoad[resKey]) {
                             // Use `options.defaultValue` if specified
                             resLoad[resKey] = options.defaultValue;
                         } else if ((resLoad[resKey] !== options.defaultValue) && (lng === defaultLng)) {
                             // A default value has provided but it's different with the expected default
-                            this.log(`i18next-scanner: The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
+                            this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
                         }
                     } else if (options.defaultValue_plural && resKey.endsWith(`${pluralSeparator}plural`)) {
                         if (!resLoad[resKey]) {
@@ -906,7 +940,7 @@ class Parser {
                             resLoad[resKey] = options.defaultValue_plural;
                         } else if ((resLoad[resKey] !== options.defaultValue_plural) && (lng === defaultLng)) {
                             // A default value has provided but it's different with the expected default
-                            this.log(`i18next-scanner: The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
+                            this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
                         }
                     }
 
