@@ -540,7 +540,7 @@ class Parser {
                             acc[name] = properties.reduce((obj, property) => {
                                 if (property.value.type === 'Literal') {
                                     obj[property.key.name] = property.value.value;
-                                } else if (prop.value.type === 'TemplateLiteral') {
+                                } else if (property.value.type === 'TemplateLiteral') {
                                     obj[property.key.name] = property.value.quasis
                                         .map(element => element.value.cooked)
                                         .join('');
