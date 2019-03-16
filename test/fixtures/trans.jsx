@@ -6,10 +6,15 @@ const Component = () => (
             // Empty expression should not fail
         }
         <Fragment>
+            <Trans count={10} ns="dev">
+                Hello <strong>World</strong>, you have {{count}} unread message.
+            </Trans>
+        </Fragment>
+        <Fragment>
             <Trans i18nKey="jsx-quotes-double">Use double quotes for the i18nKey attribute</Trans>
             <Trans i18nKey='jsx-quotes-single'>Use single quote for the i18nKey attribute</Trans>
             <Trans i18nKey="plural" count={count}>You have {{count}} apples</Trans>
-            <Trans i18nKey="context" context="male">A boyfriend</Trans>
+            <Trans i18nKey="context" tOptions={{ context: 'male' }}>A boyfriend</Trans>
         </Fragment>
         <Fragment>
             <Trans i18nKey="multiline-text-string">
