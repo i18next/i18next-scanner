@@ -83,7 +83,7 @@ test('Skip undefined namespace', (t) => {
         ns: ['translation']
     });
     const content = `
-        i18next.t('none:key2');
+        i18next.t('none:key2'); // "none" does not exist in the namespaces
         i18next.t('key1');
     `;
     const wanted = {
@@ -146,6 +146,10 @@ test('Parse translation function', (t) => {
 test('Parse Trans components', (t) => {
     const parser = new Parser({
         lngs: ['en'],
+        ns: [
+            'dev',
+            'translation'
+        ],
         trans: {
             fallbackKey: true
         },
@@ -158,6 +162,10 @@ test('Parse Trans components', (t) => {
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {
+            dev: {
+                'Hello <1>World</1>, you have <3>{{count}}</3> unread message.': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.',
+                'Hello <1>World</1>, you have <3>{{count}}</3> unread message._plural': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.'
+            },
             translation: {
                 // quote style
                 'jsx-quotes-double': 'Use double quotes for the i18nKey attribute',
@@ -210,6 +218,10 @@ test('Parse Trans components', (t) => {
 test('Parse Trans components with fallback key', (t) => {
     const parser = new Parser({
         lngs: ['en'],
+        ns: [
+            'dev',
+            'translation'
+        ],
         trans: {
             fallbackKey: (ns, value) => {
                 return sha1(value); // return a sha1 as the key
@@ -224,6 +236,10 @@ test('Parse Trans components with fallback key', (t) => {
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {
+            dev: {
+                '2290678f8f33c49494499fe5e32b4ebd124d9292': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.',
+                '2290678f8f33c49494499fe5e32b4ebd124d9292_plural': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.'
+            },
             translation: {
                 // quote style
                 'jsx-quotes-double': 'Use double quotes for the i18nKey attribute',
@@ -276,6 +292,10 @@ test('Parse Trans components with fallback key', (t) => {
 test('Parse wrapped Trans components', (t) => {
     const parser = new Parser({
         lngs: ['en'],
+        ns: [
+            'dev',
+            'translation'
+        ],
         trans: {
             component: 'I18n',
             i18nKey: '__t',
@@ -290,6 +310,7 @@ test('Parse wrapped Trans components', (t) => {
     parser.parseTransFromString(content);
     t.same(parser.get(), {
         en: {
+            dev: {},
             translation: {
                 'mykey': 'A wrapper component with key',
                 'A wrapper component without key': 'A wrapper component without key'

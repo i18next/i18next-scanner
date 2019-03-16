@@ -532,7 +532,43 @@ class Parser {
                     if (attribute.value.type === 'Literal') {
                         acc[name] = attribute.value.value;
                     } else if (attribute.value.type === 'JSXExpressionContainer') {
-                        acc[name] = attribute.value.expression;
+                        const expression = attribute.value.expression;
+
+                        // Identifier
+                        if (expression.type === 'Identifier') {
+                            acc[name] = expression.name;
+                        }
+
+                        // Literal
+                        if (expression.type === 'Literal') {
+                            acc[name] = expression.value;
+                        }
+
+                        // Object Expression
+                        if (expression.type === 'ObjectExpression') {
+                            const properties = ensureArray(expression.properties);
+                            acc[name] = properties.reduce((obj, property) => {
+                                if (property.value.type === 'Literal') {
+                                    obj[property.key.name] = property.value.value;
+                                } else if (property.value.type === 'TemplateLiteral') {
+                                    obj[property.key.name] = property.value.quasis
+                                        .map(element => element.value.cooked)
+                                        .join('');
+                                } else {
+                                    // Unable to get value of the property
+                                    obj[property.key.name] = '';
+                                }
+
+                                return obj;
+                            }, {});
+                        }
+
+                        // Template Literal
+                        if (expression.type === 'TemplateLiteral') {
+                            acc[name] = expression.quasis
+                                .map(element => element.value.cooked)
+                                .join('');
+                        }
                     }
 
                     return acc;
@@ -545,7 +581,10 @@ class Parser {
                 this.log(`defaults value must be a static string, saw ${chalk.yellow(defaultsString)}`);
             }
 
+            // https://www.i18next.com/translation-function/essentials#overview-options
+            const tOptions = attr.tOptions;
             const options = {
+                ...tOptions,
                 defaultValue: defaultsString || nodesToString(node.children),
                 fallbackKey: fallbackKey || this.options.trans.fallbackKey
             };
@@ -554,12 +593,12 @@ class Parser {
                 options.count = Number(attr.count) || 0;
             }
 
-            if (Object.prototype.hasOwnProperty.call(attr, 'context')) {
-                options.context = attr.context;
-
-                if (typeof options.context !== 'string') {
-                    this.log(`The context attribute must be a string, saw ${chalk.yellow(attr.context)}`);
+            if (Object.prototype.hasOwnProperty.call(attr, 'ns')) {
+                if (typeof options.ns !== 'string') {
+                    this.log(`The ns attribute must be a string, saw ${chalk.yellow(attr.ns)}`);
                 }
+
+                options.ns = attr.ns;
             }
 
             if (customHandler) {
@@ -827,7 +866,7 @@ class Parser {
             let resScan = this.resScan[lng] && this.resScan[lng][ns];
 
             if (!_.isPlainObject(resLoad)) { // Skip undefined namespace
-                this.log(`The namespace ${chalk.yellow(JSON.stringify(ns))} does not exist:`, { key, options });
+                this.error(`${chalk.yellow(JSON.stringify(ns))} does not exist in the namespaces (${chalk.yellow(JSON.stringify(this.options.ns))}): key=${chalk.yellow(JSON.stringify(key))}, options=${chalk.yellow(JSON.stringify(options))}`);
                 return;
             }
 

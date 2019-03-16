@@ -157,6 +157,11 @@ test('[Key Based Fallback] defaultValue as function', function(t) {
 
 test('[Trans Component] fallbackKey', function(t) {
     const options = _.merge({}, defaults, {
+        ns: [
+            'dev',
+            'locale',
+            'resource'
+        ],
         trans: {
             extensions: ['.js', '.jsx'], // with extensions
             fallbackKey: function(ns, value) {
