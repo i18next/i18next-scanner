@@ -534,6 +534,16 @@ class Parser {
                     } else if (attribute.value.type === 'JSXExpressionContainer') {
                         const expression = attribute.value.expression;
 
+                        // Identifier
+                        if (expression.type === 'Identifier') {
+                            acc[name] = expression.name;
+                        }
+
+                        // Literal
+                        if (expression.type === 'Literal') {
+                            acc[name] = expression.value;
+                        }
+
                         // Object Expression
                         if (expression.type === 'ObjectExpression') {
                             const properties = ensureArray(expression.properties);
@@ -553,14 +563,11 @@ class Parser {
                             }, {});
                         }
 
-                        // Literal
-                        if (expression.type === 'Literal') {
-                            acc[name] = expression.value;
-                        }
-
-                        // Identifier
-                        if (expression.type === 'Identifier') {
-                            acc[name] = expression.name;
+                        // Template Literal
+                        if (expression.type === 'TemplateLiteral') {
+                            acc[name] = expression.quasis
+                                .map(element => element.value.cooked)
+                                .join('');
                         }
                     }
 
