@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -50,6 +50,7 @@
   ],
   "dependencies": {
     "acorn": "^6.1.1",
+    "acorn-dynamic-import": "^4.0.0",
     "acorn-jsx": "^5.0.1",
     "acorn-stage3": "^2.0.0",
     "acorn-walk": "^6.1.1",
