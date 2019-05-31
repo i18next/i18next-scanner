@@ -721,6 +721,7 @@ class Parser {
 
                     for (let i = 0; i < unusedKeys.length; ++i) {
                         _.unset(resMerged[lng][ns], unusedKeys[i]);
+						this.log(`Removed an unused translation key { ${chalk.red(JSON.stringify(unusedKeys[i]))} from ${chalk.red(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
                     }
 
                     // Omit empty object
