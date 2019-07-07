@@ -97,10 +97,10 @@ _Note: Globbing patterns should be wrapped in single quotes._
 * [examples/i18next-scanner.config.js](https://github.com/i18next/i18next-scanner/blob/master/examples/i18next-scanner.config.js)
 
 ```js
-const fs = require('fs');
-const chalk = require('chalk');
+import fs from 'fs';
+import chalk from 'chalk';
 
-module.exports = {
+export default {
     input: [
         'app/**/*.{js,jsx}',
         // Use ! to filter out files or directories

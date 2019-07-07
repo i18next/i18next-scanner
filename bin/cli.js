@@ -8,6 +8,7 @@ const sort = require('gulp-sort');
 const vfs = require('vinyl-fs');
 const scanner = require('../lib');
 const pkg = require('../package.json');
+const requireESM = require('esm')(module);
 
 program
     .version(pkg.version)
@@ -34,7 +35,7 @@ if (!program.config) {
 
 let config = {};
 try {
-    config = require(path.resolve(program.config));
+    config = requireESM(path.resolve(program.config));
 } catch (err) {
     console.error('i18next-scanner:', err);
     return;
