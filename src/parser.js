@@ -521,6 +521,7 @@ class Parser {
                 return;
             }
 
+            const staticAttrs = [i18nKey, 'ns'];
             const attr = ensureArray(node.openingElement.attributes)
                 .reduce((acc, attribute) => {
                     if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier') {
@@ -528,16 +529,12 @@ class Parser {
                     }
 
                     const { name } = attribute.name;
+                    const needsStaticValue = staticAttrs.includes(name);
 
                     if (attribute.value.type === 'Literal') {
                         acc[name] = attribute.value.value;
                     } else if (attribute.value.type === 'JSXExpressionContainer') {
                         const expression = attribute.value.expression;
-
-                        // Identifier
-                        if (expression.type === 'Identifier') {
-                            acc[name] = expression.name;
-                        }
 
                         // Literal
                         if (expression.type === 'Literal') {
@@ -550,7 +547,7 @@ class Parser {
                             acc[name] = properties.reduce((obj, property) => {
                                 if (property.value.type === 'Literal') {
                                     obj[property.key.name] = property.value.value;
-                                } else if (property.value.type === 'TemplateLiteral') {
+                                } else if (property.value.type === 'TemplateLiteral' && !needsStaticValue) {
                                     obj[property.key.name] = property.value.quasis
                                         .map(element => element.value.cooked)
                                         .join('');
@@ -564,7 +561,7 @@ class Parser {
                         }
 
                         // Template Literal
-                        if (expression.type === 'TemplateLiteral') {
+                        if (expression.type === 'TemplateLiteral' && !needsStaticValue) {
                             acc[name] = expression.quasis
                                 .map(element => element.value.cooked)
                                 .join('');
