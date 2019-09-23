@@ -22,7 +22,7 @@
     "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls",
     "coverage": "tap test/*.js --coverage --coverage-report=json --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
     "coverage_report": "istanbul report text-summary",
-    "test": "tap test/*.js --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill"
+    "test": "tap test/*.js --no-esm --no-timeout --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill"
   },
   "repository": {
     "type": "git",
@@ -87,7 +87,7 @@
     "gulp-util": "^3.0.8",
     "istanbul": "^0.4.5",
     "sha1": "^1.1.1",
-    "tap": "~12.4.1",
+    "tap": "^14.6.4",
     "text-table": "^0.2.0"
   }
 }
