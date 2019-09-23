@@ -346,27 +346,6 @@ test('Parse Trans components with modern acorn features', (t) => {
     t.end();
 });
 
-test('Parse Trans components should fail with broken syntax', (t) => {
-    const parser = new Parser({
-        lngs: ['en'],
-        trans: {
-            fallbackKey: true
-        },
-        nsSeparator: false,
-        keySeparator: '.', // Specify the keySeparator for this test to make sure the fallbackKey won't be separated
-        fallbackLng: 'en'
-    });
-
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans-acorn-broken.jsx'), 'utf-8');
-    parser.parseTransFromString(content);
-    t.same(parser.get(), {
-        en: {
-            translation: {}
-        }
-    });
-    t.end();
-});
-
 test('Parse HTML attribute', (t) => {
     test('parseAttrFromString(content)', (t) => {
         const parser = new Parser({

@@ -1,6 +1,6 @@
 {
   "name": "i18next-scanner",
-  "version": "2.10.2",
+  "version": "2.10.3",
   "description": "Scan your code, extract translation keys/values, and merge them into i18n resource files.",
   "homepage": "https://github.com/i18next/i18next-scanner",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -19,10 +19,8 @@
     "prepublish": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "eslint": "eslint ./src",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls",
-    "coverage": "tap test/*.js --coverage --coverage-report=json --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
-    "coverage_report": "istanbul report text-summary",
-    "test": "tap test/*.js --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill"
+    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register | coveralls",
+    "test": "tap test/*.js --no-esm --no-timeout --node-arg=--require --node-arg=@babel/register"
   },
   "repository": {
     "type": "git",
@@ -30,7 +28,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "keywords": [
     "i18n",
@@ -49,15 +47,15 @@
     "tasks"
   ],
   "dependencies": {
-    "acorn": "^6.1.1",
+    "acorn": "^6.0.0",
     "acorn-dynamic-import": "^4.0.0",
     "acorn-jsx": "^5.0.1",
     "acorn-stage3": "^2.0.0",
-    "acorn-walk": "^6.1.1",
+    "acorn-walk": "^6.0.0",
     "chalk": "^2.4.1",
     "clone-deep": "^4.0.0",
-    "commander": "^2.15.1",
-    "deepmerge": "^2.1.1",
+    "commander": "^3.0.1",
+    "deepmerge": "^4.0.0",
     "ensure-array": "^1.0.0",
     "eol": "^0.9.1",
     "esprima": "^4.0.0",
@@ -66,28 +64,28 @@
     "lodash": "^4.0.0",
     "parse5": "^5.0.0",
     "sortobject": "^1.1.1",
-    "through2": "^2.0.3",
+    "through2": "^3.0.1",
     "vinyl": "^2.2.0",
     "vinyl-fs": "^3.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
+    "@babel/cli": "~7.6.0",
+    "@babel/core": "~7.6.0",
+    "@babel/preset-env": "~7.6.0",
+    "@babel/register": "~7.6.0",
+    "@trendmicro/babel-config": "~1.0.0-alpha",
+    "babel-eslint": "~10.0.3",
     "coveralls": "^3.0.2",
-    "eslint": "^5.6.0",
+    "eslint": "^6.4.0",
     "eslint-config-trendmicro": "^1.4.1",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.1",
-    "gulp": "^3.9.1",
-    "gulp-tap": "^1.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "gulp": "^4.0.2",
+    "gulp-tap": "^2.0.0",
     "gulp-util": "^3.0.8",
-    "istanbul": "^0.4.5",
     "sha1": "^1.1.1",
-    "tap": "~12.4.1",
+    "tap": "^14.6.4",
     "text-table": "^0.2.0"
   }
 }
