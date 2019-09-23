@@ -19,10 +19,8 @@
     "prepublish": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "eslint": "eslint ./src",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls",
-    "coverage": "tap test/*.js --coverage --coverage-report=json --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
-    "coverage_report": "istanbul report text-summary",
-    "test": "tap test/*.js --no-esm --no-timeout --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill"
+    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register | coveralls",
+    "test": "tap test/*.js --no-esm --no-timeout --node-arg=--require --node-arg=@babel/register"
   },
   "repository": {
     "type": "git",
@@ -30,7 +28,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "keywords": [
     "i18n",
@@ -71,11 +69,12 @@
     "vinyl-fs": "^3.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
+    "@babel/cli": "~7.6.0",
+    "@babel/core": "~7.6.0",
+    "@babel/preset-env": "~7.6.0",
+    "@babel/register": "~7.6.0",
+    "@trendmicro/babel-config": "~1.0.0-alpha",
+    "babel-eslint": "~10.0.3",
     "coveralls": "^3.0.2",
     "eslint": "^5.6.0",
     "eslint-config-trendmicro": "^1.4.1",
@@ -85,7 +84,6 @@
     "gulp": "^3.9.1",
     "gulp-tap": "^1.0.1",
     "gulp-util": "^3.0.8",
-    "istanbul": "^0.4.5",
     "sha1": "^1.1.1",
     "tap": "^14.6.4",
     "text-table": "^0.2.0"
