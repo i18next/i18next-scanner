@@ -184,7 +184,7 @@ test('Parse Trans components', (t) => {
                 'string-literal': 'This is a <1>test</1>',
                 'object-expression': 'This is a <1><0>{{test}}</0></1>',
                 'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
-                'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'components': 'Go to <1>Administration Tools</1> to download administrative tools.',
                 'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
                 'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
@@ -194,7 +194,7 @@ test('Parse Trans components', (t) => {
                 'This is a <1>test</1>': 'This is a <1>test</1>',
                 'This is a <1><0>{{test}}</0></1>': 'This is a <1><0>{{test}}</0></1>',
                 '2 + 2 = <1>{{result}}</1>': '2 + 2 = <1>{{result}}</1>',
-                'Go to <1>Administration > Tools</1> to download administrative tools.': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'Go to <1>Administration Tools</1> to download administrative tools.': 'Go to <1>Administration Tools</1> to download administrative tools.',
                 '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
                 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
@@ -258,7 +258,7 @@ test('Parse Trans components with fallback key', (t) => {
                 'string-literal': 'This is a <1>test</1>',
                 'object-expression': 'This is a <1><0>{{test}}</0></1>',
                 'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
-                'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'components': 'Go to <1>Administration Tools</1> to download administrative tools.',
                 'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
                 'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 
@@ -268,7 +268,7 @@ test('Parse Trans components with fallback key', (t) => {
                 'e4ca61dff6bc759d214e32c4e37c8ae594ca163d': 'This is a <1>test</1>',
                 '0ce90193dd25c93cdc12f25a36d31004a74c63de': 'This is a <1><0>{{test}}</0></1>',
                 '493781e20cd3cfd5b3137963519571c3d97ab383': '2 + 2 = <1>{{result}}</1>',
-                '083eac6b4f73ec317824caaaeea57fba3b83c1d9': 'Go to <1>Administration > Tools</1> to download administrative tools.',
+                'f6434ed195ebe2fdb16abda50a56ff79c7f6e4d9': 'Go to <1>Administration Tools</1> to download administrative tools.',
                 '938c04be9e14562b7532a19458fe92b65c6ef941': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
                 '9c3ca5d5d8089e96135c8c7c9f42ba34a635fb47': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
 

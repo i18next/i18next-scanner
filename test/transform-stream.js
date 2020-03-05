@@ -200,7 +200,7 @@ test('[Trans Component] fallbackKey', function(t) {
                     "string-literal": "This is a <1>test</1>",
                     "object-expression": "This is a <1><0>{{test}}</0></1>",
                     "arithmetic-expression": "2 + 2 = <1>{{result}}</1>",
-                    "components": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                    "components": "Go to <1>Administration Tools</1> to download administrative tools.",
                     "lorem-ipsum": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
                     "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
 
@@ -210,7 +210,7 @@ test('[Trans Component] fallbackKey', function(t) {
                     "This is a <1>test</1>": "This is a <1>test</1>",
                     "This is a <1><0>{{test}}</0></1>": "This is a <1><0>{{test}}</0></1>",
                     "2 + 2 = <1>{{result}}</1>": "2 + 2 = <1>{{result}}</1>",
-                    "Go to <1>Administration > Tools</1> to download administrative tools.": "Go to <1>Administration > Tools</1> to download administrative tools.",
+                    "Go to <1>Administration Tools</1> to download administrative tools.": "Go to <1>Administration Tools</1> to download administrative tools.",
                     "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
                     "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</2>",
 
