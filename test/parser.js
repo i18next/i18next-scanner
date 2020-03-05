@@ -863,7 +863,10 @@ test('Context', (t) => {
                 translation: {
                     'friend': '',
                     'friend_male': '',
-                    'friend_female': ''
+                    'friend_female': '',
+                    'friendDynamic': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
                 }
             }
         });
@@ -888,7 +891,10 @@ test('Context', (t) => {
             en: {
                 translation: {
                     'friend': '',
-                    'friend_male': ''
+                    'friend_male': '',
+                    'friendDynamic': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
                 }
             }
         });
@@ -918,7 +924,13 @@ test('Context with plural combined', (t) => {
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
                     'friendWithDefaultValue_male_plural': '{{count}} boyfriend',
                     'friendWithDefaultValue_female': '{{count}} girlfriend',
-                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_plural': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_male_plural': '',
+                    'friendDynamic_female': '',
+                    'friendDynamic_female_plural': '',
                 }
             }
         });
@@ -939,7 +951,10 @@ test('Context with plural combined', (t) => {
                     'friend_female': '',
                     'friendWithDefaultValue': '{{count}} boyfriend',
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
-                    'friendWithDefaultValue_female': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
                 }
             }
         });
@@ -959,7 +974,9 @@ test('Context with plural combined', (t) => {
                     'friend_male': '',
                     'friend_female': '',
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
-                    'friendWithDefaultValue_female': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
                 }
             }
         });
@@ -978,7 +995,9 @@ test('Context with plural combined', (t) => {
                     'friend': '',
                     'friend_plural': '',
                     'friendWithDefaultValue': '{{count}} boyfriend',
-                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_plural': '',
                 }
             }
         });
@@ -996,7 +1015,8 @@ test('Context with plural combined', (t) => {
             en: {
                 translation: {
                     'friend_plural': '',
-                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendDynamic_plural': '',
                 }
             }
         });

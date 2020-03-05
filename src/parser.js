@@ -927,6 +927,11 @@ class Parser {
                         : !!plural;
                 })();
 
+                let contextValues = [];
+                if (containsContext) {
+                    contextValues = options.context === '' ? ['male', 'female'] : [options.context];
+                }
+
                 if (containsPlural) {
                     let suffixes = pluralFallback
                         ? this.pluralSuffixes[lng]
@@ -938,7 +943,9 @@ class Parser {
 
                     if (containsContext && containsPlural) {
                         suffixes.forEach((pluralSuffix) => {
-                            resKeys.push(`${key}${contextSeparator}${options.context}${pluralSuffix}`);
+                            contextValues.forEach(contextValue => {
+                                resKeys.push(`${key}${contextSeparator}${contextValue}${pluralSuffix}`);
+                            });
                         });
                     }
                 } else {
@@ -947,7 +954,9 @@ class Parser {
                     }
 
                     if (containsContext) {
-                        resKeys.push(`${key}${contextSeparator}${options.context}`);
+                        contextValues.forEach(contextValue => {
+                            resKeys.push(`${key}${contextSeparator}${contextValue}`);
+                        });
                     }
                 }
 
