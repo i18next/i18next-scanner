@@ -80,6 +80,7 @@ const defaults = {
     context: true, // whether to add context form key
     contextFallback: true, // whether to add a fallback key as well as the context form key
     contextSeparator: '_', // char to split context from key
+    contextDefaultValues: [], // list of values for dynamic values
 
     // Plural Form
     plural: true, // whether to add plural form key
@@ -855,6 +856,7 @@ class Parser {
             context,
             contextFallback,
             contextSeparator,
+            contextDefaultValues,
             plural,
             pluralFallback,
             pluralSeparator,
@@ -929,7 +931,10 @@ class Parser {
 
                 let contextValues = [];
                 if (containsContext) {
-                    contextValues = options.context === '' ? ['male', 'female'] : [options.context];
+                    contextValues =
+                      options.context === '' && Array.isArray(contextDefaultValues) && contextDefaultValues.length > 0
+                          ? contextDefaultValues
+                          : [options.context];
                 }
 
                 if (containsPlural) {

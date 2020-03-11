@@ -865,8 +865,7 @@ test('Context', (t) => {
                     'friend_male': '',
                     'friend_female': '',
                     'friendDynamic': '',
-                    'friendDynamic_male': '',
-                    'friendDynamic_female': '',
+                    'friendDynamic_': '',
                 }
             }
         });
@@ -893,8 +892,7 @@ test('Context', (t) => {
                     'friend': '',
                     'friend_male': '',
                     'friendDynamic': '',
-                    'friendDynamic_male': '',
-                    'friendDynamic_female': '',
+                    'friendDynamic_': '',
                 }
             }
         });
@@ -908,7 +906,9 @@ test('Context with plural combined', (t) => {
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context-plural.js'), 'utf-8');
 
     test('Default options', (t) => {
-        const parser = new Parser();
+        const parser = new Parser({
+            contextDefaultValues: ['male', 'female'],
+        });
         parser.parseFuncFromString(content);
         t.same(parser.get(), {
             en: {
@@ -953,8 +953,7 @@ test('Context with plural combined', (t) => {
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
                     'friendWithDefaultValue_female': '{{count}} girlfriend',
                     'friendDynamic': '',
-                    'friendDynamic_male': '',
-                    'friendDynamic_female': '',
+                    'friendDynamic_': '',
                 }
             }
         });
@@ -965,6 +964,7 @@ test('Context with plural combined', (t) => {
         const parser = new Parser({
             context: true,
             contextFallback: false,
+            contextDefaultValues: ['male', 'female'],
             plural: false
         });
         parser.parseFuncFromString(content);

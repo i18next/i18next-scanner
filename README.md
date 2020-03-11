@@ -526,6 +526,7 @@ Below are the configuration options with their default values:
     keySeparator: '.',
     pluralSeparator: '_',
     contextSeparator: '_',
+    contextDefaultValues: [],
     interpolation: {
         prefix: '{{',
         suffix: '}}'
@@ -744,6 +745,13 @@ Whether to add a fallback key as well as the context form key.
 Type: `String` Default: `'_'`
 
 The character to split context from key.
+
+#### contextDefaultValues
+
+Type: `Array` Default: `[]`
+
+A list of default context values, used when the scanner encounters dynamic value as a `context`.
+For a list of `['male', 'female']` the scanner will generate an entry for each value.
 
 #### plural
 
