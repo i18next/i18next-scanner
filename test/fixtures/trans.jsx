@@ -32,7 +32,7 @@ const Component = () => (
                 2 + 2 = {{ result: 2 + 2 }}
             </Trans>
             <Trans i18nKey="components">
-                Go to <Anchor href="/administration/tools">Administration > Tools</Anchor> to download administrative tools.
+                Go to <Anchor href="/administration/tools">Administration &gt; Tools</Anchor> to download administrative tools.
             </Trans>
             <Trans i18nKey="lorem-ipsum">
                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
@@ -65,7 +65,7 @@ const Component = () => (
                 2 + 2 = {{ result: 2 + 2 }}
             </Trans>
             <Trans>
-                Go to <Anchor href="/administration/tools">Administration > Tools</Anchor> to download administrative tools.
+                Go to <Anchor href="/administration/tools">Administration &gt; Tools</Anchor> to download administrative tools.
             </Trans>
             <Trans>
                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
