@@ -951,7 +951,7 @@ class Parser {
                     }
                 }
 
-                resKeys.forEach(resKey => {
+                resKeys.forEach(async(resKey) => {
                     if (resLoad[resKey] === undefined) {
                         if (options.defaultValue_plural !== undefined && resKey.endsWith(`${pluralSeparator}plural`)) {
                             resLoad[resKey] = options.defaultValue_plural;
@@ -960,8 +960,8 @@ class Parser {
                             resLoad[resKey] = options.defaultValue;
                         } else {
                             // Fallback to `defaultValue`
-                            resLoad[resKey] = _.isFunction(defaultValue)
-                                ? defaultValue(lng, ns, key, options)
+                            resLoad[resKey] = typeof defaultValue === 'function'
+                                ? await defaultValue(lng, ns, key, options)
                                 : defaultValue;
                         }
                         this.log(`Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
