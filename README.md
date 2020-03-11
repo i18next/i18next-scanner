@@ -42,7 +42,7 @@ Checkout [Migration Guide](https://github.com/i18next/i18next-scanner/wiki/Migra
 ## Features
 * Fully compatible with [i18next](https://github.com/i18next/i18next) - a full-featured i18n javascript library for translating your webapplication.
 * Support [react-i18next](https://github.com/i18next/react-i18next) for parsing the <b>Trans</b> component
-* Support [Key Based Fallback](http://i18next.com/translate/keyBasedFallback/) to write your code without the need to maintain i18n keys. This feature is available since [i18next@^2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210)
+* Support [Key Based Fallback](https://www.i18next.com/principles/fallback#key-fallback/) to write your code without the need to maintain i18n keys. This feature is available since [i18next@^2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210)
 * A standalone parser API
 * A transform stream that works with both Gulp and Grunt task runner.
 * Support custom transform and flush functions.
@@ -711,7 +711,7 @@ Type: `String` or `false` Default: `'.'`
 
 Key separator used in translation keys.
 
-Set to `false` to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Set to `false` to disable key separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at https://www.i18next.com/principles/fallback#key-fallback.
 
 #### nsSeparator
 
@@ -719,7 +719,7 @@ Type: `String` or `false` Default: `':'`
 
 Namespace separator used in translation keys.
 
-Set to `false` to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at http://i18next.com/translate/keyBasedFallback.
+Set to `false` to disable namespace separator if you prefer having keys as the fallback for translation (e.g. gettext). This feature is supported by [i18next@2.1.0](https://github.com/i18next/i18next/blob/master/CHANGELOG.md#210). Also see <strong>Key based fallback</strong> at https://www.i18next.com/principles/fallback#key-fallback.
 
 #### context
 
