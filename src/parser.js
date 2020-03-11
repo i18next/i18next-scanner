@@ -955,14 +955,11 @@ class Parser {
                     if (resLoad[resKey] === undefined) {
                         if (options.defaultValue_plural !== undefined && resKey.endsWith(`${pluralSeparator}plural`)) {
                             resLoad[resKey] = options.defaultValue_plural;
-                        } else if (options.defaultValue !== undefined) {
-                            // Use `options.defaultValue` if specified
-                            resLoad[resKey] = options.defaultValue;
                         } else {
                             // Fallback to `defaultValue`
-                            resLoad[resKey] = typeof defaultValue === 'function'
+                            resLoad[resKey] = _.isFunction(defaultValue)
                                 ? await defaultValue(lng, ns, key, options)
-                                : defaultValue;
+                                : (options.defaultValue || defaultValue);
                         }
                         this.log(`Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
                     } else if (options.defaultValue && (!options.defaultValue_plural || !resKey.endsWith(`${pluralSeparator}plural`))) {
