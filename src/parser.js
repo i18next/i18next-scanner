@@ -929,13 +929,15 @@ class Parser {
                         : !!plural;
                 })();
 
-                let contextValues = [];
-                if (containsContext) {
-                    contextValues =
-                      options.context === '' && Array.isArray(contextDefaultValues) && contextDefaultValues.length > 0
-                          ? contextDefaultValues
-                          : [options.context];
-                }
+                const contextValues = (() => {
+                    if (options.context !== '') {
+                        return [options.context];
+                    }
+                    if (ensureArray(contextDefaultValues).length > 0) {
+                        return ensureArray(contextDefaultValues);
+                    }
+                    return [];
+                })();
 
                 if (containsPlural) {
                     let suffixes = pluralFallback

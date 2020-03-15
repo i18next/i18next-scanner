@@ -865,7 +865,6 @@ test('Context', (t) => {
                     'friend_male': '',
                     'friend_female': '',
                     'friendDynamic': '',
-                    'friendDynamic_': '',
                 }
             }
         });
@@ -892,7 +891,6 @@ test('Context', (t) => {
                     'friend': '',
                     'friend_male': '',
                     'friendDynamic': '',
-                    'friendDynamic_': '',
                 }
             }
         });
@@ -953,7 +951,6 @@ test('Context with plural combined', (t) => {
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
                     'friendWithDefaultValue_female': '{{count}} girlfriend',
                     'friendDynamic': '',
-                    'friendDynamic_': '',
                 }
             }
         });
