@@ -80,6 +80,7 @@ const defaults = {
     context: true, // whether to add context form key
     contextFallback: true, // whether to add a fallback key as well as the context form key
     contextSeparator: '_', // char to split context from key
+    contextDefaultValues: [], // list of values for dynamic values
 
     // Plural Form
     plural: true, // whether to add plural form key
@@ -855,6 +856,7 @@ class Parser {
             context,
             contextFallback,
             contextSeparator,
+            contextDefaultValues,
             plural,
             pluralFallback,
             pluralSeparator,
@@ -927,6 +929,16 @@ class Parser {
                         : !!plural;
                 })();
 
+                const contextValues = (() => {
+                    if (options.context !== '') {
+                        return [options.context];
+                    }
+                    if (ensureArray(contextDefaultValues).length > 0) {
+                        return ensureArray(contextDefaultValues);
+                    }
+                    return [];
+                })();
+
                 if (containsPlural) {
                     let suffixes = pluralFallback
                         ? this.pluralSuffixes[lng]
@@ -938,7 +950,9 @@ class Parser {
 
                     if (containsContext && containsPlural) {
                         suffixes.forEach((pluralSuffix) => {
-                            resKeys.push(`${key}${contextSeparator}${options.context}${pluralSuffix}`);
+                            contextValues.forEach(contextValue => {
+                                resKeys.push(`${key}${contextSeparator}${contextValue}${pluralSuffix}`);
+                            });
                         });
                     }
                 } else {
@@ -947,7 +961,9 @@ class Parser {
                     }
 
                     if (containsContext) {
-                        resKeys.push(`${key}${contextSeparator}${options.context}`);
+                        contextValues.forEach(contextValue => {
+                            resKeys.push(`${key}${contextSeparator}${contextValue}`);
+                        });
                     }
                 }
 

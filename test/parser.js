@@ -863,7 +863,8 @@ test('Context', (t) => {
                 translation: {
                     'friend': '',
                     'friend_male': '',
-                    'friend_female': ''
+                    'friend_female': '',
+                    'friendDynamic': '',
                 }
             }
         });
@@ -888,7 +889,8 @@ test('Context', (t) => {
             en: {
                 translation: {
                     'friend': '',
-                    'friend_male': ''
+                    'friend_male': '',
+                    'friendDynamic': '',
                 }
             }
         });
@@ -902,7 +904,9 @@ test('Context with plural combined', (t) => {
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/context-plural.js'), 'utf-8');
 
     test('Default options', (t) => {
-        const parser = new Parser();
+        const parser = new Parser({
+            contextDefaultValues: ['male', 'female'],
+        });
         parser.parseFuncFromString(content);
         t.same(parser.get(), {
             en: {
@@ -918,7 +922,13 @@ test('Context with plural combined', (t) => {
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
                     'friendWithDefaultValue_male_plural': '{{count}} boyfriend',
                     'friendWithDefaultValue_female': '{{count}} girlfriend',
-                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_plural': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_male_plural': '',
+                    'friendDynamic_female': '',
+                    'friendDynamic_female_plural': '',
                 }
             }
         });
@@ -939,7 +949,8 @@ test('Context with plural combined', (t) => {
                     'friend_female': '',
                     'friendWithDefaultValue': '{{count}} boyfriend',
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
-                    'friendWithDefaultValue_female': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendDynamic': '',
                 }
             }
         });
@@ -950,6 +961,7 @@ test('Context with plural combined', (t) => {
         const parser = new Parser({
             context: true,
             contextFallback: false,
+            contextDefaultValues: ['male', 'female'],
             plural: false
         });
         parser.parseFuncFromString(content);
@@ -959,7 +971,9 @@ test('Context with plural combined', (t) => {
                     'friend_male': '',
                     'friend_female': '',
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
-                    'friendWithDefaultValue_female': '{{count}} girlfriend'
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
                 }
             }
         });
@@ -978,7 +992,9 @@ test('Context with plural combined', (t) => {
                     'friend': '',
                     'friend_plural': '',
                     'friendWithDefaultValue': '{{count}} boyfriend',
-                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_plural': '',
                 }
             }
         });
@@ -996,7 +1012,8 @@ test('Context with plural combined', (t) => {
             en: {
                 translation: {
                     'friend_plural': '',
-                    'friendWithDefaultValue_plural': '{{count}} boyfriend'
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendDynamic_plural': '',
                 }
             }
         });
