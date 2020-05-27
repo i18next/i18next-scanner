@@ -32,7 +32,7 @@ const isObjectExpression = (node) => {
     return node.type === 'ObjectExpression';
 };
 
-const nodesToString = (nodes) => {
+const nodesToString = (nodes, code) => {
     let memo = '';
     let nodeIndex = 0;
     nodes.forEach((node, i) => {
@@ -58,10 +58,11 @@ const nodesToString = (nodes) => {
                 memo += `<${nodeIndex}>{{${expression.properties[0].key.name}}}</${nodeIndex}>`;
             } else {
                 console.error(`Unsupported JSX expression. Only static values or {{interpolation}} blocks are supported. Got ${expression.type}:`);
+                console.error(code.slice(node.start, node.end));
                 console.error(node.expression);
             }
         } else if (node.children) {
-            memo += `<${nodeIndex}>${nodesToString(node.children)}</${nodeIndex}>`;
+            memo += `<${nodeIndex}>${nodesToString(node.children, code)}</${nodeIndex}>`;
         }
 
         ++nodeIndex;
