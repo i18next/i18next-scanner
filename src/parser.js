@@ -723,9 +723,9 @@ class Parser {
                 Object.keys(this.resStore[lng]).forEach((ns) => {
                     const resStoreKeys = flattenObjectKeys(_.get(this.resStore, [lng, ns], {}));
 
-                    if(opts.ignoreEmpty) {
-                        _.remove(resStoreKeys, (key) => _.isEqual([''], key))
-                        _.unset(resMerged[lng][ns], '')
+                    if (opts.ignoreEmpty) {
+                        _.remove(resStoreKeys, (key) => _.isEqual([''], key));
+                        _.unset(resMerged[lng][ns], '');
                     }
 
                     const resScanKeys = flattenObjectKeys(_.get(this.resScan, [lng, ns], {}));

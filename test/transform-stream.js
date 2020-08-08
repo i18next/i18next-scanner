@@ -695,3 +695,34 @@ test('Line Endings', function(t) {
 
     t.end();
 });
+
+test('End With Empty Trans', function(t) {
+    const options = _.merge({}, defaults, {
+        resource: {
+            endWithEmptyTrans: true,
+        }
+    });
+
+    const list = [
+        'test/fixtures/app.html',
+        'test/fixtures/modules/**/*.js'
+    ];
+
+    gulp.src(list)
+        .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+            const list = [
+                'i18n/de/resource.json',
+                'i18n/en/resource.json',
+            ];
+
+            if (_.includes(list, file.path)) {
+                const found = JSON.parse(contents);
+                t.same(_.last(Object.keys(found)), '');
+            }
+        }));
+})
