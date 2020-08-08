@@ -70,7 +70,11 @@ const defaults = {
 
         // Normalize line endings to '\r\n', '\r', '\n', or 'auto' for the current operating system. Defaults to '\n'.
         // Aliases: 'CRLF', 'CR', 'LF', 'crlf', 'cr', 'lf'
-        lineEnding: '\n'
+        lineEnding: '\n',
+
+        // Whether append emptye trans in the end of translation
+        // Useful for vcs check and diff
+        endWithEmptyTrans: false
     },
 
     keySeparator: '.', // char to separate keys

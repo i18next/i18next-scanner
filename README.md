@@ -520,7 +520,8 @@ Below are the configuration options with their default values:
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
         savePath: 'i18n/{{lng}}/{{ns}}.json',
         jsonIndent: 2,
-        lineEnding: '\n'
+        lineEnding: '\n',
+        endWithEmptyTrans: false
     },
     nsSeparator: ':',
     keySeparator: '.',
@@ -702,6 +703,10 @@ Resource options:
         // Normalize line endings to '\r\n', '\r', '\n', or 'auto' for the current operating system. Defaults to '\n'.
         // Aliases: 'CRLF', 'CR', 'LF', 'crlf', 'cr', 'lf'
         lineEnding: '\n'
+        
+        // Whether append emptye trans in the end of translation
+        // Useful for vcs check and diff
+        endWithEmptyTrans: false,
     }
 }
 ```

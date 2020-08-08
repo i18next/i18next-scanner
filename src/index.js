@@ -64,6 +64,7 @@ const flush = (parser, customFlush) => {
         // Flush to resource store
         const resStore = parser.get({ sort: options.sort });
         const { jsonIndent } = options.resource;
+        const endWithEmptyTrans = Boolean(options.resource.endWithEmptyTrans);
         const lineEnding = String(options.resource.lineEnding).toLowerCase();
 
         Object.keys(resStore).forEach((lng) => {
@@ -71,6 +72,11 @@ const flush = (parser, customFlush) => {
 
             Object.keys(namespaces).forEach((ns) => {
                 const obj = namespaces[ns];
+
+                if (endWithEmptyTrans === true) {
+                    obj[''] = '';
+                }
+
                 const resPath = parser.formatResourceSavePath(lng, ns);
                 let text = JSON.stringify(obj, null, jsonIndent) + '\n';
 
