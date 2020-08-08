@@ -706,6 +706,7 @@ class Parser {
     // @param {object} [opts] The opts object
     // @param {boolean} [opts.sort] True to sort object by key
     // @param {boolean} [opts.lng] The language to use
+    // @param {boolean} [opts.ignoreEmpty] Whether ignore empty trans
     // @return {object}
     get(key, opts = {}) {
         if (_.isPlainObject(key)) {
@@ -721,6 +722,12 @@ class Parser {
             Object.keys(this.resStore).forEach((lng) => {
                 Object.keys(this.resStore[lng]).forEach((ns) => {
                     const resStoreKeys = flattenObjectKeys(_.get(this.resStore, [lng, ns], {}));
+
+                    if(opts.ignoreEmpty) {
+                        _.remove(resStoreKeys, (key) => _.isEqual([''], key))
+                        _.unset(resMerged[lng][ns], '')
+                    }
+
                     const resScanKeys = flattenObjectKeys(_.get(this.resScan, [lng, ns], {}));
                     const unusedKeys = _.differenceWith(resStoreKeys, resScanKeys, _.isEqual);
 

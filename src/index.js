@@ -61,11 +61,12 @@ const flush = (parser, customFlush) => {
             return;
         }
 
-        // Flush to resource store
-        const resStore = parser.get({ sort: options.sort });
         const { jsonIndent } = options.resource;
         const endWithEmptyTrans = Boolean(options.resource.endWithEmptyTrans);
         const lineEnding = String(options.resource.lineEnding).toLowerCase();
+
+        // Flush to resource store
+        const resStore = parser.get({ sort: options.sort, ignoreEmpty: endWithEmptyTrans });
 
         Object.keys(resStore).forEach((lng) => {
             const namespaces = resStore[lng];
