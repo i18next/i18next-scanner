@@ -692,6 +692,64 @@ test('Line Endings', function(t) {
                 }
             }));
     });
+    
+    test('[Trans Component] defaultValue is respected - empty defaultValue (string)', function(t) {
+        const options = _.merge({}, defaults, {
+            trans: {
+                extensions: ['.js', '.jsx'], // with extensions
+                fallbackKey: true
+            },
+            defaultValue: "",
+            nsSeparator: false,
+            keySeparator: false
+        });
+
+        gulp.src('test/fixtures/**/trans-defaultValue.jsx')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+
+                if (file.path === 'i18n/en/resource.json') {
+                    const found = JSON.parse(contents);
+                    const wanted = {
+                        "Trans component should respect the defaultValue option": "",
+                    };
+                    t.same(found, wanted);
+                }
+            }));
+    });
+    
+    test('[Trans Component] defaultValue is respected - empty defaultValue (function)', function(t) {
+        const options = _.merge({}, defaults, {
+            trans: {
+                extensions: ['.js', '.jsx'], // with extensions
+                fallbackKey: true
+            },
+            defaultValue: (lng, ns, key, options) => "",
+            nsSeparator: false,
+            keySeparator: false
+        });
+
+        gulp.src('test/fixtures/**/trans-defaultValue.jsx')
+            .pipe(scanner(options))
+            .on('end', function() {
+                t.end();
+            })
+            .pipe(tap(function(file) {
+                const contents = file.contents.toString();
+
+                if (file.path === 'i18n/en/resource.json') {
+                    const found = JSON.parse(contents);
+                    const wanted = {
+                        "Trans component should respect the defaultValue option": "",
+                    };
+                    t.same(found, wanted);
+                }
+            }));
+    });
 
     t.end();
 });
