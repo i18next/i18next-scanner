@@ -527,6 +527,12 @@ Below are the configuration options with their default values:
     pluralSeparator: '_',
     contextSeparator: '_',
     contextDefaultValues: [],
+    contextList: {
+        'default': {
+            list: [],
+            fallback: false
+        },
+    },
     interpolation: {
         prefix: '{{',
         suffix: '}}'
@@ -752,6 +758,23 @@ Type: `Array` Default: `[]`
 
 A list of default context values, used when the scanner encounters dynamic value as a `context`.
 For a list of `['male', 'female']` the scanner will generate an entry for each value.
+
+#### contextList
+
+Type: `Object` Default: `{'default': { list: [], fallback: false }`
+
+An object of curated lists for valid `context`, with fallback and separator overrides. This contextList can also be used for validating dynamic keys by creating a comment with the dynamic key removed and setting context: `''` supplying a contextList and setting separator to false.
+
+```js
+  // t(`some.`, { context: '', contextList: 'dynamicKeys' })
+```
+
+```js
+contextList = { 
+    'gender': { list: ['male', 'female'], fallback: true, separator: false }
+    'location': { list: ['foo', 'bar', 'baz'], fallback: false, separator: false  }
+}
+```
 
 #### plural
 

@@ -81,6 +81,7 @@ const defaults = {
     contextFallback: true, // whether to add a fallback key as well as the context form key
     contextSeparator: '_', // char to split context from key
     contextDefaultValues: [], // list of values for dynamic values
+    contextList: { 'default': { list: [], fallback: false } }, // all valid dynamic values
 
     // Plural Form
     plural: true, // whether to add plural form key
@@ -439,6 +440,7 @@ class Parser {
                         'defaultValue_plural',
                         'count',
                         'context',
+                        'contextList',
                         'ns',
                         'keySeparator',
                         'nsSeparator',
@@ -792,6 +794,7 @@ class Parser {
     // @param {string} [options.defaultValue] defaultValue to return if translation not found
     // @param {number} [options.count] count value used for plurals
     // @param {string} [options.context] used for contexts (eg. male)
+    // @param {object} [options.contextList] used for informing 18next-scanner of all correct contexts
     // @param {string} [options.ns] namespace for the translation
     // @param {string|boolean} [options.nsSeparator] The value used to override this.options.nsSeparator
     // @param {string|boolean} [options.keySeparator] The value used to override this.options.keySeparator
@@ -857,6 +860,7 @@ class Parser {
             contextFallback,
             contextSeparator,
             contextDefaultValues,
+            contextList,
             plural,
             pluralFallback,
             pluralSeparator,
@@ -933,6 +937,9 @@ class Parser {
                     if (options.context !== '') {
                         return [options.context];
                     }
+                    if (ensureArray(contextList?.[options.contextList]?.list)?.length > 0) {
+                        return ensureArray(contextList[options.contextList]?.list);
+                    }
                     if (ensureArray(contextDefaultValues).length > 0) {
                         return ensureArray(contextDefaultValues);
                     }
@@ -956,7 +963,7 @@ class Parser {
                         });
                     }
                 } else {
-                    if (!containsContext || (containsContext && contextFallback)) {
+                    if (!containsContext || (containsContext && (contextList?.[options.contextList]?.fallback ?? contextFallback))) {
                         resKeys.push(key);
                     }
 

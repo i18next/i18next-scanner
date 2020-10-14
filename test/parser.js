@@ -935,6 +935,38 @@ test('Context with plural combined', (t) => {
         t.end();
     });
 
+    test('Default options w/ contextList', (t) => {
+        const parser = new Parser({
+            contextList: {'gender': {list: ['male', 'female'], fallback: true}},
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    'friend': '',
+                    'friend_plural': '',
+                    'friend_male': '',
+                    'friend_male_plural': '',
+                    'friend_female': '',
+                    'friend_female_plural': '',
+                    'friendWithDefaultValue': '{{count}} boyfriend',
+                    'friendWithDefaultValue_plural': '{{count}} boyfriend',
+                    'friendWithDefaultValue_male': '{{count}} boyfriend',
+                    'friendWithDefaultValue_male_plural': '{{count}} boyfriend',
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendWithDefaultValue_female_plural': '{{count}} girlfriend',
+                    'friendDynamic': '',
+                    'friendDynamic_plural': '',
+                    'friendDynamic_male': '',
+                    'friendDynamic_male_plural': '',
+                    'friendDynamic_female': '',
+                    'friendDynamic_female_plural': '',
+                }
+            }
+        });
+        t.end();
+    });
+
     test('Context form only', (t) => {
         const parser = new Parser({
             context: true,
@@ -970,6 +1002,31 @@ test('Context with plural combined', (t) => {
                 translation: {
                     'friend_male': '',
                     'friend_female': '',
+                    'friendWithDefaultValue_male': '{{count}} boyfriend',
+                    'friendWithDefaultValue_female': '{{count}} girlfriend',
+                    'friendDynamic_male': '',
+                    'friendDynamic_female': '',
+                }
+            }
+        });
+        t.end();
+    });
+
+    test('No context fallback w/ contextList', (t) => {
+        const parser = new Parser({
+            context: true,
+            contextFallback: true,
+            contextList: {'gender': {list: ['male', 'female'], fallback: false}},
+            plural: false
+        });
+        parser.parseFuncFromString(content);
+        t.same(parser.get(), {
+            en: {
+                translation: {
+                    'friend': '',
+                    'friend_male': '',
+                    'friend_female': '',
+                    'friendWithDefaultValue': '{{count}} boyfriend',
                     'friendWithDefaultValue_male': '{{count}} boyfriend',
                     'friendWithDefaultValue_female': '{{count}} girlfriend',
                     'friendDynamic_male': '',
