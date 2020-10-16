@@ -695,3 +695,69 @@ test('Line Endings', function(t) {
 
     t.end();
 });
+
+test('resource.loadPath and resource.savePath configuration as functions', function(t) {
+    const options = _.merge({}, defaults, {
+        removeUnusedKeys: true,
+        resource: {
+            loadPath: function(lng, ns) {
+                return 'test/fixtures/i18n/'+lng+'/'+ns+'.json';
+            },
+            savePath: function(lng, ns) {
+                return 'i18n/'+lng+'/'+ns+'.json';
+            }
+        }
+    });
+
+    gulp.src('test/fixtures/modules/**/*.js')
+        .pipe(scanner(options))
+        .on('end', function() {
+            t.end();
+        })
+        .pipe(tap(function(file) {
+            const contents = file.contents.toString();
+
+            // English - locale.json
+            if (file.path === 'i18n/en/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {};
+                t.same(found, wanted);
+            }
+
+            // English - resource.json
+            if (file.path === 'i18n/en/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Loading...": "Loading...", // Note. This is an existing translation key in English resource file.
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+
+            // German - locale.json
+            if (file.path === 'i18n/de/locale.json') {
+                const found = JSON.parse(contents);
+                const wanted = {};
+                t.same(found, wanted);
+            }
+
+            // German - resource.json
+            if (file.path === 'i18n/de/resource.json') {
+                const found = JSON.parse(contents);
+                const wanted = {
+                    "Loading...": "__STRING_NOT_TRANSLATED__",
+                    "This value does not exist.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users.": "__STRING_NOT_TRANSLATED__",
+                    "YouTube has more than {{count}} billion users._plural": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages.": "__STRING_NOT_TRANSLATED__",
+                    "You have {{count}} messages._plural": "__STRING_NOT_TRANSLATED__"
+                };
+                t.same(found, wanted);
+            }
+        }));
+});
+
