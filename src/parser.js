@@ -2,6 +2,7 @@
 /* eslint no-eval: 0 */
 import fs from 'fs';
 import * as acorn from 'acorn';
+import optionalChaining from 'acorn-optional-chaining';
 import acornJsx from 'acorn-jsx';
 import acornStage3 from 'acorn-stage3';
 import chalk from 'chalk';
@@ -611,7 +612,7 @@ class Parser {
         };
 
         try {
-            const ast = acorn.Parser.extend(acornStage3, acornJsx())
+            const ast = acorn.Parser.extend(acornStage3, optionalChaining, acornJsx())
                 .parse(content, {
                     ...defaults.trans.acorn,
                     ...acornOptions
