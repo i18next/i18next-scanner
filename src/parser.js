@@ -40,7 +40,7 @@ const defaults = {
         extensions: ['.js', '.jsx'],
         fallbackKey: false,
         acorn: {
-            ecmaVersion: 10, // defaults to 10
+            ecmaVersion: 2020, // defaults to 2020
             sourceType: 'module', // defaults to 'module'
             // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
         }

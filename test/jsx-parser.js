@@ -7,7 +7,7 @@ import nodesToString from '../src/nodes-to-string';
 
 const jsxToString = (code) => {
     try {
-        const ast = Parser.extend(jsx()).parse(`<Trans>${code}</Trans>`);
+        const ast = Parser.extend(jsx()).parse(`<Trans>${code}</Trans>`, { ecmaVersion: 2020 });
 
         const nodes = ensureArray(_get(ast, 'body[0].expression.children'));
         if (nodes.length === 0) {
