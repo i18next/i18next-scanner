@@ -309,9 +309,11 @@ class Parser {
             ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
-        return options.resource.loadPath
-            .replace(regex.lng, lng)
-            .replace(regex.ns, ns);
+        return _.isFunction(options.resource.loadPath)
+            ? options.resource.loadPath(lng, ns)
+            : options.resource.loadPath
+                .replace(regex.lng, lng)
+                .replace(regex.ns, ns);
     }
 
     formatResourceSavePath(lng, ns) {
@@ -321,9 +323,11 @@ class Parser {
             ns: new RegExp(_.escapeRegExp(options.interpolation.prefix + 'ns' + options.interpolation.suffix), 'g')
         };
 
-        return options.resource.savePath
-            .replace(regex.lng, lng)
-            .replace(regex.ns, ns);
+        return _.isFunction(options.resource.savePath)
+            ? options.resource.savePath(lng, ns)
+            : options.resource.savePath
+                .replace(regex.lng, lng)
+                .replace(regex.ns, ns);
     }
 
     fixStringAfterRegExp(strToFix) {

@@ -690,11 +690,36 @@ Resource options:
 ```js
 { // Default
     resource: {
-        // The path where resources get loaded from. Relative to current working directory.
+        // The path where resources get loaded from. Relative to current working directory. 
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
 
         // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
         savePath: 'i18n/{{lng}}/{{ns}}.json',
+
+        // Specify the number of space characters to use as white space to insert into the output JSON string for readability purpose.
+        jsonIndent: 2,
+
+        // Normalize line endings to '\r\n', '\r', '\n', or 'auto' for the current operating system. Defaults to '\n'.
+        // Aliases: 'CRLF', 'CR', 'LF', 'crlf', 'cr', 'lf'
+        lineEnding: '\n'
+    }
+}
+```
+
+`loadPath` and `savePath` can be both be defined as `Function` with parameters `lng` and `ns`
+
+```js
+{ // Default
+    resource: {
+        // The path where resources get loaded from. Relative to current working directory. 
+        loadPath: function(lng, ns) {
+            return 'i18n/'+lng+'/'+ns+'.json';
+        },
+
+        // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
+        savePath: function(lng, ns) {
+            return 'i18n/'+lng+'/'+ns+'.json';
+        },
 
         // Specify the number of space characters to use as white space to insert into the output JSON string for readability purpose.
         jsonIndent: 2,
