@@ -23,7 +23,7 @@ const jsxToString = (code) => {
 
 test('JSX to i18next', (t) => {
     t.same(jsxToString('Basic text'), 'Basic text');
-    t.same(jsxToString('Hello, {{name}}'), 'Hello, <1>{{name}}</1>');
+    t.same(jsxToString('Hello, {{name}}'), 'Hello, {{name}}');
     t.same(jsxToString('I agree to the <Link>terms</Link>.'), 'I agree to the <1>terms</1>.');
     t.same(jsxToString('One &amp; two'), 'One & two');
     t.end();
