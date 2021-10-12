@@ -16,7 +16,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "prepublish": "npm run eslint && npm run build && npm test",
+    "prepublishOnly": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "eslint": "eslint ./src",
     "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register | coveralls",
