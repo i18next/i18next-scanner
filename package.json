@@ -19,7 +19,7 @@
     "prepublishOnly": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "eslint": "eslint ./src",
-    "coverage": "tap test/*.js --nyc-arg=--require --nyc-arg=@babel/register --coverage-report=text-lcov | codecov",
+    "coverage": "nyc --reporter=lcov --reporter=text yarn test",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=core-js/stable --node-arg=--require --node-arg=regenerator-runtime/runtime"
   },
   "repository": {
