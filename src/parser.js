@@ -18,6 +18,10 @@ import flattenObjectKeys from './flatten-object-keys';
 import omitEmptyObject from './omit-empty-object';
 import nodesToString from './nodes-to-string';
 
+i18next.init({
+  compatibilityJSON: 'v3',
+});
+
 const defaults = {
     debug: false, // verbose logging
 
@@ -1018,7 +1022,5 @@ class Parser {
         return JSON.stringify(this.get(others), replacer, space);
     }
 }
-
-i18next.init();
 
 export default Parser;
