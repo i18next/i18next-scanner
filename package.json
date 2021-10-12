@@ -19,8 +19,8 @@
     "prepublishOnly": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "eslint": "eslint ./src",
-    "coverage": "tap test/*.js --no-esm --nyc-arg=--require --nyc-arg=@babel/register --coverage-report=text-lcov | codecov",
-    "test": "tap test/*.js --no-esm --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=core-js/stable --node-arg=--require --node-arg=regenerator-runtime/runtime"
+    "coverage": "tap test/*.js --nyc-arg=--require --nyc-arg=@babel/register --coverage-report=text-lcov | codecov",
+    "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=core-js/stable --node-arg=--require --node-arg=regenerator-runtime/runtime"
   },
   "repository": {
     "type": "git",
@@ -88,5 +88,8 @@
     "sha1": "^1.1.1",
     "tap": "^15.0.10",
     "text-table": "^0.2.0"
+  },
+  "tap": {
+    "check-coverage": false
   }
 }
