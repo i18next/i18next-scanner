@@ -20,7 +20,7 @@ jobs:
     - run: yarn eslint
     - run: yarn build
     - run: yarn test
-    - run: yarn coveralls
+    - run: yarn coverage
     - uses: codecov/codecov-action@v2
       with:
         name: node-${{ matrix.node-version }}
