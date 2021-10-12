@@ -19,7 +19,7 @@ import omitEmptyObject from './omit-empty-object';
 import nodesToString from './nodes-to-string';
 
 i18next.init({
-  compatibilityJSON: 'v3',
+    compatibilityJSON: 'v3',
 });
 
 const defaults = {
