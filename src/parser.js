@@ -496,7 +496,7 @@ class Parser {
             acorn: acornOptions = this.options.trans.acorn, // object
         } = { ...opts };
 
-        const parseJSXElement = (node) => {
+        const parseJSXElement = (node, code) => {
             if (!node) {
                 return;
             }
@@ -513,12 +513,12 @@ class Parser {
                     return;
                 }
 
-                parseJSXElement(expression);
+                parseJSXElement(expression, code);
             });
 
             ensureArray(node.children).forEach(childNode => {
                 if (childNode.type === 'JSXElement') {
-                    parseJSXElement(childNode);
+                    parseJSXElement(childNode, code);
                 }
             });
 
@@ -590,7 +590,7 @@ class Parser {
             const tOptions = attr.tOptions;
             const options = {
                 ...tOptions,
-                defaultValue: defaultsString || nodesToString(node.children),
+                defaultValue: defaultsString || nodesToString(node.children, code),
                 fallbackKey: fallbackKey || this.options.trans.fallbackKey
             };
 
@@ -622,7 +622,7 @@ class Parser {
                 });
 
             jsxwalk(ast, {
-                JSXElement: parseJSXElement
+                JSXElement: node => parseJSXElement(node, content)
             });
         } catch (err) {
             if (transformOptions.filepath) {

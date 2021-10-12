@@ -14,7 +14,7 @@ const jsxToString = (code) => {
             return '';
         }
 
-        return nodesToString(nodes);
+        return nodesToString(nodes, code);
     } catch (e) {
         console.error(e);
         return '';
