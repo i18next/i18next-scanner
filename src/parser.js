@@ -599,7 +599,7 @@ class Parser {
             }
 
             if (Object.prototype.hasOwnProperty.call(attr, 'ns')) {
-                if (typeof options.ns !== 'string') {
+                if (typeof attr.ns !== 'string') {
                     this.log(`The ns attribute must be a string, saw ${chalk.yellow(attr.ns)}`);
                 }
 
