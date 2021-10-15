@@ -1060,6 +1060,32 @@ test('parser.toJSON({ sort: true, space: 2 })', (t) => {
     t.end();
 });
 
+test('Extract properties from optional chaining', (t) => {
+    const parser = new Parser({
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key;
+            }
+            return '__NOT_TRANSLATED__';
+        },
+        keySeparator: false,
+        nsSeparator: false
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/optional-chaining.js'), 'utf8');
+    const wanted = {
+        'en': {
+            'translation': {
+                'optional chaining: {{value}}': 'optional chaining: {{value}}',
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+
+    t.end();
+});
+
 test('Extract properties from template literals', (t) => {
     const parser = new Parser({
         defaultValue: function(lng, ns, key) {
