@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
 import ensureArray from 'ensure-array';
-import { parse } from 'esprima';
+import { parse } from 'esprima-next';
 import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
