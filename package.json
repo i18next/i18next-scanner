@@ -28,7 +28,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "i18n",
@@ -58,7 +58,7 @@
     "deepmerge": "^4.0.0",
     "ensure-array": "^1.0.0",
     "eol": "^0.9.1",
-    "esprima": "^4.0.0",
+    "esprima-next": "^5.7.0",
     "gulp-sort": "^2.0.0",
     "i18next": "*",
     "lodash": "^4.0.0",
