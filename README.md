@@ -124,7 +124,7 @@ module.exports = {
                 return value;
             },
             acorn: {
-                ecmaVersion: 10, // defaults to 10
+                ecmaVersion: 2020,
                 sourceType: 'module', // defaults to 'module'
                 // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
             }
