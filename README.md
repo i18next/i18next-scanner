@@ -183,7 +183,7 @@ const customHandler = function(key) {
 };
 
 const parser = new Parser();
-const content = '';
+let content = '';
 
 // Parse Translation Function
 // i18next.t('key');
