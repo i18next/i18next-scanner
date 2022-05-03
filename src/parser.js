@@ -369,39 +369,37 @@ class Parser {
     handleObjectExpression(props) {
         return _.reduce(props, ((acc, prop) => {
             if (prop.type !== 'ObjectMethod') {
-                const value = optionsBuilder(prop.value)
+                const value = _.optionsBuilder(prop.value);
                 if (value !== undefined) {
                     return {
                         ...acc,
                         [prop.key.name]: value
-                    }
+                    };
                 }
             }
-            return acc
+            return acc;
         }, {}));
     }
 
     handleArrayExpression(elements) {
-        return elements.reduce((acc, element) =>
-                [
-                    ...acc,
-                    [_optionsBuilder(element)]
-                ],
-            [],
-        )
+        return elements.reduce((acc, element) => [
+            ...acc,
+            [_.optionsBuilder(element)]
+        ],
+        [],);
     }
 
     optionsBuilder(prop) {
         if (prop.value && prop.value.type === 'Literal' || prop.type && prop.type === 'Literal') {
             return prop.value.value !== undefined ? prop.value.value : prop.value;
         } else if (prop.value && prop.value.type === 'TemplateLiteral' || prop.type && prop.type === 'TemplateLiteral') {
-            return prop.value.quasis.map(function (element) {
+            return prop.value.quasis.map((element) => {
                 return element.value.cooked;
-            }).join('')
+            }).join('');
         } else if (prop.value && prop.value.type === 'ObjectExpression' || prop.type && prop.type === 'ObjectExpression') {
-            return handleObjectExpression(prop.value.properties);
+            return this.handleObjectExpression(prop.value.properties);
         } else if (prop.value && prop.value.type === 'ArrayExpression' || prop.type && prop.type === 'ArrayExpression') {
-            return handleArrayExpression(prop.elements);
+            return this.handleArrayExpression(prop.elements);
         } else {
             // Unable to get value of the property
             return '';
@@ -497,7 +495,7 @@ class Parser {
 
                     props.forEach((prop) => {
                         if (_.includes(supportedOptions, prop.key.name)) {
-                            options[prop.key.name] = optionsBuilder(prop)
+                            options[prop.key.name] = this.optionsBuilder(prop);
                         }
                     });
                 } catch (err) {
@@ -523,8 +521,8 @@ class Parser {
         if (_.isFunction(opts)) {
             customHandler = opts;
             opts = {};
-        }
 
+        }
         const {
             transformOptions = {}, // object
             component = this.options.trans.component, // string
