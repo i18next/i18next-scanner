@@ -521,8 +521,8 @@ class Parser {
         if (_.isFunction(opts)) {
             customHandler = opts;
             opts = {};
-
         }
+
         const {
             transformOptions = {}, // object
             component = this.options.trans.component, // string
