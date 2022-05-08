@@ -367,9 +367,9 @@ class Parser {
     }
 
     handleObjectExpression(props) {
-        return _.reduce(props, ((acc, prop) => {
+        return props.reduce((acc, prop) => {
             if (prop.type !== 'ObjectMethod') {
-                const value = _.optionsBuilder(prop.value);
+                const value = this.optionsBuilder(prop.value);
                 if (value !== undefined) {
                     return {
                         ...acc,
@@ -378,13 +378,13 @@ class Parser {
                 }
             }
             return acc;
-        }, {}));
+        }, {});
     }
 
     handleArrayExpression(elements) {
         return elements.reduce((acc, element) => [
             ...acc,
-            [_.optionsBuilder(element)]
+            [this.optionsBuilder(element)]
         ],
         [],);
     }
