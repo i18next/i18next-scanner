@@ -95,7 +95,9 @@ const defaults = {
     interpolation: {
         prefix: '{{', // prefix for interpolation
         suffix: '}}' // suffix for interpolation
-    }
+    },
+
+    externalOptions: {}
 };
 
 // http://codereview.stackexchange.com/questions/45991/balanced-parentheses
@@ -384,7 +386,7 @@ class Parser {
     handleArrayExpression(elements) {
         return elements.reduce((acc, element) => [
             ...acc,
-            [this.optionsBuilder(element)]
+            this.optionsBuilder(element)
         ],
         [],);
     }
