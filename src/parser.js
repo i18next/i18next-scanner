@@ -96,8 +96,7 @@ const defaults = {
         prefix: '{{', // prefix for interpolation
         suffix: '}}' // suffix for interpolation
     },
-
-    externalOptions: {}
+    externalOptions: {} // additional custom options
 };
 
 // http://codereview.stackexchange.com/questions/45991/balanced-parentheses
