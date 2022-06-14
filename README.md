@@ -826,7 +826,7 @@ Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Int
 
 Type: `Object` Default: `{}`
 
-For additional custom options
+This can be used to pass any additional information regarding the string. 
 
 ## License
 

@@ -1,1 +1,1 @@
-i18next.t('friend', {externalOptions: {collection: ['group1', 'group2']}});
+i18next.t('friend', {externalOptions: {tags: ['tag1', 'tag2']}});

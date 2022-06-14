@@ -1202,7 +1202,18 @@ test('Default values test', (t) => {
 test('externalOptions', (t) => {
     const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/external-options.js'), 'utf-8');
-    parser.parseFuncFromString(content);
+    const customHandler = function(key, options) {
+        parser.set(key, options);
+        t.same(options, {
+            'externalOptions': {
+                'tags': [
+                    'tag1',
+                    'tag2',
+                ],
+            },
+        });
+    };
+    parser.parseFuncFromString(content, customHandler);
     t.same(parser.get(), {
         en: {
             translation: {
