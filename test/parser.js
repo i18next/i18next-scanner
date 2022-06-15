@@ -1201,7 +1201,7 @@ test('Default values test', (t) => {
 
 test('metadata', (t) => {
     const parser = new Parser();
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/external-options.js'), 'utf-8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/metadata.js'), 'utf-8');
     const customHandler = function(key, options) {
         parser.set(key, options);
         t.same(options, {
