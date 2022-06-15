@@ -1,1 +1,1 @@
-i18next.t('friend', {externalOptions: {tags: ['tag1', 'tag2']}});
+i18next.t('friend', {metadata: {tags: ['tag1', 'tag2']}});

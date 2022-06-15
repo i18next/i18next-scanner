@@ -96,7 +96,7 @@ const defaults = {
         prefix: '{{', // prefix for interpolation
         suffix: '}}' // suffix for interpolation
     },
-    externalOptions: {} // additional custom options
+    metadata: {} // additional custom options
 };
 
 // http://codereview.stackexchange.com/questions/45991/balanced-parentheses
@@ -491,7 +491,7 @@ class Parser {
                         'ns',
                         'keySeparator',
                         'nsSeparator',
-                        'externalOptions',
+                        'metadata',
                     ];
 
                     props.forEach((prop) => {

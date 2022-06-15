@@ -822,7 +822,7 @@ interpolation options
 ## Integration Guide
 Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) to learn how to integrate with [React](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#react), [Gettext Style I18n](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#gettext-style-i18n), and [Handlebars](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#handlebars).
 
-#### externalOptions
+#### metadata
 
 Type: `Object` Default: `{}`
 

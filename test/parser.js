@@ -1199,13 +1199,13 @@ test('Default values test', (t) => {
     t.end();
 });
 
-test('externalOptions', (t) => {
+test('metadata', (t) => {
     const parser = new Parser();
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/external-options.js'), 'utf-8');
     const customHandler = function(key, options) {
         parser.set(key, options);
         t.same(options, {
-            'externalOptions': {
+            'metadata': {
                 'tags': [
                     'tag1',
                     'tag2',
