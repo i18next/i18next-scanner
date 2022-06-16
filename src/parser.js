@@ -96,7 +96,8 @@ const defaults = {
         prefix: '{{', // prefix for interpolation
         suffix: '}}' // suffix for interpolation
     },
-    metadata: {} // additional custom options
+    metadata: {}, // additional custom options
+    allowDynamicKeys: false, // allow Dynamic Keys
 };
 
 // http://codereview.stackexchange.com/questions/45991/balanced-parentheses
@@ -336,12 +337,19 @@ class Parser {
     }
 
     fixStringAfterRegExp(strToFix) {
+        const options = this.options;
         let fixedString = _.trim(strToFix); // Remove leading and trailing whitespace
         const firstChar = fixedString[0];
 
-        // Ignore key with embedded expressions in string literals
+        
         if (firstChar === '`' && fixedString.match(/\${.*?}/)) {
-            return null;
+            if (options.allowDynamicKeys && fixedString.endsWith('}`')) {
+                // Allow Dyanmic Keys at the end of the string literal with option enabled
+                fixedString = fixedString.replace(/\$\{(.+?)\}/g, "")
+            } else {
+                // Ignore key with embedded expressions in string literals 
+                return null;
+            }
         }
 
         if (_.includes(['\'', '"', '`'], firstChar)) {

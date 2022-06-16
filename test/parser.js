@@ -1090,14 +1090,15 @@ test('Extract properties from template literals', (t) => {
     const parser = new Parser({
         defaultValue: function(lng, ns, key) {
             if (lng === 'en') {
-                return key;
+                return key.replace(/\r\n/g, '\n');
             }
             return '__NOT_TRANSLATED__';
         },
         keySeparator: false,
-        nsSeparator: false
+        nsSeparator: false,
+        allowDynamicKeys: false
     });
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8').replace(/\r\n/g, '\n');
     const wanted = {
         'en': {
             'translation': {
@@ -1212,6 +1213,25 @@ test('metadata', (t) => {
                 ],
             },
         });
+    };
+    parser.parseFuncFromString(content, customHandler);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                'friend': '',
+            }
+        }
+    });
+    t.end();
+});
+
+test('allowDynamicKeys', (t) => {
+    const parser = new Parser({
+        allowDynamicKeys: true
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/dynamic-keys.js'), 'utf-8');
+    const customHandler = function(key, options) {
+        parser.set(key, options);
     };
     parser.parseFuncFromString(content, customHandler);
     t.same(parser.get(), {

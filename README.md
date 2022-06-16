@@ -828,6 +828,12 @@ Type: `Object` Default: `{}`
 
 This can be used to pass any additional information regarding the string. 
 
+#### allowDynamicKeys
+
+Type: `Boolean` Default: `false`
+
+This can be used to allow dynamic keys e.g. `friend${DynamicValue}`
+
 ## License
 
 MIT
