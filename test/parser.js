@@ -1198,3 +1198,28 @@ test('Default values test', (t) => {
 
     t.end();
 });
+
+test('metadata', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/metadata.js'), 'utf-8');
+    const customHandler = function(key, options) {
+        parser.set(key, options);
+        t.same(options, {
+            'metadata': {
+                'tags': [
+                    'tag1',
+                    'tag2',
+                ],
+            },
+        });
+    };
+    parser.parseFuncFromString(content, customHandler);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                'friend': '',
+            }
+        }
+    });
+    t.end();
+});
