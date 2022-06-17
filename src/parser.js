@@ -341,13 +341,12 @@ class Parser {
         let fixedString = _.trim(strToFix); // Remove leading and trailing whitespace
         const firstChar = fixedString[0];
 
-        
         if (firstChar === '`' && fixedString.match(/\${.*?}/)) {
             if (options.allowDynamicKeys && fixedString.endsWith('}`')) {
                 // Allow Dyanmic Keys at the end of the string literal with option enabled
-                fixedString = fixedString.replace(/\$\{(.+?)\}/g, "")
+                fixedString = fixedString.replace(/\$\{(.+?)\}/g, '');
             } else {
-                // Ignore key with embedded expressions in string literals 
+                // Ignore key with embedded expressions in string literals
                 return null;
             }
         }
