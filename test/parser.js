@@ -1232,12 +1232,25 @@ test('allowDynamicKeys', (t) => {
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/dynamic-keys.js'), 'utf-8');
     const customHandler = function(key, options) {
         parser.set(key, options);
+        t.same(options, {
+            'metadata': {
+                'keys': [
+                    'Hard',
+                    'Normal',
+                ],
+            },
+        });
     };
     parser.parseFuncFromString(content, customHandler);
     t.same(parser.get(), {
         en: {
             translation: {
-                'friend': '',
+                'Activities': {
+                    '':'',
+                },
+                'LoadoutBuilder': {
+                    'Select': ""
+                }
             }
         }
     });

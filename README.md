@@ -834,6 +834,58 @@ Type: `Boolean` Default: `false`
 
 This can be used to allow dynamic keys e.g. `friend${DynamicValue}`
 
+Example Usage:
+
+```
+  transform: function customTransform(file, enc, done) {
+    'use strict';
+    const parser = this.parser;
+
+    const contexts = {
+      compact: ['compact'],
+      max: ['Max'],
+    };
+
+    // set separator to false for keys like Select${minMax} which becomes SelectMin instead of Select.Min
+    const keys = {
+        difficulty: { list: ['Normal', 'Hard'] },
+        minMax: { list: ['Min', 'Max'], separator: false },
+    };
+
+    const content = fs.readFileSync(file.path, enc);
+
+    parser.parseFuncFromString(content, { list: ['i18next.t', 'i18n.t'] }, (key, options) => {
+      // Add context based on metadata
+      if (options.metadata?.context) {
+        delete options.context;
+        const context = contexts[options.metadata?.context];
+        parser.set(key, options);
+        for (let i = 0; i < context?.length; i++) {
+          parser.set(`${key}_${context[i]}`, options);
+        }
+      }
+
+      // Add keys based on metadata (dynamic or otherwise)
+      if (options.metadata?.keys) {
+        const list = keys[options.metadata?.keys].list;
+        const addSeparator = keys[options.metadata?.keys].separator ?? true;
+        if (key.endsWith('.')) {
+          key = key.slice(0, -1);
+        }
+        for (let i = 0; i < list?.length; i++) {
+          parser.set(`${key}${addSeparator ? '.' : ''}${list[i]}`, options);
+        }
+      }
+
+      // Add all other non-metadata related keys
+      if (!options.metadata) {
+        parser.set(key, options);
+      }
+    });
+
+    done();
+```
+
 ## License
 
 MIT
