@@ -95,7 +95,9 @@ const defaults = {
   interpolation: {
     prefix: '{{', // prefix for interpolation
     suffix: '}}' // suffix for interpolation
-  }
+  },
+  metadata: {}, // additional custom options
+  allowDynamicKeys: false, // allow Dynamic Keys
 };
 
 // http://codereview.stackexchange.com/questions/45991/balanced-parentheses
@@ -335,12 +337,18 @@ class Parser {
   }
 
   fixStringAfterRegExp(strToFix) {
+    const options = this.options;
     let fixedString = _.trim(strToFix); // Remove leading and trailing whitespace
     const firstChar = fixedString[0];
 
-    // Ignore key with embedded expressions in string literals
     if (firstChar === '`' && fixedString.match(/\${.*?}/)) {
-      return null;
+      if (options.allowDynamicKeys && fixedString.endsWith('}`')) {
+        // Allow Dyanmic Keys at the end of the string literal with option enabled
+        fixedString = fixedString.replace(/\$\{(.+?)\}/g, '');
+      } else {
+        // Ignore key with embedded expressions in string literals
+        return null;
+      }
     }
 
     if (_.includes(['\'', '"', '`'], firstChar)) {
@@ -364,6 +372,46 @@ class Parser {
     // * Unicode escape sequences: \\u[a-fA-F0-9]{4}
     fixedString = fixedString.replace(/(\\x[a-fA-F0-9]{2}|\\u[a-fA-F0-9]{4})/g, (match) => eval(`"${match}"`));
     return fixedString;
+  }
+
+  handleObjectExpression(props) {
+    return props.reduce((acc, prop) => {
+      if (prop.type !== 'ObjectMethod') {
+        const value = this.optionsBuilder(prop.value);
+        if (value !== undefined) {
+          return {
+            ...acc,
+            [prop.key.name]: value
+          };
+        }
+      }
+      return acc;
+    }, {});
+  }
+
+  handleArrayExpression(elements) {
+    return elements.reduce((acc, element) => [
+      ...acc,
+      this.optionsBuilder(element)
+    ],
+    [],);
+  }
+
+  optionsBuilder(prop) {
+    if (prop.value && prop.value.type === 'Literal' || prop.type && prop.type === 'Literal') {
+      return prop.value.value !== undefined ? prop.value.value : prop.value;
+    } else if (prop.value && prop.value.type === 'TemplateLiteral' || prop.type && prop.type === 'TemplateLiteral') {
+      return prop.value.quasis.map((element) => {
+        return element.value.cooked;
+      }).join('');
+    } else if (prop.value && prop.value.type === 'ObjectExpression' || prop.type && prop.type === 'ObjectExpression') {
+      return this.handleObjectExpression(prop.value.properties);
+    } else if (prop.value && prop.value.type === 'ArrayExpression' || prop.type && prop.type === 'ArrayExpression') {
+      return this.handleArrayExpression(prop.elements);
+    } else {
+      // Unable to get value of the property
+      return '';
+    }
   }
 
   // i18next.t('ns:foo.bar') // matched
@@ -450,20 +498,12 @@ class Parser {
             'ns',
             'keySeparator',
             'nsSeparator',
+            'metadata',
           ];
 
           props.forEach((prop) => {
             if (_.includes(supportedOptions, prop.key.name)) {
-              if (prop.value.type === 'Literal') {
-                options[prop.key.name] = prop.value.value;
-              } else if (prop.value.type === 'TemplateLiteral') {
-                options[prop.key.name] = prop.value.quasis
-                  .map(element => element.value.cooked)
-                  .join('');
-              } else {
-                // Unable to get value of the property
-                options[prop.key.name] = '';
-              }
+              options[prop.key.name] = this.optionsBuilder(prop);
             }
           });
         } catch (err) {

@@ -183,7 +183,7 @@ const customHandler = function(key) {
 };
 
 const parser = new Parser();
-const content = '';
+let content = '';
 
 // Parse Translation Function
 // i18next.t('key');
@@ -821,6 +821,65 @@ interpolation options
 
 ## Integration Guide
 Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) to learn how to integrate with [React](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#react), [Gettext Style I18n](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#gettext-style-i18n), and [Handlebars](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#handlebars).
+
+#### metadata
+
+Type: `Object` Default: `{}`
+
+This can be used to pass any additional information regarding the string. 
+
+#### allowDynamicKeys
+
+Type: `Boolean` Default: `false`
+
+This can be used to allow dynamic keys e.g. `friend${DynamicValue}`
+
+Example Usage:
+
+```
+  transform: function customTransform(file, enc, done) {
+    'use strict';
+    const parser = this.parser;
+
+    const contexts = {
+      compact: ['compact'],
+      max: ['Max'],
+    };
+
+    const keys = {
+        difficulty: { list: ['Normal', 'Hard'] },
+        minMax: { list: ['Min', 'Max'] },
+    };
+
+    const content = fs.readFileSync(file.path, enc);
+
+    parser.parseFuncFromString(content, { list: ['i18next.t', 'i18n.t'] }, (key, options) => {
+      // Add context based on metadata
+      if (options.metadata?.context) {
+        delete options.context;
+        const context = contexts[options.metadata?.context];
+        parser.set(key, options);
+        for (let i = 0; i < context?.length; i++) {
+          parser.set(`${key}${parser.options.contextSeparator}${context[i]}`, options);
+        }
+      }
+
+      // Add keys based on metadata (dynamic or otherwise)
+      if (options.metadata?.keys) {
+        const list = keys[options.metadata?.keys].list;
+        for (let i = 0; i < list?.length; i++) {
+          parser.set(`${key}${list[i]}`, options);
+        }
+      }
+
+      // Add all other non-metadata related keys
+      if (!options.metadata) {
+        parser.set(key, options);
+      }
+    });
+
+    done();
+```
 
 ## License
 

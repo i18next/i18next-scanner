@@ -6,7 +6,7 @@ const program = require('commander');
 const ensureArray = require('ensure-array');
 const sort = require('gulp-sort');
 const vfs = require('vinyl-fs');
-const scanner = require('../lib');
+const scanner = require('../lib').default;
 const pkg = require('../package.json');
 
 program

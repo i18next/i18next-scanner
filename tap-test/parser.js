@@ -1060,7 +1060,7 @@ test('parser.toJSON({ sort: true, space: 2 })', (t) => {
     t.end();
 });
 
-test('Extract properties from template literals', (t) => {
+test('Extract properties from optional chaining', (t) => {
     const parser = new Parser({
         defaultValue: function(lng, ns, key) {
             if (lng === 'en') {
@@ -1071,7 +1071,34 @@ test('Extract properties from template literals', (t) => {
         keySeparator: false,
         nsSeparator: false
     });
-    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8');
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/optional-chaining.js'), 'utf8');
+    const wanted = {
+        'en': {
+            'translation': {
+                'optional chaining: {{value}}': 'optional chaining: {{value}}',
+            }
+        }
+    };
+
+    parser.parseFuncFromString(content);
+    t.same(parser.get(), wanted);
+
+    t.end();
+});
+
+test('Extract properties from template literals', (t) => {
+    const parser = new Parser({
+        defaultValue: function(lng, ns, key) {
+            if (lng === 'en') {
+                return key.replace(/\r\n/g, '\n');
+            }
+            return '__NOT_TRANSLATED__';
+        },
+        keySeparator: false,
+        nsSeparator: false,
+        allowDynamicKeys: false
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/template-literals.js'), 'utf8').replace(/\r\n/g, '\n');
     const wanted = {
         'en': {
             'translation': {
@@ -1170,5 +1197,62 @@ test('Default values test', (t) => {
     parser.parseFuncFromString(content);
     t.same(parser.get(), wanted);
 
+    t.end();
+});
+
+test('metadata', (t) => {
+    const parser = new Parser();
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/metadata.js'), 'utf-8');
+    const customHandler = function(key, options) {
+        parser.set(key, options);
+        t.same(options, {
+            'metadata': {
+                'tags': [
+                    'tag1',
+                    'tag2',
+                ],
+            },
+        });
+    };
+    parser.parseFuncFromString(content, customHandler);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                'friend': '',
+            }
+        }
+    });
+    t.end();
+});
+
+test('allowDynamicKeys', (t) => {
+    const parser = new Parser({
+        allowDynamicKeys: true
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/dynamic-keys.js'), 'utf-8');
+    const customHandler = function(key, options) {
+        parser.set(key, options);
+        t.same(options, {
+            'metadata': {
+                'keys': [
+                    'Hard',
+                    'Normal',
+                ],
+            },
+        });
+    };
+    parser.parseFuncFromString(content, customHandler);
+    t.same(parser.get(), {
+        en: {
+            translation: {
+                'Activities': {
+                    '':'',
+                },
+                'LoadoutBuilder': {
+                    'Select': ""
+                }
+            }
+        }
+    });
     t.end();
 });
