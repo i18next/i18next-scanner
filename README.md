@@ -846,10 +846,9 @@ Example Usage:
       max: ['Max'],
     };
 
-    // set separator to false for keys like Select${minMax} which becomes SelectMin instead of Select.Min
     const keys = {
         difficulty: { list: ['Normal', 'Hard'] },
-        minMax: { list: ['Min', 'Max'], separator: false },
+        minMax: { list: ['Min', 'Max'] },
     };
 
     const content = fs.readFileSync(file.path, enc);
@@ -861,19 +860,15 @@ Example Usage:
         const context = contexts[options.metadata?.context];
         parser.set(key, options);
         for (let i = 0; i < context?.length; i++) {
-          parser.set(`${key}_${context[i]}`, options);
+          parser.set(`${key}${parser.options.contextSeparator}${context[i]}`, options);
         }
       }
 
       // Add keys based on metadata (dynamic or otherwise)
       if (options.metadata?.keys) {
         const list = keys[options.metadata?.keys].list;
-        const addSeparator = keys[options.metadata?.keys].separator ?? true;
-        if (key.endsWith('.')) {
-          key = key.slice(0, -1);
-        }
         for (let i = 0; i < list?.length; i++) {
-          parser.set(`${key}${addSeparator ? '.' : ''}${list[i]}`, options);
+          parser.set(`${key}${list[i]}`, options);
         }
       }
 
