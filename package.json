@@ -19,7 +19,7 @@
     "prepublishOnly": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
     "clean": "del lib .nyc_output",
-    "eslint": "eslint ./src ./bin",
+    "eslint": "eslint ./src",
     "eslint-fix": "eslint --fix ./src ./test/*.js",
     "coverage": "nyc --reporter=lcov --reporter=text yarn test",
     "test": "jest --no-cache"
