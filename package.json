@@ -18,9 +18,10 @@
   "scripts": {
     "prepublishOnly": "npm run eslint && npm run build && npm test",
     "build": "babel ./src --out-dir ./lib",
+    "clean": "del lib .nyc_output",
     "eslint": "eslint ./src",
-    "coverage": "nyc --reporter=lcov --reporter=text yarn test",
-    "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=core-js/stable --node-arg=--require --node-arg=regenerator-runtime/runtime"
+    "eslint-fix": "eslint --fix ./src ./test/*.js",
+    "test": "jest --no-cache"
   },
   "repository": {
     "type": "git",
@@ -54,7 +55,7 @@
     "acorn-walk": "^8.0.0",
     "chalk": "^4.1.0",
     "clone-deep": "^4.0.0",
-    "commander": "^6.2.0",
+    "commander": "^9.0.0",
     "deepmerge": "^4.0.0",
     "ensure-array": "^1.0.0",
     "eol": "^0.9.1",
@@ -69,27 +70,62 @@
     "vinyl-fs": "^3.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "~7.12.1",
-    "@babel/core": "~7.12.3",
-    "@babel/preset-env": "~7.12.1",
-    "@babel/register": "~7.12.1",
-    "@trendmicro/babel-config": "~1.0.0-alpha",
-    "babel-eslint": "~10.1.0",
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.5",
+    "@babel/eslint-parser": "^7.18.2",
+    "@babel/eslint-plugin": "^7.17.7",
+    "@babel/plugin-transform-runtime": "^7.18.5",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@babel/register": "^7.17.7",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@trendmicro/babel-config": "^1.0.2",
     "codecov": "^3.8.3",
-    "core-js": "^3.7.0",
-    "eslint": "^7.13.0",
-    "eslint-config-trendmicro": "^1.4.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.21.5",
+    "core-js": "^3.23.1",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.18.0",
+    "eslint-config-trendmicro": "^3.1.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "~26.5.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.30.0",
     "gulp": "^4.0.2",
     "gulp-tap": "^2.0.0",
     "gulp-util": "^3.0.8",
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.1",
+    "jest-extended": "^2.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-i18next": "^11.12.0",
     "sha1": "^1.1.1",
-    "tap": "^15.0.10",
     "text-table": "^0.2.0"
   },
-  "tap": {
-    "check-coverage": false
+  "jest": {
+    "setupFiles": [],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
+    "unmockedModulePathPatterns": [
+      "react"
+    ],
+    "testMatch": [
+      "<rootDir>/test/**/?(*.)(spec|test).js?(x)"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "<rootDir>/src/**/*.js",
+      "!**/node_modules/**",
+      "!**/test/**"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "html"
+    ],
+    "testPathIgnorePatterns": [],
+    "testTimeout": 30000,
+    "testEnvironment": "node"
   }
 }
