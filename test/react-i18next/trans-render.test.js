@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 import React from 'react';
 import { render } from '@testing-library/react';
 import {
@@ -544,6 +545,10 @@ describe('trans should work with uppercase elements in components', () => {
 });
 
 describe('trans with null child', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
   const TestComponent = () => (
     <Trans i18nKey="transTest1">
       Open <Link to="/msgs">here</Link>.{null}
