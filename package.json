@@ -21,7 +21,6 @@
     "clean": "del lib .nyc_output",
     "eslint": "eslint ./src",
     "eslint-fix": "eslint --fix ./src ./test/*.js",
-    "coverage": "nyc --reporter=lcov --reporter=text yarn test",
     "test": "jest --no-cache"
   },
   "repository": {
