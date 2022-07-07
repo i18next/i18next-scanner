@@ -160,8 +160,8 @@ test('Parse Trans components', () => {
   expect(parser.get()).toEqual({
     en: {
       dev: {
-        'Hello <1>World</1>, you have <3>{{count}}</3> unread message.': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.',
-        'Hello <1>World</1>, you have <3>{{count}}</3> unread message._plural': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.'
+        'Hello <strong>World</strong>, you have {{count}} unread message.': 'Hello <strong>World</strong>, you have {{count}} unread message.',
+        'Hello <strong>World</strong>, you have {{count}} unread message._plural': 'Hello <strong>World</strong>, you have {{count}} unread message.'
       },
       translation: {
         // quote style
@@ -169,8 +169,8 @@ test('Parse Trans components', () => {
         'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
         // plural
-        'plural': 'You have <1>{{count}}</1> apples',
-        'plural_plural': 'You have <1>{{count}}</1> apples',
+        'plural': 'You have {{count}} apples',
+        'plural_plural': 'You have {{count}} apples',
 
         // context
         'context': 'A boyfriend',
@@ -178,22 +178,23 @@ test('Parse Trans components', () => {
 
         // i18nKey
         'multiline-text-string': 'multiline text string',
-        'string-literal': 'This is a <1>test</1>',
-        'object-expression': 'This is a <1><0>{{test}}</0></1>',
-        'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
+        'string-literal': 'This is a <strong>test</strong>',
+        'object-expression': 'This is a <1>{{test}}</1>',
+        'arithmetic-expression': '2 + 2 = {{result}}',
         'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-        'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-        'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+
+        "lorem-ipsum": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
+        "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
         // fallback key
         'Hello, World!': 'Hello, World!',
         'multiline text string': 'multiline text string',
-        'This is a <1>test</1>': 'This is a <1>test</1>',
-        'This is a <1><0>{{test}}</0></1>': 'This is a <1><0>{{test}}</0></1>',
-        '2 + 2 = <1>{{result}}</1>': '2 + 2 = <1>{{result}}</1>',
+        'This is a <strong>test</strong>': 'This is a <strong>test</strong>',
+        'This is a <1>{{test}}</1>': 'This is a <1>{{test}}</1>',
+        '2 + 2 = {{result}}': '2 + 2 = {{result}}',
         'Go to <1>Administration > Tools</1> to download administrative tools.': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-        '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+        "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
         // defaults
         'The component might be self-closing': 'The component might be self-closing',
@@ -233,8 +234,8 @@ test('Parse Trans components with fallback key', () => {
   expect(parser.get()).toEqual({
     en: {
       dev: {
-        '2290678f8f33c49494499fe5e32b4ebd124d9292': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.',
-        '2290678f8f33c49494499fe5e32b4ebd124d9292_plural': 'Hello <1>World</1>, you have <3>{{count}}</3> unread message.'
+        "2f9bdac18af14a38ed4c147f8076c70b740c2ca6": "Hello <strong>World</strong>, you have {{count}} unread message.",
+        "2f9bdac18af14a38ed4c147f8076c70b740c2ca6_plural": "Hello <strong>World</strong>, you have {{count}} unread message.",
       },
       translation: {
         // quote style
@@ -242,8 +243,8 @@ test('Parse Trans components with fallback key', () => {
         'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
         // plural
-        'plural': 'You have <1>{{count}}</1> apples',
-        'plural_plural': 'You have <1>{{count}}</1> apples',
+        'plural': 'You have {{count}} apples',
+        'plural_plural': 'You have {{count}} apples',
 
         // context
         'context': 'A boyfriend',
@@ -251,22 +252,22 @@ test('Parse Trans components with fallback key', () => {
 
         // i18nKey
         'multiline-text-string': 'multiline text string',
-        'string-literal': 'This is a <1>test</1>',
-        'object-expression': 'This is a <1><0>{{test}}</0></1>',
-        'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
+        "string-literal": "This is a <strong>test</strong>",
+        "object-expression": "This is a <1>{{test}}</1>",
+        'arithmetic-expression': '2 + 2 = {{result}}',
         'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-        'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-        'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+        "lorem-ipsum": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
+        "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
         // fallback key
         '0a0a9f2a6772942557ab5355d76af442f8f65e01': 'Hello, World!',
         '32876cbad378f3153c900c297ed2efa06243e0e2': 'multiline text string',
-        'e4ca61dff6bc759d214e32c4e37c8ae594ca163d': 'This is a <1>test</1>',
-        '0ce90193dd25c93cdc12f25a36d31004a74c63de': 'This is a <1><0>{{test}}</0></1>',
-        '493781e20cd3cfd5b3137963519571c3d97ab383': '2 + 2 = <1>{{result}}</1>',
+        "e2eff612e7754fb3954034c9be7e600a0456b84b": "This is a <strong>test</strong>",
+        "49794e6e13cb1be2987c790d7e6d21f724cc3d5b": "This is a <1>{{test}}</1>",
+        'd9ad3431d982619e3b7bd34ed248205312e95bff': '2 + 2 = {{result}}',
         '083eac6b4f73ec317824caaaeea57fba3b83c1d9': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-        '938c04be9e14562b7532a19458fe92b65c6ef941': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-        '9c3ca5d5d8089e96135c8c7c9f42ba34a635fb47': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+        "11a5b6b7b39fc588da3a1a82d77051bc0e80ad71": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
+        "5bdc93d2ec3db7b40698abcdfcd5dbd53ef3620b": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
         // defaults
         '7551746c2d33a1d0a24658c22821c8700fa58a0d': 'Hello <1>{{planet}}</1>!',

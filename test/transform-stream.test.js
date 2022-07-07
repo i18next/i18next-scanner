@@ -185,8 +185,9 @@ test('[Trans Component] fallbackKey', done => {
           'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
           // plural
-          'plural': 'You have <1>{{count}}</1> apples',
-          'plural_plural': 'You have <1>{{count}}</1> apples',
+          "plural": "You have {{count}} apples",
+          "plural_plural": "You have {{count}} apples",
+
 
           // context
           'context': 'A boyfriend',
@@ -194,22 +195,23 @@ test('[Trans Component] fallbackKey', done => {
 
           // i18nKey
           'multiline-text-string': 'multiline text string',
-          'string-literal': 'This is a <1>test</1>',
-          'object-expression': 'This is a <1><0>{{test}}</0></1>',
-          'arithmetic-expression': '2 + 2 = <1>{{result}}</1>',
+          'string-literal': 'This is a <strong>test</strong>',
+          "object-expression": "This is a <1>{{test}}</1>",
+          "arithmetic-expression": "2 + 2 = {{result}}",
           'components': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-          'lorem-ipsum': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-          'lorem-ipsum-nested': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+          "lorem-ipsum": "<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
+          "lorem-ipsum-nested": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
           // fallback key
           'Hello, World!': 'Hello, World!',
           'multiline text string': 'multiline text string',
-          'This is a <1>test</1>': 'This is a <1>test</1>',
-          'This is a <1><0>{{test}}</0></1>': 'This is a <1><0>{{test}}</0></1>',
-          '2 + 2 = <1>{{result}}</1>': '2 + 2 = <1>{{result}}</1>',
+          "This is a <strong>test</strong>": "This is a <strong>test</strong>",
+          "This is a <1>{{test}}</1>": "This is a <1>{{test}}</1>",
+          "2 + 2 = {{result}}": "2 + 2 = {{result}}",
           'Go to <1>Administration > Tools</1> to download administrative tools.': 'Go to <1>Administration > Tools</1> to download administrative tools.',
-          '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': '<0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</0>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</1></1><2>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</2>',
+
+          '<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</p>': '<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</p>',
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.<1>Lorem Ipsum is simply dummy text of the printing and typesetting industry.<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p></1><p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>",
 
           // defaults
           'The component might be self-closing': 'The component might be self-closing',
