@@ -121,9 +121,11 @@ const createStream = (options, customTransform, customFlush) => {
   return stream;
 };
 
-export default (...args) => createStream(...args);
+// Convenience API
+module.exports = (...args) => module.exports.createStream(...args);
 
-export {
-  createStream,
-  Parser,
-};
+// Basic API
+module.exports.createStream = createStream;
+
+// Parser
+module.exports.Parser = Parser;
