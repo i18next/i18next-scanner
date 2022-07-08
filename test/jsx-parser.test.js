@@ -35,6 +35,18 @@ test('Usage with text nodes and HTML entities', () => {
   expect(jsxToString('Hello, <span>{{name}}</span>')).toBe('Hello, <1>{{name}}</1>');
   expect(jsxToString('Hello <strong>John</strong>. <Link to="/inbox">See my profile</Link>')).toBe('Hello <strong>John</strong>. <3>See my profile</3>');
   expect(jsxToString('Hello <strong>{{name}}</strong>. <Link to="/inbox">See my profile</Link>')).toBe('Hello <1>{{name}}</1>. <3>See my profile</3>');
+  expect(jsxToString(`
+    <span>Example test, </span>
+    <Text>
+      Wow
+    </Text>
+  `)).toBe('<0>Example test, </0><1>Wow</1>');
+  expect(jsxToString(`
+    lorem
+    <img />
+    <img />
+    ipsum
+  `)).toBe('lorem<1></1><2></2>ipsum');
 });
 
 test('Usage with simple HTML elements', () => {

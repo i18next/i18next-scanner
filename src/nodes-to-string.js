@@ -41,10 +41,17 @@ const trimValue = value => ensureString(value)
 const nodesToString = (nodes, options) => {
   const supportBasicHtmlNodes = ensureBoolean(options?.supportBasicHtmlNodes);
   const keepBasicHtmlNodesFor = ensureArray(options?.keepBasicHtmlNodesFor);
+  const filteredNodes = ensureArray(nodes)
+    .filter(node => {
+      if (isJSXText(node)) {
+        return trimValue(node.value);
+      }
+      return true;
+    });
 
   let memo = '';
-  nodes.forEach((node, nodeIndex) => {
-    if (isJSXText(node) || isStringLiteral(node)) {
+  filteredNodes.forEach((node, nodeIndex) => {
+    if (isJSXText(node)) {
       const value = trimValue(node.value);
       if (!value) {
         return;
@@ -69,15 +76,15 @@ const nodesToString = (nodes, options) => {
       const nodeType = node.openingElement?.name?.name;
       const selfClosing = node.openingElement?.selfClosing;
       const attributeCount = ensureArray(node.openingElement?.attributes).length;
-      const nonemptyChildNodes = ensureArray(node.children)
+      const filteredChildNodes = ensureArray(node.children)
         .filter(childNode => {
-          if (isJSXText(childNode) || isStringLiteral(childNode)) {
+          if (isJSXText(childNode)) {
             return trimValue(childNode.value);
           }
           return true;
         });
-      const childCount = nonemptyChildNodes.length;
-      const firstChildNode = nonemptyChildNodes[0];
+      const childCount = filteredChildNodes.length;
+      const firstChildNode = filteredChildNodes[0];
       const shouldKeepChild = supportBasicHtmlNodes && keepBasicHtmlNodesFor.indexOf(node.openingElement?.name?.name) > -1;
 
       if (selfClosing && shouldKeepChild && (attributeCount === 0)) {
@@ -88,7 +95,7 @@ const nodesToString = (nodes, options) => {
         // actual e.g. lorem <hr className="test" /> ipsum
         // expected e.g. lorem <0></0> ipsum
         memo += `<${nodeIndex}></${nodeIndex}>`;
-      } else if (shouldKeepChild && (attributeCount === 0) && (childCount === 1) && (isJSXText(firstChildNode) || isStringLiteral(firstChildNode) || isStringLiteral(firstChildNode?.expression))) {
+      } else if (shouldKeepChild && (attributeCount === 0) && (childCount === 1) && (isJSXText(firstChildNode) || isStringLiteral(firstChildNode?.expression))) {
         // actual e.g. dolor <strong>bold</strong> amet
         // expected e.g. dolor <strong>bold</strong> amet
         memo += `<${nodeType}>${nodesToString(node.children, options)}</${nodeType}>`;
