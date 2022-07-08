@@ -1,3 +1,4 @@
+import { ensureArray, ensureBoolean, ensureString } from 'ensure-type';
 import _get from 'lodash/get';
 
 const isJSXText = (node) => {
@@ -32,16 +33,26 @@ const isObjectExpression = (node) => {
   return node.type === 'ObjectExpression';
 };
 
-const nodesToString = (nodes, code) => {
-  let memo = '';
-  let nodeIndex = 0;
-  nodes.forEach((node, i) => {
-    if (isJSXText(node) || isStringLiteral(node)) {
-      const value = (node.value)
-        .replace(/^[\r\n]+\s*/g, '') // remove leading spaces containing a leading newline character
-        .replace(/[\r\n]+\s*$/g, '') // remove trailing spaces containing a leading newline character
-        .replace(/[\r\n]+\s*/g, ' '); // replace spaces containing a leading newline character with a single space character
+const trimValue = value => ensureString(value)
+  .replace(/^[\r\n]+\s*/g, '') // remove leading spaces containing a leading newline character
+  .replace(/[\r\n]+\s*$/g, '') // remove trailing spaces containing a leading newline character
+  .replace(/[\r\n]+\s*/g, ' '); // replace spaces containing a leading newline character with a single space character
 
+const nodesToString = (nodes, options) => {
+  const supportBasicHtmlNodes = ensureBoolean(options?.supportBasicHtmlNodes);
+  const keepBasicHtmlNodesFor = ensureArray(options?.keepBasicHtmlNodesFor);
+  const filteredNodes = ensureArray(nodes)
+    .filter(node => {
+      if (isJSXText(node)) {
+        return trimValue(node.value);
+      }
+      return true;
+    });
+
+  let memo = '';
+  filteredNodes.forEach((node, nodeIndex) => {
+    if (isJSXText(node)) {
+      const value = trimValue(node.value);
       if (!value) {
         return;
       }
@@ -55,17 +66,44 @@ const nodesToString = (nodes, code) => {
       } if (isStringLiteral(expression)) {
         memo += expression.value;
       } else if (isObjectExpression(expression) && (_get(expression, 'properties[0].type') === 'Property')) {
-        memo += `<${nodeIndex}>{{${expression.properties[0].key.name}}}</${nodeIndex}>`;
+        memo += `{{${expression.properties[0].key.name}}}`;
       } else {
         console.error(`Unsupported JSX expression. Only static values or {{interpolation}} blocks are supported. Got ${expression.type}:`);
-        console.error(code.slice(node.start, node.end));
+        console.error(ensureString(options?.code).slice(node.start, node.end));
         console.error(node.expression);
       }
     } else if (node.children) {
-      memo += `<${nodeIndex}>${nodesToString(node.children, code)}</${nodeIndex}>`;
-    }
+      const nodeType = node.openingElement?.name?.name;
+      const selfClosing = node.openingElement?.selfClosing;
+      const attributeCount = ensureArray(node.openingElement?.attributes).length;
+      const filteredChildNodes = ensureArray(node.children)
+        .filter(childNode => {
+          if (isJSXText(childNode)) {
+            return trimValue(childNode.value);
+          }
+          return true;
+        });
+      const childCount = filteredChildNodes.length;
+      const firstChildNode = filteredChildNodes[0];
+      const shouldKeepChild = supportBasicHtmlNodes && keepBasicHtmlNodesFor.indexOf(node.openingElement?.name?.name) > -1;
 
-    ++nodeIndex;
+      if (selfClosing && shouldKeepChild && (attributeCount === 0)) {
+        // actual e.g. lorem <br/> ipsum
+        // expected e.g. lorem <br/> ipsum
+        memo += `<${nodeType}/>`;
+      } else if ((childCount === 0 && !shouldKeepChild) || (childCount === 0 && attributeCount !== 0)) {
+        // actual e.g. lorem <hr className="test" /> ipsum
+        // expected e.g. lorem <0></0> ipsum
+        memo += `<${nodeIndex}></${nodeIndex}>`;
+      } else if (shouldKeepChild && (attributeCount === 0) && (childCount === 1) && (isJSXText(firstChildNode) || isStringLiteral(firstChildNode?.expression))) {
+        // actual e.g. dolor <strong>bold</strong> amet
+        // expected e.g. dolor <strong>bold</strong> amet
+        memo += `<${nodeType}>${nodesToString(node.children, options)}</${nodeType}>`;
+      } else {
+        // regular case mapping the inner children
+        memo += `<${nodeIndex}>${nodesToString(node.children, options)}</${nodeIndex}>`;
+      }
+    }
   });
 
   return memo;

@@ -123,10 +123,15 @@ module.exports = {
             fallbackKey: function(ns, value) {
                 return value;
             },
+
+            // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
+            supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+            keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+            // https://github.com/acornjs/acorn/tree/master/acorn#interface
             acorn: {
                 ecmaVersion: 2020,
                 sourceType: 'module', // defaults to 'module'
-                // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
             }
         },
         lngs: ['en','de'],
@@ -148,7 +153,9 @@ module.exports = {
         interpolation: {
             prefix: '{{',
             suffix: '}}'
-        }
+        },
+        metadata: {},
+        allowDynamicKeys: false,
     },
     transform: function customTransform(file, enc, done) {
         "use strict";
@@ -498,18 +505,28 @@ Below are the configuration options with their default values:
     sort: false,
     attr: {
         list: ['data-i18n'],
-        extensions: ['.html', '.htm']
+        extensions: ['.html', '.htm'],
     },
     func: {
         list: ['i18next.t', 'i18n.t'],
-        extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx'],
     },
     trans: {
         component: 'Trans',
         i18nKey: 'i18nKey',
         defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
-        fallbackKey: false
+        fallbackKey: false,
+
+        // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
+        supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+        keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+        // https://github.com/acornjs/acorn/tree/master/acorn#interface
+        acorn: {
+            ecmaVersion: 2020,
+            sourceType: 'module', // defaults to 'module'
+        },
     },
     lngs: ['en'],
     ns: ['translation'],
@@ -520,7 +537,7 @@ Below are the configuration options with their default values:
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
         savePath: 'i18n/{{lng}}/{{ns}}.json',
         jsonIndent: 2,
-        lineEnding: '\n'
+        lineEnding: '\n',
     },
     nsSeparator: ':',
     keySeparator: '.',
@@ -529,8 +546,10 @@ Below are the configuration options with their default values:
     contextDefaultValues: [],
     interpolation: {
         prefix: '{{',
-        suffix: '}}'
-    }
+        suffix: '}}',
+    },
+    metadata: {},
+    allowDynamicKeys: false,
 }
 ```
 
@@ -606,7 +625,17 @@ If an `Object` is supplied, you can specify a list of extensions, or override th
         i18nKey: 'i18nKey',
         defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
-        fallbackKey: false
+        fallbackKey: false,
+
+        // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
+        supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+        keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+        // https://github.com/acornjs/acorn/tree/master/acorn#interface
+        acorn: {
+            ecmaVersion: 2020,
+            sourceType: 'module', // defaults to 'module'
+        },
     }
 }
 ```
@@ -819,9 +848,6 @@ interpolation options
 }
 ```
 
-## Integration Guide
-Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) to learn how to integrate with [React](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#react), [Gettext Style I18n](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#gettext-style-i18n), and [Handlebars](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#handlebars).
-
 #### metadata
 
 Type: `Object` Default: `{}`
@@ -880,6 +906,9 @@ Example Usage:
 
     done();
 ```
+
+## Integration Guide
+Checkout [Integration Guide](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide) to learn how to integrate with [React](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#react), [Gettext Style I18n](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#gettext-style-i18n), and [Handlebars](https://github.com/i18next/i18next-scanner/wiki/Integration-Guide#handlebars).
 
 ## License
 

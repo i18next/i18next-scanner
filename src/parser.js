@@ -7,7 +7,7 @@ import acornStage3 from 'acorn-stage3';
 import chalk from 'chalk';
 import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
-import ensureArray from 'ensure-array';
+import { ensureArray } from 'ensure-type';
 import { parse } from 'esprima-next';
 import _ from 'lodash';
 import parse5 from 'parse5';
@@ -43,11 +43,13 @@ const defaults = {
     defaultsKey: 'defaults',
     extensions: ['.js', '.jsx'],
     fallbackKey: false,
+    supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+    keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
     acorn: {
       ecmaVersion: 2020, // defaults to 2020
       sourceType: 'module', // defaults to 'module'
       // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
-    }
+    },
   },
 
   lngs: ['en'], // array of supported languages
@@ -170,6 +172,12 @@ const normalizeOptions = (options) => {
     }
     if (_.isUndefined(_.get(options, 'trans.acorn'))) {
       _.set(options, 'trans.acorn', defaults.trans.acorn);
+    }
+    if (_.isUndefined(_.get(options, 'trans.supportBasicHtmlNodes'))) {
+      _.set(options, 'trans.supportBasicHtmlNodes', defaults.trans.supportBasicHtmlNodes);
+    }
+    if (_.isUndefined(_.get(options, 'trans.keepBasicHtmlNodesFor'))) {
+      _.set(options, 'trans.keepBasicHtmlNodesFor', defaults.trans.keepBasicHtmlNodesFor);
     }
   }
 
@@ -538,6 +546,8 @@ class Parser {
       defaultsKey = this.options.trans.defaultsKey, // string
       fallbackKey, // boolean|function
       acorn: acornOptions = this.options.trans.acorn, // object
+      supportBasicHtmlNodes = this.options.trans.supportBasicHtmlNodes, // boolean
+      keepBasicHtmlNodesFor = this.options.trans.keepBasicHtmlNodesFor, // array
     } = { ...opts };
 
     const parseJSXElement = (node, code) => {
@@ -634,7 +644,11 @@ class Parser {
       const tOptions = attr.tOptions;
       const options = {
         ...tOptions,
-        defaultValue: defaultsString || nodesToString(node.children, code),
+        defaultValue: defaultsString || nodesToString(node.children, {
+          code,
+          supportBasicHtmlNodes,
+          keepBasicHtmlNodesFor,
+        }),
         fallbackKey: fallbackKey || this.options.trans.fallbackKey
       };
 

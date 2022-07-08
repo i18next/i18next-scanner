@@ -2,10 +2,10 @@
 
 const path = require('path');
 const program = require('commander');
-const ensureArray = require('ensure-array');
+const { ensureArray } = require('ensure-type');
 const sort = require('gulp-sort');
 const vfs = require('vinyl-fs');
-const scanner = require('../lib').default;
+const scanner = require('../lib');
 const pkg = require('../package.json');
 
 program
