@@ -1,4 +1,4 @@
-/* eslint-disable no-buffer-constructor */
+/* eslint-disable import/no-import-module-exports */
 import fs from 'fs';
 import path from 'path';
 import eol from 'eol';
@@ -93,7 +93,7 @@ const flush = (parser, customFlush) => {
           contents = Buffer.from(text);
         } catch (e) {
           // Fallback to "new Buffer(string[, encoding])" which is deprecated since Node.js v6.0.0
-          contents = new Buffer(text);
+          contents = new Buffer(text); // eslint-disable-line no-buffer-constructor
         }
 
         this.push(new VirtualFile({
