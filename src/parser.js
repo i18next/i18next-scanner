@@ -43,13 +43,13 @@ const defaults = {
     defaultsKey: 'defaults',
     extensions: ['.js', '.jsx'],
     fallbackKey: false,
+    supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+    keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
     acorn: {
       ecmaVersion: 2020, // defaults to 2020
       sourceType: 'module', // defaults to 'module'
       // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
     },
-    supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys
-    keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
   },
 
   lngs: ['en'], // array of supported languages
