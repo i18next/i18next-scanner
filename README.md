@@ -123,12 +123,15 @@ module.exports = {
             fallbackKey: function(ns, value) {
                 return value;
             },
-            supportBasicHtmlNodes: true,
-            keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
+
+            // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
+            supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+            keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+            // https://github.com/acornjs/acorn/tree/master/acorn#interface
             acorn: {
                 ecmaVersion: 2020,
                 sourceType: 'module', // defaults to 'module'
-                // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
             }
         },
         lngs: ['en','de'],
@@ -514,12 +517,15 @@ Below are the configuration options with their default values:
         defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
         fallbackKey: false,
-        supportBasicHtmlNodes: true,
-        keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
+
+        // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
+        supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
+        keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+        // https://github.com/acornjs/acorn/tree/master/acorn#interface
         acorn: {
             ecmaVersion: 2020,
             sourceType: 'module', // defaults to 'module'
-            // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
         },
     },
     lngs: ['en'],
@@ -620,12 +626,15 @@ If an `Object` is supplied, you can specify a list of extensions, or override th
         defaultsKey: 'defaults',
         extensions: ['.js', '.jsx'],
         fallbackKey: false,
+
+        // https://react.i18next.com/latest/trans-component#usage-with-simple-html-elements-like-less-than-br-greater-than-and-others-v10.4.0
         supportBasicHtmlNodes: true, // Enables keeping the name of simple nodes (e.g. <br/>) in translations instead of indexed keys.
         keepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'], // Which nodes are allowed to be kept in translations during defaultValue generation of <Trans>.
+
+        // https://github.com/acornjs/acorn/tree/master/acorn#interface
         acorn: {
             ecmaVersion: 2020,
             sourceType: 'module', // defaults to 'module'
-            // Check out https://github.com/acornjs/acorn/tree/master/acorn#interface for additional options
         },
     }
 }
