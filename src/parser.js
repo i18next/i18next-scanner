@@ -1,6 +1,5 @@
 /* eslint no-console: 0 */
 /* eslint no-eval: 0 */
-import fs from 'fs';
 import * as acorn from 'acorn';
 import acornJsx from 'acorn-jsx';
 import acornStage3 from 'acorn-stage3';
@@ -9,14 +8,15 @@ import cloneDeep from 'clone-deep';
 import deepMerge from 'deepmerge';
 import { ensureArray } from 'ensure-type';
 import { parse } from 'esprima-next';
+import fs from 'fs';
+import i18next from 'i18next';
 import _ from 'lodash';
 import parse5 from 'parse5';
 import sortObject from 'sortobject';
-import i18next from 'i18next';
 import jsxwalk from './acorn-jsx-walk';
 import flattenObjectKeys from './flatten-object-keys';
-import omitEmptyObject from './omit-empty-object';
 import nodesToString from './nodes-to-string';
+import omitEmptyObject from './omit-empty-object';
 
 i18next.init({
   compatibilityJSON: 'v3',
@@ -1046,7 +1046,7 @@ class Parser {
               resLoad[resKey] = options.defaultValue;
             } else if ((resLoad[resKey] !== options.defaultValue) && (lng === defaultLng)) {
               // A default value has provided but it's different with the expected default
-              this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
+              this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))}, with a default value of "${chalk.yellow(options.defaultValue)}" has a different default value, you may need to check the translation key of default language (${defaultLng})`);
             }
           } else if (options.defaultValue_plural && resKey.endsWith(`${pluralSeparator}plural`)) {
             if (!resLoad[resKey]) {
@@ -1054,7 +1054,7 @@ class Parser {
               resLoad[resKey] = options.defaultValue_plural;
             } else if ((resLoad[resKey] !== options.defaultValue_plural) && (lng === defaultLng)) {
               // A default value has provided but it's different with the expected default
-              this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))} has a different default value, you may need to check the translation key of default language (${defaultLng})`);
+              this.log(`The translation key ${chalk.yellow(JSON.stringify(resKey))}, with a default value of "${chalk.yellow(options.defaultValue_plural)}" has a different default value, you may need to check the translation key of default language (${defaultLng})`);
             }
           }
 
