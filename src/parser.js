@@ -774,7 +774,8 @@ class Parser {
     let resStore = {};
     if (this.options.removeUnusedKeys) {
       // Merge two objects `resStore` and `resScan` deeply, returning a new merged object with the elements from both `resStore` and `resScan`.
-      const resMerged = deepMerge(this.resStore, this.resScan);
+      const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
+      const resMerged = deepMerge(this.resStore, this.resScan, { arrayMerge: overwriteMerge });
 
       Object.keys(this.resStore).forEach((lng) => {
         Object.keys(this.resStore[lng]).forEach((ns) => {
