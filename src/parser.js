@@ -582,7 +582,7 @@ class Parser {
 
       const attr = ensureArray(node.openingElement.attributes)
         .reduce((acc, attribute) => {
-          if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier') {
+          if (attribute.type !== 'JSXAttribute' || attribute.name.type !== 'JSXIdentifier' || attribute.value === null) {
             return acc;
           }
 

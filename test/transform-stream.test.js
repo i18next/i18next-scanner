@@ -184,6 +184,9 @@ test('[Trans Component] fallbackKey', done => {
           'jsx-quotes-double': 'Use double quotes for the i18nKey attribute',
           'jsx-quotes-single': 'Use single quote for the i18nKey attribute',
 
+          // HTML encoded tags like: `&lt; &amp; &gt;` should be unescaped, to become: `< & >`
+          'html-encoded-tags': '< & >',
+
           // plural
           "plural": "You have {{count}} apples",
           "plural_plural": "You have {{count}} apples",

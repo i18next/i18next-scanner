@@ -16,6 +16,7 @@ const Component = () => (
         <Fragment>
             <Trans i18nKey="jsx-quotes-double">Use double quotes for the i18nKey attribute</Trans>
             <Trans i18nKey='jsx-quotes-single'>Use single quote for the i18nKey attribute</Trans>
+            <Trans i18nKey="html-encoded-tags" shouldUnescape>&lt; &amp; &gt;</Trans>
             <Trans i18nKey="plural" count={count}>You have {{count}} apples</Trans>
             <Trans i18nKey="context" tOptions={{ context: 'male' }}>A boyfriend</Trans>
             <Trans i18nKey="context" tOptions={{ context: `male` }}>A boyfriend</Trans>
