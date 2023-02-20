@@ -541,7 +541,7 @@ class Parser {
 
     const {
       transformOptions = {}, // object
-      component = this.options.trans.component, // string
+      component = this.options.trans.component, // string|RegExp
       i18nKey = this.options.trans.i18nKey, // string
       defaultsKey = this.options.trans.defaultsKey, // string
       fallbackKey, // boolean|function
@@ -576,7 +576,9 @@ class Parser {
         }
       });
 
-      if (node.openingElement.name.name !== component) {
+      if (component instanceof RegExp
+        ? !node.openingElement.name.name.match(component)
+        : node.openingElement.name.name !== component) {
         return;
       }
 
