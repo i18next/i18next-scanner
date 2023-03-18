@@ -1040,7 +1040,9 @@ class Parser {
                 ? defaultValue(lng, ns, key, options)
                 : (options.defaultValue || defaultValue);
             }
-            this.log(`Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
+            if (resLoad[resKey] !== undefined) {
+              this.log(`Added a new translation key { ${chalk.yellow(JSON.stringify(resKey))}: ${chalk.yellow(JSON.stringify(resLoad[resKey]))} } to ${chalk.yellow(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
+            }
           } else if (options.defaultValue && (!options.defaultValue_plural || !resKey.endsWith(`${pluralSeparator}plural`))) {
             if (!resLoad[resKey]) {
               // Use `options.defaultValue` if specified
