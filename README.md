@@ -655,6 +655,11 @@ fallbackKey: function(ns, value) {
 }
 ```
 
+You can pass RexExp to `trans.component` in case you want to match multiple things:
+```js
+component: /Trans$/
+```
+
 #### lngs
 
 Type: `Array` Default: `['en']`

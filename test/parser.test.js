@@ -321,6 +321,26 @@ test('Parse wrapped Trans components', () => {
   });
 });
 
+test('Parse Trans components with custom component', () => {
+  const parser = new Parser({
+    lngs: ['en'],
+    trans: {
+      component: /Trans$/,
+    }
+  });
+
+  const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/trans-component.jsx'), 'utf-8');
+  parser.parseTransFromString(content);
+  expect(parser.get()).toEqual({
+    en: {
+      translation: {
+        default: 'Default Trans component',
+        custom: 'Customized Trans component',
+      }
+    }
+  });
+});
+
 test('Parse Trans components with modern acorn features', () => {
   const parser = new Parser({
     lngs: ['en'],
