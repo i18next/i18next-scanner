@@ -17,6 +17,7 @@ import jsxwalk from './acorn-jsx-walk';
 import flattenObjectKeys from './flatten-object-keys';
 import nodesToString from './nodes-to-string';
 import omitEmptyObject from './omit-empty-object';
+import { removeComments } from './util';
 
 i18next.init({
   compatibilityJSON: 'v3',
@@ -433,6 +434,7 @@ class Parser {
       opts = {};
     }
 
+    const trimmedContent = this.options.notComments ? removeComments(content) : content;   
     const funcs = (opts.list !== undefined)
       ? ensureArray(opts.list)
       : ensureArray(this.options.func.list);
@@ -466,7 +468,7 @@ class Parser {
     const re = new RegExp(pattern, 'gim');
 
     let r;
-    while ((r = re.exec(content))) {
+    while ((r = re.exec(trimmedContent))) {
       const options = {};
       const full = r[0];
 
@@ -487,7 +489,7 @@ class Parser {
       if (endsWithComma) {
         const { propsFilter } = { ...opts };
 
-        let code = matchBalancedParentheses(content.substr(re.lastIndex));
+        let code = matchBalancedParentheses(trimmedContent.substr(re.lastIndex));
 
         if (typeof propsFilter === 'function') {
           code = propsFilter(code);
