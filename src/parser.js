@@ -555,27 +555,6 @@ class Parser {
         return;
       }
 
-      ensureArray(node.openingElement.attributes).forEach(attribute => {
-        const value = attribute.value;
-
-        if (!(value && value.type === 'JSXExpressionContainer')) {
-          return;
-        }
-
-        const expression = value.expression;
-        if (!(expression && expression.type === 'JSXElement')) {
-          return;
-        }
-
-        parseJSXElement(expression, code);
-      });
-
-      ensureArray(node.children).forEach(childNode => {
-        if (childNode.type === 'JSXElement') {
-          parseJSXElement(childNode, code);
-        }
-      });
-
       if (component instanceof RegExp
         ? !node.openingElement.name.name.match(component)
         : node.openingElement.name.name !== component) {
