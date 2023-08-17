@@ -49,7 +49,6 @@
   ],
   "dependencies": {
     "acorn": "^8.0.4",
-    "acorn-dynamic-import": "^4.0.0",
     "acorn-jsx": "^5.3.1",
     "acorn-stage3": "^4.0.0",
     "acorn-walk": "^8.0.0",
