@@ -442,9 +442,8 @@ class Parser {
     }
 
     const matchFuncs = funcs
-      .map(func => ('(?:' + func + ')'))
-      .join('|')
-      .replace(/\./g, '\\.');
+      .map(func => ('(?:' + _.escapeRegExp(func) + ')'))
+      .join('|');
     // `\s` matches a single whitespace character, which includes spaces, tabs, form feeds, line feeds and other unicode spaces.
     const matchSpecialCharacters = '[\\r\\n\\s]*';
     const stringGroup =
