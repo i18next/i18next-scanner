@@ -92,6 +92,7 @@ const defaults = {
   plural: true, // whether to add plural form key
   pluralFallback: true, // whether to add a fallback key as well as the plural form key
   pluralSeparator: '_', // char to split plural from key
+  pluralVersion: null, // 'compatibilityJSON' version for plural suffixes
 
   // interpolation options
   interpolation: {
@@ -272,6 +273,12 @@ class Parser {
       ...options
     });
 
+    const i18nextInstance = i18next.createInstance();
+    i18nextInstance.init({
+      compatibilityJSON: this.options.pluralVersion || 'v3',
+      pluralSeparator: this.options.pluralSeparator,
+    });
+
     const lngs = this.options.lngs;
     const namespaces = this.options.ns;
 
@@ -279,7 +286,11 @@ class Parser {
       this.resStore[lng] = this.resStore[lng] || {};
       this.resScan[lng] = this.resScan[lng] || {};
 
-      this.pluralSuffixes[lng] = ensureArray(getPluralSuffixes(lng, this.options.pluralSeparator));
+      if (this.options.pluralVersion) {
+        this.pluralSuffixes[lng] = i18nextInstance.services.pluralResolver.getSuffixes(lng);
+      } else {
+        this.pluralSuffixes[lng] = ensureArray(getPluralSuffixes(lng, this.options.pluralSeparator));
+      }
       if (this.pluralSuffixes[lng].length === 0) {
         this.log(`No plural rule found for: ${lng}`);
       }

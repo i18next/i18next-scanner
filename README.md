@@ -23,7 +23,7 @@ into resource files
 {
   "Loading...": "Wird geladen...", // uses existing translation
   "Backslashes in single quote: ' \\ '": "__NOT_TRANSLATED__", // returns a custom string
-  "This is a multiline string": "this is a multiline string", // returns the key as the default value 
+  "This is a multiline string": "this is a multiline string", // returns the key as the default value
   "car": "car",
   "car_blue": "One blue car",
   "car_blue_plural": "{{count}} blue cars",
@@ -263,7 +263,7 @@ gulp.task('i18next', function() {
             resource: {
                 // the source path is relative to current working directory
                 loadPath: 'assets/i18n/{{lng}}/{{ns}}.json',
-                
+
                 // the destination path is relative to your `gulp.dest()` path
                 savePath: 'i18n/{{lng}}/{{ns}}.json'
             }
@@ -307,7 +307,7 @@ const Parser = require('i18next-scanner').Parser;
 const parser = new Parser(options);
 
 const code = "i18next.t('key'); ...";
-parser.parseFuncFromString(code); 
+parser.parseFuncFromString(code);
 
 const jsx = '<Trans i18nKey="some.key">Default text</Trans>';
 parser.parseTransFromString(jsx);
@@ -381,7 +381,7 @@ Get the value of a translation key or the whole i18n resource store
 // Returns the whole i18n resource store
 parser.get();
 
-// Returns the resource store with the top-level keys sorted by alphabetical order 
+// Returns the resource store with the top-level keys sorted by alphabetical order
 parser.get({ sort: true });
 
 // Returns a value in fallback language (@see options.fallbackLng) with namespace and key
@@ -438,12 +438,12 @@ For example:
 const customTransform = function _transform(file, enc, done) {
     const parser = this.parser;
     const content = fs.readFileSync(file.path, enc);
-    
+
     parser.parseFuncFromString(content, { list: ['i18n.t'] }, function(key) {
         const defaultValue = '__L10N__';
         parser.set(key, defaultValue);
     });
-    
+
     done();
 };
 ```
@@ -455,13 +455,13 @@ const hash = require('sha1');
 const customTransform = function _transform(file, enc, done) {
     const parser = this.parser;
     const content = fs.readFileSync(file.path, enc);
-    
+
     parser.parseFuncFromString(content, { list: ['i18n._'] }, function(key) {
         const value = key;
         const defaultKey = hash(value);
         parser.set(defaultKey, value);
     });
-    
+
     done();
 };
 ```
@@ -484,7 +484,7 @@ const customFlush = function _flush(done) {
             // add your code
         });
     });
-    
+
     done();
 };
 
@@ -542,6 +542,7 @@ Below are the configuration options with their default values:
     nsSeparator: ':',
     keySeparator: '.',
     pluralSeparator: '_',
+    pluralVersion: null,
     contextSeparator: '_',
     contextDefaultValues: [],
     interpolation: {
@@ -724,7 +725,7 @@ Resource options:
 ```js
 { // Default
     resource: {
-        // The path where resources get loaded from. Relative to current working directory. 
+        // The path where resources get loaded from. Relative to current working directory.
         loadPath: 'i18n/{{lng}}/{{ns}}.json',
 
         // The path to store resources. Relative to the path specified by `gulp.dest(path)`.
@@ -745,7 +746,7 @@ Resource options:
 ```js
 { // Default
     resource: {
-        // The path where resources get loaded from. Relative to current working directory. 
+        // The path where resources get loaded from. Relative to current working directory.
         loadPath: function(lng, ns) {
             return 'i18n/'+lng+'/'+ns+'.json';
         },
@@ -836,6 +837,12 @@ Type: `String` Default: `'_'`
 
 The character to split plural from key.
 
+#### pluralVersion
+
+Type: `String` Default: `null`
+
+The `compatibilityJSON` version to use for plural suffixes.
+
 #### interpolation
 
 Type: `Object`
@@ -857,7 +864,7 @@ interpolation options
 
 Type: `Object` Default: `{}`
 
-This can be used to pass any additional information regarding the string. 
+This can be used to pass any additional information regarding the string.
 
 #### allowDynamicKeys
 
