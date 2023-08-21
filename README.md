@@ -500,6 +500,7 @@ Below are the configuration options with their default values:
 
 ```javascript
 {
+    compatibilityJSON: 'v3', // One of: 'v1', 'v2', 'v3', 'v4
     debug: false,
     removeUnusedKeys: false,
     sort: false,
@@ -542,7 +543,6 @@ Below are the configuration options with their default values:
     nsSeparator: ':',
     keySeparator: '.',
     pluralSeparator: '_',
-    pluralVersion: null,
     contextSeparator: '_',
     contextDefaultValues: [],
     interpolation: {
@@ -553,6 +553,14 @@ Below are the configuration options with their default values:
     allowDynamicKeys: false,
 }
 ```
+
+#### compatibilityJSON
+
+Type: `String` Default: `'v3'`
+
+The `compatibilityJSON` version to use for plural suffixes.
+
+See https://https://www.i18next.com/misc/json-format for details.
 
 #### debug
 
@@ -836,12 +844,6 @@ Whether to add a fallback key as well as the plural form key.
 Type: `String` Default: `'_'`
 
 The character to split plural from key.
-
-#### pluralVersion
-
-Type: `String` Default: `null`
-
-The `compatibilityJSON` version to use for plural suffixes.
 
 #### interpolation
 

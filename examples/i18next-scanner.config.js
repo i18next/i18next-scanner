@@ -11,6 +11,7 @@ module.exports = {
     ],
     output: './',
     options: {
+        compatibilityJSON: 'v3',
         debug: true,
         func: {
             list: ['i18next.t', 'i18n.t'],

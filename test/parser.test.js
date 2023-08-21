@@ -793,8 +793,8 @@ describe('Plural', () => {
 
   test('pluralVersion', () => {
     const parser = new Parser({
+      compatibilityJSON: 'v4',
       lngs: ['en'],
-      pluralVersion: 'v4'
     });
     const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
     parser.parseFuncFromString(content, { propsFilter: props => props });
