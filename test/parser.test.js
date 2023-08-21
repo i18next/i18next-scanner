@@ -1222,3 +1222,19 @@ test('allowDynamicKeys', () => {
     }
   });
 });
+
+test('Should support fallback keys', () => {
+  const parser = new Parser();
+  const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/fallback.js'), 'utf-8');
+  parser.parseFuncFromString(content, {});
+  expect(parser.get()).toEqual({
+    en: {
+      translation: {
+        'error': {
+          'unspecific': '', // Something wen wrong.
+          '404': '', // The page was not found.
+        },
+      }
+    }
+  });
+});

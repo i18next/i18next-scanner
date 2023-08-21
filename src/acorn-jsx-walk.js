@@ -1,6 +1,5 @@
 // Originally from: https://github.com/sderosiaux/acorn-jsx-walk
 import { simple as walk, base } from 'acorn-walk';
-import { DynamicImportKey } from 'acorn-dynamic-import';
 
 Object.assign(base, {
   FieldDefinition(node, state, callback) {
@@ -8,10 +7,6 @@ Object.assign(base, {
       callback(node.value, state);
     }
   },
-
-  // Workaround with `acorn` and `acorn-dynamic-import`
-  // https://github.com/kristoferbaxter/dynamic-walk/blob/master/workaround.js
-  [DynamicImportKey]: () => {},
 });
 
 // Extends acorn walk with JSX elements

@@ -344,6 +344,23 @@ class Parser {
         .replace(regex.ns, ns);
   }
 
+  fixStringAfterRegExpAsArray(strToFix) {
+    let fixedString = _.trim(strToFix);
+    const firstChar = fixedString[0];
+    const lastChar = fixedString[fixedString.length - 1];
+
+    if (firstChar === '[' && lastChar === ']') {
+      return fixedString
+        .substring(1, fixedString.length - 1)
+        .split(',')
+        .map((part) => {
+          return this.fixStringAfterRegExp(part, true);
+        });
+    }
+
+    return [this.fixStringAfterRegExp(strToFix, true)];
+  }
+
   fixStringAfterRegExp(strToFix) {
     const options = this.options;
     let fixedString = _.trim(strToFix); // Remove leading and trailing whitespace
@@ -442,13 +459,11 @@ class Parser {
     }
 
     const matchFuncs = funcs
-      .map(func => ('(?:' + func + ')'))
-      .join('|')
-      .replace(/\./g, '\\.');
+      .map(func => ('(?:' + _.escapeRegExp(func) + ')'))
+      .join('|');
     // `\s` matches a single whitespace character, which includes spaces, tabs, form feeds, line feeds and other unicode spaces.
     const matchSpecialCharacters = '[\\r\\n\\s]*';
-    const stringGroup =
-            matchSpecialCharacters + '(' +
+    const string =
             // backtick (``)
             '`(?:[^`\\\\]|\\\\(?:.|$))*`' +
             '|' +
@@ -456,11 +471,26 @@ class Parser {
             '"(?:[^"\\\\]|\\\\(?:.|$))*"' +
             '|' +
             // single quote ('')
-            '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'' +
+            '\'(?:[^\'\\\\]|\\\\(?:.|$))*\'';
+    const stringGroup =
+            matchSpecialCharacters + '(' +
+            string +
             ')' + matchSpecialCharacters;
+    const stringNoGroup =
+            matchSpecialCharacters + '(?:' +
+            string +
+            ')' + matchSpecialCharacters;
+    const keys = '(' +
+            stringNoGroup +
+            '|' +
+            '\\[' +
+            stringNoGroup +
+            '(?:[\\,]' + stringNoGroup + ')?' +
+            '\\]' +
+            ')';
     const pattern = '(?:(?:^\\s*)|[^a-zA-Z0-9_])' +
             '(?:' + matchFuncs + ')' +
-            '\\(' + stringGroup +
+            '\\(' + keys +
             '(?:[\\,]' + stringGroup + ')?' +
             '[\\,\\)]';
     const re = new RegExp(pattern, 'gim');
@@ -470,62 +500,64 @@ class Parser {
       const options = {};
       const full = r[0];
 
-      let key = this.fixStringAfterRegExp(r[1], true);
-      if (!key) {
-        continue;
-      }
-
-      if (r[2] !== undefined) {
-        const defaultValue = this.fixStringAfterRegExp(r[2], false);
-        if (!defaultValue) {
+      let keys = this.fixStringAfterRegExpAsArray(r[1]);
+      for (const key of keys) {
+        if (!key) {
           continue;
         }
-        options.defaultValue = defaultValue;
-      }
 
-      const endsWithComma = (full[full.length - 1] === ',');
-      if (endsWithComma) {
-        const { propsFilter } = { ...opts };
-
-        let code = matchBalancedParentheses(content.substr(re.lastIndex));
-
-        if (typeof propsFilter === 'function') {
-          code = propsFilter(code);
+        if (r[2] !== undefined) {
+          const defaultValue = this.fixStringAfterRegExp(r[2], false);
+          if (!defaultValue) {
+            continue;
+          }
+          options.defaultValue = defaultValue;
         }
 
-        try {
-          const syntax = code.trim() !== '' ? parse('(' + code + ')') : {};
+        const endsWithComma = (full[full.length - 1] === ',');
+        if (endsWithComma) {
+          const { propsFilter } = { ...opts };
 
-          const props = _.get(syntax, 'body[0].expression.properties') || [];
-          // http://i18next.com/docs/options/
-          const supportedOptions = [
-            'defaultValue',
-            'defaultValue_plural',
-            'count',
-            'context',
-            'ns',
-            'keySeparator',
-            'nsSeparator',
-            'metadata',
-          ];
+          let code = matchBalancedParentheses(content.substr(re.lastIndex));
 
-          props.forEach((prop) => {
-            if (_.includes(supportedOptions, prop.key.name)) {
-              options[prop.key.name] = this.optionsBuilder(prop);
-            }
-          });
-        } catch (err) {
-          this.error(`Unable to parse code "${code}"`);
-          this.error(err);
+          if (typeof propsFilter === 'function') {
+            code = propsFilter(code);
+          }
+
+          try {
+            const syntax = code.trim() !== '' ? parse('(' + code + ')') : {};
+
+            const props = _.get(syntax, 'body[0].expression.properties') || [];
+            // http://i18next.com/docs/options/
+            const supportedOptions = [
+              'defaultValue',
+              'defaultValue_plural',
+              'count',
+              'context',
+              'ns',
+              'keySeparator',
+              'nsSeparator',
+              'metadata',
+            ];
+
+            props.forEach((prop) => {
+              if (_.includes(supportedOptions, prop.key.name)) {
+                options[prop.key.name] = this.optionsBuilder(prop);
+              }
+            });
+          } catch (err) {
+            this.error(`Unable to parse code "${code}"`);
+            this.error(err);
+          }
         }
-      }
 
-      if (customHandler) {
-        customHandler(key, options);
-        continue;
-      }
+        if (customHandler) {
+          customHandler(key, options);
+          continue;
+        }
 
-      this.set(key, options);
+        this.set(key, options);
+      }
     }
 
     return this;
