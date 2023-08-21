@@ -1230,8 +1230,10 @@ test('Should support fallback keys', () => {
   expect(parser.get()).toEqual({
     en: {
       translation: {
-        'key1': '',
-        'key2': ''
+        'error': {
+          'unspecific': '', // Something wen wrong.
+          '404': '', // The page was not found.
+        },
       }
     }
   });
