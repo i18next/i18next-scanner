@@ -791,7 +791,7 @@ describe('Plural', () => {
     });
   });
 
-  test('pluralVersion', () => {
+  test('compatibilityJSON', () => {
     const parser = new Parser({
       compatibilityJSON: 'v4',
       lngs: ['en'],
