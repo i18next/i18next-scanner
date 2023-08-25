@@ -791,6 +791,33 @@ describe('Plural', () => {
     });
   });
 
+  test('compatibilityJSON', () => {
+    const parser = new Parser({
+      compatibilityJSON: 'v4',
+      lngs: ['en'],
+    });
+    const content = fs.readFileSync(path.resolve(__dirname, 'fixtures/plural.js'), 'utf-8');
+    parser.parseFuncFromString(content, { propsFilter: props => props });
+    expect(parser.get()).toEqual({
+      en: {
+        translation: {
+          'key_one': '',
+          'key_other': '',
+          'keyWithCount_one': '',
+          'keyWithCount_other': '',
+          'keyWithVariable_one': '',
+          'keyWithVariable_other': '',
+          'keyWithCountAndDefaultValues_one': '{{count}} item',
+          'keyWithCountAndDefaultValues_other': '{{count}} item',
+          'keyWithDefaultValueAndCount_one': '{{count}} item',
+          'keyWithDefaultValueAndCount_other': '{{count}} item',
+          'keyWithDefaultValueAndVariable_one': '{{count}} item',
+          'keyWithDefaultValueAndVariable_other': '{{count}} item',
+        }
+      }
+    });
+  });
+
   test('User defined function', () => {
     const parser = new Parser({
       plural: (lng, ns, key, options) => {

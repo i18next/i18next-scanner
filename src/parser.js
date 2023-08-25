@@ -18,11 +18,9 @@ import flattenObjectKeys from './flatten-object-keys';
 import nodesToString from './nodes-to-string';
 import omitEmptyObject from './omit-empty-object';
 
-i18next.init({
-  compatibilityJSON: 'v3',
-});
-
 const defaults = {
+  compatibilityJSON: 'v3', // JSON format
+
   debug: false, // verbose logging
 
   sort: false, // sort keys in alphabetical order
@@ -224,32 +222,6 @@ const normalizeOptions = (options) => {
   return options;
 };
 
-// Get an array of plural suffixes for a given language.
-// @param {string} lng The language.
-// @param {string} pluralSeparator pluralSeparator, default '_'.
-// @return {array} An array of plural suffixes.
-const getPluralSuffixes = (lng, pluralSeparator = '_') => {
-  const rule = i18next.services.pluralResolver.getRule(lng);
-
-  if (!(rule && rule.numbers)) {
-    return []; // Return an empty array if lng is not supported
-  }
-
-  if (rule.numbers.length === 1) {
-    return [`${pluralSeparator}0`];
-  }
-
-  if (rule.numbers.length === 2) {
-    return ['', `${pluralSeparator}plural`];
-  }
-
-  const suffixes = rule.numbers.reduce((acc, n, i) => {
-    return acc.concat(`${pluralSeparator}${i}`);
-  }, []);
-
-  return suffixes;
-};
-
 /**
 * Creates a new parser
 * @constructor
@@ -272,6 +244,12 @@ class Parser {
       ...options
     });
 
+    const i18nextInstance = i18next.createInstance();
+    i18nextInstance.init({
+      compatibilityJSON: this.options.compatibilityJSON,
+      pluralSeparator: this.options.pluralSeparator,
+    });
+
     const lngs = this.options.lngs;
     const namespaces = this.options.ns;
 
@@ -279,7 +257,8 @@ class Parser {
       this.resStore[lng] = this.resStore[lng] || {};
       this.resScan[lng] = this.resScan[lng] || {};
 
-      this.pluralSuffixes[lng] = ensureArray(getPluralSuffixes(lng, this.options.pluralSeparator));
+      this.pluralSuffixes[lng] = i18nextInstance.services.pluralResolver.getSuffixes(lng);
+
       if (this.pluralSuffixes[lng].length === 0) {
         this.log(`No plural rule found for: ${lng}`);
       }
