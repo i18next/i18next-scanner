@@ -560,7 +560,7 @@ Type: `String` Default: `'v3'`
 
 The `compatibilityJSON` version to use for plural suffixes.
 
-See https://https://www.i18next.com/misc/json-format for details.
+See https://www.i18next.com/misc/json-format for details.
 
 #### debug
 
