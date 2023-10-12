@@ -519,11 +519,6 @@ class Parser {
               'metadata',
             ];
 
-
-            if(dynamicSupportedOptions && dynamicSupportedOptions.length > 0) {
-              _.merge(supportedOptions, dynamicSupportedOptions);
-            }
-
             props.forEach((prop) => {
               if (_.includes(supportedOptions, prop.key.name) || dynamicSupportedOptions) {
                 options[prop.key.name] = this.optionsBuilder(prop);
