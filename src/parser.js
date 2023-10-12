@@ -508,7 +508,7 @@ class Parser {
 
             const props = _.get(syntax, 'body[0].expression.properties') || [];
             // http://i18next.com/docs/options/
-            let supportedOptions = [
+            const supportedOptions = [
               'defaultValue',
               'defaultValue_plural',
               'count',
