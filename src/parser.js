@@ -495,7 +495,7 @@ class Parser {
 
         const endsWithComma = (full[full.length - 1] === ',');
         if (endsWithComma) {
-          const { propsFilter } = { ...opts };
+          const { propsFilter, dynamicSupportedOptions } = { ...opts };
 
           let code = matchBalancedParentheses(content.substr(re.lastIndex));
 
@@ -508,7 +508,7 @@ class Parser {
 
             const props = _.get(syntax, 'body[0].expression.properties') || [];
             // http://i18next.com/docs/options/
-            const supportedOptions = [
+            let supportedOptions = [
               'defaultValue',
               'defaultValue_plural',
               'count',
@@ -519,8 +519,13 @@ class Parser {
               'metadata',
             ];
 
+
+            if(dynamicSupportedOptions && dynamicSupportedOptions.length > 0) {
+              _.merge(supportedOptions, dynamicSupportedOptions);
+            }
+
             props.forEach((prop) => {
-              if (_.includes(supportedOptions, prop.key.name)) {
+              if (_.includes(supportedOptions, prop.key.name) || dynamicSupportedOptions) {
                 options[prop.key.name] = this.optionsBuilder(prop);
               }
             });
