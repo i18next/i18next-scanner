@@ -495,7 +495,7 @@ class Parser {
 
         const endsWithComma = (full[full.length - 1] === ',');
         if (endsWithComma) {
-          const { propsFilter } = { ...opts };
+          const { propsFilter, dynamicSupportedOptions } = { ...opts };
 
           let code = matchBalancedParentheses(content.substr(re.lastIndex));
 
@@ -520,7 +520,7 @@ class Parser {
             ];
 
             props.forEach((prop) => {
-              if (_.includes(supportedOptions, prop.key.name)) {
+              if (_.includes(supportedOptions, prop.key.name) || dynamicSupportedOptions) {
                 options[prop.key.name] = this.optionsBuilder(prop);
               }
             });
