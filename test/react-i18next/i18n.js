@@ -28,6 +28,8 @@ i18n.init({
         transTest2InV2: 'Hello <1>{{name}}</1>, you have {{count}} message. Open <5>hear</5>.',
         transTest2InV2_other:
           'Hello <1>{{name}}</1>, you have {{count}} messages. Open <5>here</5>.',
+        transPluralWithCountAsMemberExpression: '{{count}} item',
+        transPluralWithCountAsMemberExpression_other: '{{count}} items',
         testTransKey1: '<0>{{numOfItems}}</0> item matched.',
         testTransKey1_other: '<0>{{numOfItems}}</0> items matched.',
         testTransKey2: '<0><0>{{numOfItems}}</0></0> item matched.',
@@ -53,7 +55,9 @@ i18n.init({
     escapeValue: false, // not needed for react!!
     formatSeparator: ',',
     format(value, format) {
-      if (format === 'uppercase') return value.toUpperCase();
+      if (format === 'uppercase') {
+        return value.toUpperCase();
+      }
       return value;
     },
   },

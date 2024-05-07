@@ -614,6 +614,28 @@ class Parser {
               }, {});
             }
 
+            // Member Expression (e.g. i18nKey={foo.bar})
+            if (expression.type === 'MemberExpression') {
+              acc[name] = expression.object.name + '.' + expression.property.name;
+            }
+
+            // Conditional Expression (e.g. i18nKey={true ? 'foo' : 'bar'})
+            if (expression.type === 'ConditionalExpression') {
+              acc[name] = expression.consequent.value;
+            }
+
+            // Unary Expression (e.g. i18nKey={foo?.bar})
+            if (expression.type === 'UnaryExpression') {
+              acc[name] = expression.alternate.object.name + '.' + expression.alternate.property.name;
+            }
+
+            // Binary Expression (e.g. i18nKey={foo.bar - 1})
+            if (expression.type === 'BinaryExpression') {
+              if (expression.left.type === 'MemberExpression' && expression.right.type === 'Literal') {
+                acc[name] = expression.left.object.name + '.' + expression.left.property.name;
+              }
+            }
+
             // Template Literal
             if (expression.type === 'TemplateLiteral') {
               acc[name] = expression.quasis
