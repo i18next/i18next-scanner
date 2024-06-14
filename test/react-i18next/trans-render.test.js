@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import {
   Trans,
   withTranslation,
@@ -309,7 +309,7 @@ describe('trans complex - count only in props', () => {
     // prettier-ignore
     return (
       <Trans i18nKey="transTest2" count={count}>
-        Hello <strong>{{ name }}</strong>, you have {{n: count}} message. Open <Link to="/msgs">here</Link>.
+        Hello <strong>{{ name }}</strong>, you have {{ n: count }} message. Open <Link to="/msgs">here</Link>.
       </Trans>
     );
   };
@@ -368,10 +368,108 @@ describe('trans complex v2 no extra pseudo elements for interpolation', () => {
   });
 });
 
+describe('Trans with a count using an object property should be detected as a translation with a plural', () => {
+  const TestComponent = () => {
+    const obj = { anyProp: { a: 10 } };
+    // prettier-ignore
+    return (
+      <Trans
+        i18nKey="transPluralWithCountAsMemberExpression"
+        count={obj.anyProp.a}
+      >
+        {{ count: obj.anyProp }} item.
+      </Trans>
+    );
+  };
+
+  it('should render correct content with the count', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+<div>
+  10 items
+</div>
+`);
+  });
+});
+
+describe('Trans with a count using an conditionnal statement should be detected as a translation with a plural', () => {
+  const TestComponent = () => {
+    const obj = true;
+    // prettier-ignore
+    return (
+      <Trans
+        i18nKey="transPluralWithCountAsMemberExpression"
+        count={obj ? 3 : 10}
+      >
+        {{ count: 6 }} item.
+      </Trans>
+    );
+  };
+
+  it('should render correct content with the count', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+<div>
+  3 items
+</div>
+`);
+  });
+});
+
+describe('Trans with a count using an Unary Expression statement should be detected as a translation with a plural', () => {
+  const TestComponent = () => {
+    const obj = { a: 3 };
+    // prettier-ignore
+    return (
+      <Trans
+        i18nKey="transPluralWithCountAsMemberExpression"
+        count={obj?.a}
+      >
+        {{ count: 6 }} item.
+      </Trans>
+    );
+  };
+
+  it('should render correct content with the count', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+<div>
+  3 items
+</div>
+`);
+  });
+});
+
+describe('Trans with a count using an Binary Expression statement should be detected as a translation with a plural', () => {
+  const TestComponent = () => {
+    const obj = { a: 3 };
+    // prettier-ignore
+    return (
+      <Trans
+        i18nKey="transPluralWithCountAsMemberExpression"
+        count={obj.a - 1}
+      >
+        {{ count: 6 }} item.
+      </Trans>
+    );
+  };
+
+  it('should render correct content with the count', () => {
+    const { container } = render(<TestComponent />);
+    expect(container.firstChild).toMatchInlineSnapshot(`
+<div>
+  2 items
+</div>
+`);
+  });
+});
+
 describe('trans with t as prop', () => {
   const TestComponent = ({ t, cb }) => {
     const customT = (...args) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
       return t(...args);
     };
     return (
@@ -415,7 +513,7 @@ describe('trans with empty content', () => {
   const TestComponent = () => <Trans />;
   it('should render an empty string', () => {
     const { container } = render(<TestComponent />);
-    expect(container.firstChild).toMatchInlineSnapshot(`<div />`);
+    expect(container.firstChild).toMatchInlineSnapshot('<div />');
   });
 });
 
