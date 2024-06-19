@@ -60,7 +60,7 @@
     "eol": "^0.9.1",
     "esprima-next": "^5.7.0",
     "gulp-sort": "^2.0.0",
-    "i18next": "*",
+    "i18next": "^19.0.0",
     "lodash": "^4.0.0",
     "parse5": "^6.0.0",
     "sortobject": "^4.0.0",
