@@ -503,6 +503,7 @@ Below are the configuration options with their default values:
     compatibilityJSON: 'v3', // One of: 'v1', 'v2', 'v3', 'v4
     debug: false,
     removeUnusedKeys: false,
+    filterUnusedKeys: false,
     sort: false,
     attr: {
         list: ['data-i18n'],
@@ -573,6 +574,28 @@ Set to `true` to turn on debug output.
 Type: `Boolean` Default: `false`
 
 Set to `true` to remove unused translation keys from i18n resource files.
+
+#### filterUnusedKeys
+
+Type: `Object` Default: `false`
+
+If an `Object` is supplied and `removeUnusedKeys` is set to `true`, to leave specific keys you can specify a function like so:
+```js
+filterUnusedKeys: ({ lng, ns, unusedKey }) => {
+  if (ns === 'resource') {
+    const exceptionKeys = ['word', 'key.word', ...];
+    if (exceptionKeys.includes(unusedKey)) {
+      // leave key
+      return true;
+    }
+  }
+  if (ns === 'other_resource') {
+    // leave key
+    return true;
+  }
+  // remove key
+  return false;
+}
 
 #### sort
 

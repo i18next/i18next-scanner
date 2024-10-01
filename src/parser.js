@@ -796,10 +796,40 @@ class Parser {
           const resStoreKeys = flattenObjectKeys(_.get(this.resStore, [lng, ns], {}));
           const resScanKeys = flattenObjectKeys(_.get(this.resScan, [lng, ns], {}));
           const unusedKeys = _.differenceWith(resStoreKeys, resScanKeys, _.isEqual);
+          let filteredKey;
 
           for (let i = 0; i < unusedKeys.length; ++i) {
-            _.unset(resMerged[lng][ns], unusedKeys[i]);
-            this.log(`Removed an unused translation key { ${chalk.red(JSON.stringify(unusedKeys[i]))} from ${chalk.red(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
+            filteredKey = false;
+
+            if (
+              this.options.filterUnusedKeys &&
+              typeof this.options.filterUnusedKeys === 'function'
+            ) {
+              filteredKey = this.options.filterUnusedKeys({
+                lng,
+                ns,
+                unusedKey: unusedKeys[i].toString().replaceAll(',', '.'),
+              });
+            }
+
+            if (!filteredKey) {
+              _.unset(resMerged[lng][ns], unusedKeys[i]);
+              this.log(
+                `Removed an unused translation key { ${chalk.red(
+                  JSON.stringify(unusedKeys[i])
+                )} } from ${chalk.red(
+                  JSON.stringify(this.formatResourceLoadPath(lng, ns))
+                )}`
+              );
+              continue;
+            }
+            this.log(
+              `Skipped removing an unused translation key { ${chalk.yellow(
+                JSON.stringify(unusedKeys[i])
+              )} } from ${chalk.yellow(
+                JSON.stringify(this.formatResourceLoadPath(lng, ns))
+              )}`
+            );
           }
 
           // Omit empty object
