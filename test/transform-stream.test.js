@@ -402,7 +402,12 @@ test('Keep old translations', done => {
 // https://github.com/i18next/i18next-scanner/issues/30
 test('Remove old translation keys which are already removed from code', done => {
   const options = _.merge({}, defaults, {
-    removeUnusedKeys: true,
+    removeUnusedKeys: function(lng, ns, key) {
+      if (ns === 'resource') {
+        return true;
+      }
+      return false;
+    },
     resource: {
       loadPath: 'test/fixtures/i18n/{{lng}}/{{ns}}.json',
       savePath: 'i18n/{{lng}}/{{ns}}.json'
@@ -420,7 +425,11 @@ test('Remove old translation keys which are already removed from code', done => 
       // English - locale.json
       if (file.path === 'i18n/en/locale.json') {
         const found = JSON.parse(contents);
-        const wanted = {};
+        const wanted = {
+          'language': {
+            'en-US': 'English',
+          },
+        };
         expect(found).toEqual(wanted);
       }
 
@@ -441,7 +450,11 @@ test('Remove old translation keys which are already removed from code', done => 
       // German - locale.json
       if (file.path === 'i18n/de/locale.json') {
         const found = JSON.parse(contents);
-        const wanted = {};
+        const wanted = {
+          'language': {
+            'de-DE': 'German',
+          },
+        };
         expect(found).toEqual(wanted);
       }
 
