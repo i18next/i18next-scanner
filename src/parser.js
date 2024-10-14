@@ -786,7 +786,7 @@ class Parser {
     }
 
     let resStore = {};
-    if (this.options.removeUnusedKeys) {
+    if (!!this.options.removeUnusedKeys) {
       // Merge two objects `resStore` and `resScan` deeply, returning a new merged object with the elements from both `resStore` and `resScan`.
       const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
       const resMerged = deepMerge(this.resStore, this.resScan, { arrayMerge: overwriteMerge });
@@ -796,40 +796,17 @@ class Parser {
           const resStoreKeys = flattenObjectKeys(_.get(this.resStore, [lng, ns], {}));
           const resScanKeys = flattenObjectKeys(_.get(this.resScan, [lng, ns], {}));
           const unusedKeys = _.differenceWith(resStoreKeys, resScanKeys, _.isEqual);
-          let filteredKey;
 
           for (let i = 0; i < unusedKeys.length; ++i) {
-            filteredKey = false;
+            const unusedKey = unusedKeys[i];
+            const isRemovable = (typeof this.options.removeUnusedKeys === 'function')
+              ? this.options.removeUnusedKeys(lng, ns, unusedKey)
+              : !!this.options.removeUnusedKeys;
 
-            if (
-              this.options.filterUnusedKeys &&
-              typeof this.options.filterUnusedKeys === 'function'
-            ) {
-              filteredKey = this.options.filterUnusedKeys({
-                lng,
-                ns,
-                unusedKey: unusedKeys[i].toString().replaceAll(',', '.'),
-              });
+            if (isRemovable) {
+              _.unset(resMerged[lng][ns], unusedKey);
+              this.log(`Removed an unused translation key { ${chalk.red(JSON.stringify(unusedKey))} } from ${chalk.red(JSON.stringify(this.formatResourceLoadPath(lng, ns)))}`);
             }
-
-            if (!filteredKey) {
-              _.unset(resMerged[lng][ns], unusedKeys[i]);
-              this.log(
-                `Removed an unused translation key { ${chalk.red(
-                  JSON.stringify(unusedKeys[i])
-                )} } from ${chalk.red(
-                  JSON.stringify(this.formatResourceLoadPath(lng, ns))
-                )}`
-              );
-              continue;
-            }
-            this.log(
-              `Skipped removing an unused translation key { ${chalk.yellow(
-                JSON.stringify(unusedKeys[i])
-              )} } from ${chalk.yellow(
-                JSON.stringify(this.formatResourceLoadPath(lng, ns))
-              )}`
-            );
           }
 
           // Omit empty object
