@@ -570,9 +570,30 @@ Set to `true` to turn on debug output.
 
 #### removeUnusedKeys
 
-Type: `Boolean` Default: `false`
+Type: `Boolean` or `Function` Default: `false`
 
-Set to `true` to remove unused translation keys from i18n resource files.
+Set to `true` to remove unused translation keys from i18n resource files. By default, this is set to `false`.
+```js
+{ // Default
+    removeUnusedKeys: false,
+}
+```
+
+If a function is provided, it will be used to decide whether an unused translation key should be removed.
+```js
+// Available since 4.6.0
+//
+// @param {string} lng The language of the unused translation key.
+// @param {string} ns The namespace of the unused translation key.
+// @param {array} key The translation key in its array form.
+// @return {boolean} Returns true if the unused translation key should be removed.
+removeUnusedKeys: function(lng, ns, key) {
+  if (ns === 'resource') {
+    return true;
+  }
+  return false;
+}
+```
 
 #### sort
 
@@ -594,7 +615,7 @@ If an `Object` is supplied, you can either specify a list of attributes and exte
 }
 ```
 
-You can set attr to `false` to disable parsing attribute as below:
+You can set `attr` to `false` to disable parsing attribute as below:
 ```js
 {
     attr: false
@@ -615,7 +636,7 @@ If an `Object` is supplied, you can either specify a list of translation functio
 }
 ```
 
-You can set func to `false` to disable parsing translation function as below:
+You can set `func` to `false` to disable parsing translation function as below:
 ```js
 {
     func: false
@@ -649,14 +670,14 @@ If an `Object` is supplied, you can specify a list of extensions, or override th
 }
 ```
 
-You can set trans to `false` to disable parsing Trans component as below:
+You can set `trans` to `false` to disable parsing Trans component as below:
 ```js
 {
     trans: false
 }
 ```
 
-The fallbackKey can either be a boolean value, or a function like so:
+The `fallbackKey` can either be a boolean value, or a function like so:
 ```js
 fallbackKey: function(ns, value) {
     // Returns a hash value as the fallback key
